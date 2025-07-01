@@ -1,9 +1,13 @@
 import { Canvas } from '@react-three/fiber'
+import { Suspense } from 'react'
+import ForegroundLayerDemo from './ForegroundLayerDemo'
 
 export default function CanvasStage() {
   return (
     <Canvas className="w-full h-full">
-      {/* TODO: Add scene components in later milestones */}
+      <Suspense fallback={null}>
+        <ForegroundLayerDemo />
+      </Suspense>
     </Canvas>
   )
 }
