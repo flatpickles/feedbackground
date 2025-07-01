@@ -1,5 +1,5 @@
 import { useFrame, useThree } from '@react-three/fiber'
-import { useEffect, useMemo, useRef } from 'react'
+import { useEffect, useMemo, useRef, useLayoutEffect } from 'react'
 import * as THREE from 'three'
 
 const vertexShader = `
@@ -10,15 +10,24 @@ const vertexShader = `
   }
 `
 
-export default function useFeedbackFBO(fragmentShader: string, decay = 0.9) {
+export default function useFeedbackFBO(
+  fragmentShader: string,
+  decay = 0.9,
+  active = true,
+) {
   const { gl, size, camera } = useThree()
 
-  const snapshotGroup = useRef(new THREE.Group())
-  const snapshotScene = useMemo(() => {
-    const s = new THREE.Scene()
-    s.add(snapshotGroup.current)
-    return s
-  }, [])
+  const snapshotGroup = useRef<THREE.Group | null>(null)
+  const snapshotScene = useMemo(() => new THREE.Scene(), [])
+
+  useLayoutEffect(() => {
+    if (!snapshotGroup.current) return
+    const group = snapshotGroup.current
+    snapshotScene.add(group)
+    return () => {
+      snapshotScene.remove(group)
+    }
+  }, [snapshotScene])
 
   const readRT = useRef(new THREE.WebGLRenderTarget(size.width, size.height))
   const writeRT = useRef(new THREE.WebGLRenderTarget(size.width, size.height))
@@ -69,10 +78,13 @@ export default function useFeedbackFBO(fragmentShader: string, decay = 0.9) {
   }, [])
 
   useFrame(() => {
-    // Snapshot pass
+    // Prepare snapshot texture
     gl.setRenderTarget(snapshotRT.current)
-    gl.clear()
-    gl.render(snapshotScene, camera)
+    gl.setClearColor(0x000000, 0)
+    gl.clear(true, true, true)
+    if (active) {
+      gl.render(snapshotScene, camera)
+    }
 
     // Feedback pass
     gl.setRenderTarget(writeRT.current)
@@ -84,12 +96,6 @@ export default function useFeedbackFBO(fragmentShader: string, decay = 0.9) {
     readRT.current = writeRT.current
     writeRT.current = tmp
     uniforms.uPrevFrame.value = readRT.current.texture
-
-    // Clear snapshot
-    gl.setRenderTarget(snapshotRT.current)
-    gl.setClearColor(0x000000, 0)
-    gl.clear(true, true, true)
-    gl.setRenderTarget(null)
   })
 
   return { snapshotRef: snapshotGroup, texture: readRT.current.texture }
