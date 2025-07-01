@@ -19,6 +19,10 @@ export default function useFeedbackFBO(
 
   const snapshotGroup = useRef<THREE.Group | null>(null)
 
+  const sessionRandom = useRef(
+    new THREE.Vector3(Math.random(), Math.random(), Math.random())
+  )
+
   const readRT = useRef(new THREE.WebGLRenderTarget(size.width, size.height))
   const writeRT = useRef(new THREE.WebGLRenderTarget(size.width, size.height))
   const snapshotRT = useRef(new THREE.WebGLRenderTarget(size.width, size.height))
@@ -28,6 +32,7 @@ export default function useFeedbackFBO(
       uPrevFrame: { value: readRT.current.texture },
       uSnapshot: { value: snapshotRT.current.texture },
       uDecay: { value: decay },
+      uSessionRandom: { value: sessionRandom.current.clone() },
     }),
     [decay]
   )
@@ -49,6 +54,15 @@ export default function useFeedbackFBO(
     () => new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1),
     []
   )
+
+  useEffect(() => {
+    sessionRandom.current.set(
+      Math.random(),
+      Math.random(),
+      Math.random()
+    )
+    uniforms.uSessionRandom.value.copy(sessionRandom.current)
+  }, [active, uniforms])
 
   useEffect(() => {
     readRT.current.setSize(size.width, size.height)
