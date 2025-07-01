@@ -8,8 +8,13 @@ uniform vec3 uSessionRandom;
 
 void main() {
   vec4 history = texture2D(uPrevFrame, vUv);
-  float mask = texture2D(uSnapshot, vUv).a;
-  vec3 color = mix(history.rgb * uDecay, uSessionRandom, mask);
-  float alpha = clamp(history.a * uDecay + mask, 0.0, 1.0);
-  gl_FragColor = vec4(color, alpha);
+  vec4 snap = texture2D(uSnapshot, vUv);
+  vec4 newColor = vec4(uSessionRandom, 1.0);
+  
+  // If there's new paint, use it. Otherwise decay the history
+  if (snap.a > 0.0) {
+    gl_FragColor = newColor;
+  } else {
+    gl_FragColor = vec4(history.rgb, history.a * uDecay);
+  }
 }
