@@ -26,6 +26,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **2025-07-05** – Started M3: added `useFeedbackFBO` hook, `motionBlur.frag` shader, and `FeedbackPlane` component. Wired into `ForegroundLayerDemo`. Lint and build pass.
 
 - **2025-07-05** – Linked `useFeedbackFBO` snapshot rendering to `useDragAndSpring` activity so trails appear only while dragging or springing. Lint and build pass.
+- **2025-07-05** – Fixed feedback FBO so the foreground remains visible while rendering snapshots only during motion. Lint and build pass.
 
 ## Next Steps
 - Add shader hot-swap UI controls to switch feedback fragments.
