@@ -23,5 +23,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **2025-07-04** – Added cursor state management to `useDragAndSpring` so the canvas shows a grab hand when hovering/dragging. Lint and build pass.
 
+- **2025-07-05** – Started M3: added `useFeedbackFBO` hook, `motionBlur.frag` shader, and `FeedbackPlane` component. Wired into `ForegroundLayerDemo`. Lint and build pass.
+
 ## Next Steps
-- Begin M3 by creating the feedback FBO core and linking drag snapshots.
+- Connect `useFeedbackFBO` snapshot logic to drag/spring activity so trails only appear during motion.
