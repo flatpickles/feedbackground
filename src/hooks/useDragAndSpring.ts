@@ -5,9 +5,18 @@ import { useSpring } from '@react-spring/three'
 export type DragSpringPose = { x: number; y: number }
 
 export default function useDragAndSpring() {
-  const { size, viewport } = useThree()
+  const { size, viewport, gl } = useThree()
   const factorX = viewport.width / size.width
   const factorY = viewport.height / size.height
+
+  const overRef = useRef(false)
+
+  const setCursor = useCallback(
+    (c: string) => {
+      gl.domElement.style.cursor = c
+    },
+    [gl.domElement]
+  )
 
   const startRef = useRef<{ sx: number; sy: number; bx: number; by: number }>({
     sx: 0,
@@ -19,9 +28,15 @@ export default function useDragAndSpring() {
   const [isSpringing, setSpringing] = useState(false)
   const [spring, api] = useSpring(() => ({ x: 0, y: 0 }))
 
+  const onPointerEnter = useCallback(() => {
+    overRef.current = true
+    if (!isDragging) setCursor('grab')
+  }, [isDragging, setCursor])
+
   const onPointerDown = useCallback(
     (e: PointerEvent) => {
       setDragging(true)
+      setCursor('grabbing')
       startRef.current = {
         sx: e.clientX,
         sy: e.clientY,
@@ -30,7 +45,7 @@ export default function useDragAndSpring() {
       }
       ;(e.target as Element).setPointerCapture(e.pointerId)
     },
-    [spring.x, spring.y]
+    [spring.x, spring.y, setCursor]
   )
 
   const onPointerMove = useCallback(
@@ -52,13 +67,25 @@ export default function useDragAndSpring() {
       onStart: () => setSpringing(true),
       onRest: () => setSpringing(false),
     })
-  }, [api, isDragging])
+    setCursor(overRef.current ? 'grab' : 'auto')
+  }, [api, isDragging, setCursor])
 
   const onPointerUp = useCallback(() => release(), [release])
-  const onPointerLeave = useCallback(() => release(), [release])
+
+  const onPointerLeave = useCallback(() => {
+    overRef.current = false
+    setCursor('auto')
+    release()
+  }, [release, setCursor])
 
   return {
-    bind: { onPointerDown, onPointerMove, onPointerUp, onPointerLeave },
+    bind: {
+      onPointerEnter,
+      onPointerDown,
+      onPointerMove,
+      onPointerUp,
+      onPointerLeave,
+    },
     pose: spring,
     active: isDragging || isSpringing,
   }

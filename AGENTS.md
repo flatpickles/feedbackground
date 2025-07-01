@@ -21,6 +21,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **2025-07-04** – Started M2: implemented `useDragAndSpring` hook using `react-spring` and wired it up in `ForegroundLayerDemo`. Lint and build pass.
 
+- **2025-07-04** – Added cursor state management to `useDragAndSpring` so the canvas shows a grab hand when hovering/dragging. Lint and build pass.
+
 ## Next Steps
-- Verify background image configuration works across browsers.
-- Expand M2 by integrating drag pose with feedback FBO in upcoming milestone.
+- Begin M3 by creating the feedback FBO core and linking drag snapshots.
