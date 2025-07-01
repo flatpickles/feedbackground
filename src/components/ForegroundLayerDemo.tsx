@@ -8,5 +8,11 @@ function useSvgUrl(): string {
 
 export default function ForegroundLayerDemo() {
   const svgUrl = useSvgUrl()
-  return <ForegroundLayer url={svgUrl} color="#000000" />
+  return (
+    <ForegroundLayer
+      url={svgUrl}
+      color="#000000"
+      size={{ type: 'scaled', factor: 0.01 }}
+    />
+  )
 }

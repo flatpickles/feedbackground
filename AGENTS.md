@@ -15,7 +15,8 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **2025-07-01** – M0 complete. Initialized Vite + React + R3F project with a placeholder `<CanvasStage />`. Lint and build pass.
 - **2025-07-02** – Added `ForegroundLayer` with SVG loading and demo in `CanvasStage`. Lint and build pass.
 - **2025-07-02** – Added diamond test SVG and background image support via URL params. Lint and build pass.
+- **2025-07-03** – Added `SvgSize` and configurable sizing modes for `ForegroundLayer`. Lint and build pass.
 
 ## Next Steps
 - Verify background image configuration works across browsers.
-- Begin planning M2 (`useDragAndSpring`).
+- Begin M2 (`useDragAndSpring`) implementation.
