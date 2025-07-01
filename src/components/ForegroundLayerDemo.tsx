@@ -1,6 +1,12 @@
 import ForegroundLayer from './ForegroundLayer'
-import reactLogoUrl from '../assets/react.svg?url'
+import defaultSvgUrl from '../assets/diamond.svg?url'
+
+function useSvgUrl(): string {
+  const params = new URLSearchParams(window.location.search)
+  return params.get('svg') || defaultSvgUrl
+}
 
 export default function ForegroundLayerDemo() {
-  return <ForegroundLayer url={reactLogoUrl} />
+  const svgUrl = useSvgUrl()
+  return <ForegroundLayer url={svgUrl} color="#000000" />
 }
