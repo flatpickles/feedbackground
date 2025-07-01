@@ -10,11 +10,18 @@ type Props = {
   size?: SvgSize
 }
 
-export default function ForegroundLayer({ url, color = '#ffffff', size = { type: 'scaled', factor: 0.01 } }: Props) {
+export default function ForegroundLayer({
+  url,
+  color = '#ffffff',
+  size = { type: 'scaled', factor: 0.01 },
+}: Props) {
   const { viewport } = useThree()
   const { paths } = useLoader(SVGLoader, url)
   const shapes = useMemo(() => paths.flatMap((p) => p.toShapes(true)), [paths])
-  const geometries = useMemo(() => shapes.map((shape) => new THREE.ShapeGeometry(shape)), [shapes])
+  const geometries = useMemo(
+    () => shapes.map((shape) => new THREE.ShapeGeometry(shape)),
+    [shapes]
+  )
   const bounds = useMemo(() => {
     const box = new THREE.Box3()
     geometries.forEach((g) => {

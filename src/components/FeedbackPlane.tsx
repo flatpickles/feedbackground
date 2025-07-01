@@ -8,11 +8,7 @@ export default function FeedbackPlane({ texture }: Props) {
   return (
     <mesh scale={[viewport.width, viewport.height, 1]} position-z={0}>
       <planeGeometry args={[1, 1]} />
-      <meshBasicMaterial
-        map={texture}
-        transparent
-        toneMapped={false}
-      />
+      <meshBasicMaterial map={texture} transparent toneMapped={false} />
     </mesh>
   )
 }

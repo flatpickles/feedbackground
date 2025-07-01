@@ -27,6 +27,7 @@ export default function useDragAndSpring() {
   const [isDragging, setDragging] = useState(false)
   const [isSpringing, setSpringing] = useState(false)
   const [spring, api] = useSpring(() => ({ x: 0, y: 0 }))
+  const [interactionSession, setInteractionSession] = useState(0)
 
   const onPointerEnter = useCallback(() => {
     overRef.current = true
@@ -35,6 +36,7 @@ export default function useDragAndSpring() {
 
   const onPointerDown = useCallback(
     (e: PointerEvent) => {
+      setInteractionSession((s) => s + 1)
       setDragging(true)
       setCursor('grabbing')
       startRef.current = {
@@ -53,7 +55,11 @@ export default function useDragAndSpring() {
       if (!isDragging) return
       const dx = (e.clientX - startRef.current.sx) * factorX
       const dy = -(e.clientY - startRef.current.sy) * factorY
-      api.start({ x: startRef.current.bx + dx, y: startRef.current.by + dy, immediate: true })
+      api.start({
+        x: startRef.current.bx + dx,
+        y: startRef.current.by + dy,
+        immediate: true,
+      })
     },
     [api, factorX, factorY, isDragging]
   )
@@ -88,5 +94,6 @@ export default function useDragAndSpring() {
     },
     pose: spring,
     active: isDragging || isSpringing,
+    interactionSession,
   }
 }
