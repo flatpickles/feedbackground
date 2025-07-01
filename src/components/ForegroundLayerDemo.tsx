@@ -26,6 +26,7 @@ export default function ForegroundLayerDemo() {
 
   useEffect(() => {
     const pane = new Pane()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const shaderInput = (pane as any).addBlade({
       view: 'list',
       label: 'shader',
@@ -35,9 +36,11 @@ export default function ForegroundLayerDemo() {
       ],
       value: shaderName,
     })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     shaderInput.on('change', (ev: any) =>
       setShaderName(ev.value as keyof typeof shaderMap)
     )
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const decayInput = (pane as any).addBlade({
       view: 'slider',
       label: 'decay',
@@ -45,6 +48,7 @@ export default function ForegroundLayerDemo() {
       max: 1,
       value: decay,
     })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     decayInput.on('change', (ev: any) => setDecay(ev.value as number))
 
     return () => pane.dispose()

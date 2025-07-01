@@ -24,6 +24,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **11** – Fixed feedback FBO so the foreground remains visible while rendering snapshots only during motion. Lint and build pass.
 
 - **12** – Added tweakpane controls for shader selection and decay; introduced session-random uniform and new `randomPaint.frag` shader. Lint and build pass.
+- **13** – Modified `randomPaint.frag` to accumulate only alpha and ignore previous RGB history. Added ESLint ignores for Tweakpane usage. Lint passes with a warning; build succeeds despite a PostCSS warning.
 
 ## Next Steps
 
