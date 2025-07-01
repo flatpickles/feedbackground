@@ -1,5 +1,5 @@
 import { useFrame, useThree } from '@react-three/fiber'
-import { useEffect, useMemo, useRef, useLayoutEffect } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 
 const vertexShader = `
@@ -18,16 +18,6 @@ export default function useFeedbackFBO(
   const { gl, size, camera } = useThree()
 
   const snapshotGroup = useRef<THREE.Group | null>(null)
-  const snapshotScene = useMemo(() => new THREE.Scene(), [])
-
-  useLayoutEffect(() => {
-    if (!snapshotGroup.current) return
-    const group = snapshotGroup.current
-    snapshotScene.add(group)
-    return () => {
-      snapshotScene.remove(group)
-    }
-  }, [snapshotScene])
 
   const readRT = useRef(new THREE.WebGLRenderTarget(size.width, size.height))
   const writeRT = useRef(new THREE.WebGLRenderTarget(size.width, size.height))
@@ -82,8 +72,8 @@ export default function useFeedbackFBO(
     gl.setRenderTarget(snapshotRT.current)
     gl.setClearColor(0x000000, 0)
     gl.clear(true, true, true)
-    if (active) {
-      gl.render(snapshotScene, camera)
+    if (active && snapshotGroup.current) {
+      gl.render(snapshotGroup.current, camera)
     }
 
     // Feedback pass
