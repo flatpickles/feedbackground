@@ -23,6 +23,8 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **10** – Linked `useFeedbackFBO` snapshot rendering to `useDragAndSpring` activity so trails appear only while dragging or springing. Lint and build pass.
 - **11** – Fixed feedback FBO so the foreground remains visible while rendering snapshots only during motion. Lint and build pass.
 
+- **12** – Added tweakpane controls for shader selection and decay; introduced session-random uniform and new `randomPaint.frag` shader. Lint and build pass.
+
 ## Next Steps
 
-- Add shader hot-swap UI controls to switch feedback fragments.
+- Implement sub-frame interpolation for smoother feedback trails.

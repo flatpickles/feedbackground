@@ -16,6 +16,7 @@
     "@react-three/fiber": "^9.1.4",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "tweakpane": "^4.0.5",
     "vite-plugin-glsl": "^1.5.1"
   },
   "devDependencies": {
