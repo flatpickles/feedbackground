@@ -13,9 +13,8 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **2025-07-01** – Removed "Next Steps" section from README and referenced AGENTS log. Lint and build pass.
 
 - **2025-07-01** – M0 complete. Initialized Vite + React + R3F project with a placeholder `<CanvasStage />`. Lint and build pass.
+- **2025-07-02** – Added `ForegroundLayer` with SVG loading and demo in `CanvasStage`. Lint and build pass.
 
 ## Next Steps
-
-- Implement M1: load arbitrary closed-path SVG in a new `ForegroundLayer` component.
-- Provide a basic Storybook or dev test to verify the SVG renders correctly.
 - Begin planning M2 (`useDragAndSpring`) once SVG support is confirmed.
+- Document usage of `ForegroundLayer` and create placeholder tests.
