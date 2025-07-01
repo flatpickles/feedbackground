@@ -13,8 +13,8 @@ function useSvgUrl(): string {
 
 export default function ForegroundLayerDemo() {
   const svgUrl = useSvgUrl()
-  const { bind, pose } = useDragAndSpring()
-  const { snapshotRef, texture } = useFeedbackFBO(motionBlurFrag)
+  const { bind, pose, active } = useDragAndSpring()
+  const { snapshotRef, texture } = useFeedbackFBO(motionBlurFrag, 0.9, active)
   return (
     <>
       <FeedbackPlane texture={texture} />
