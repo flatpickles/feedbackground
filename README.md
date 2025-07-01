@@ -4,6 +4,8 @@
 
 ---
 
+Ongoing progress and next steps are tracked in [AGENTS.md](AGENTS.md).
+
 ## 0 · Project Intent & Vision
 
 This is an interactive web demo for a subtly interactive hero element on an informational website. The project will largely be built with Codex, though in discrete steps that are guided and tested with human oversight. This document discusses the project plan and development milestones in detail.
@@ -134,15 +136,3 @@ src/
 | **Shader compile errors** | Blank or noisy UI | Precompile & cache shaders; revert to default shader. |
 
 ---
-
-## 8 · Next Steps
-
-1. Clone the R3F + Vite starter and push baseline.
-2. Complete **M1–M2** (SVG loading + drag/spring).
-3. Port your existing shader logic (e.g. `blur.frag`) into `useFeedbackFBO`.
-4. Add UI hot-swap controls for shaders and decay settings.
-5. Write tests for SVG loading, interpolation, and FBO pipeline.
-
----
-
-_Kick off with the universal SVG trail, then explore your custom feedback shaders!_
