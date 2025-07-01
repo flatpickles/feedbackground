@@ -19,6 +19,8 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **2025-07-04** – Centered SVG geometry within `ForegroundLayer`. Lint and build pass.
 
+- **2025-07-04** – Started M2: implemented `useDragAndSpring` hook using `react-spring` and wired it up in `ForegroundLayerDemo`. Lint and build pass.
+
 ## Next Steps
 - Verify background image configuration works across browsers.
-- Begin M2 (`useDragAndSpring`) implementation with drag-based interaction.
+- Expand M2 by integrating drag pose with feedback FBO in upcoming milestone.
