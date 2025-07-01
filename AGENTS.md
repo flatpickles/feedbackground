@@ -17,6 +17,8 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **2025-07-02** – Added diamond test SVG and background image support via URL params. Lint and build pass.
 - **2025-07-03** – Added `SvgSize` and configurable sizing modes for `ForegroundLayer`. Lint and build pass.
 
+- **2025-07-04** – Centered SVG geometry within `ForegroundLayer`. Lint and build pass.
+
 ## Next Steps
 - Verify background image configuration works across browsers.
-- Begin M2 (`useDragAndSpring`) implementation.
+- Begin M2 (`useDragAndSpring`) implementation with drag-based interaction.

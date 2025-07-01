@@ -40,8 +40,15 @@ export default function ForegroundLayer({ url, color = '#ffffff', size = { type:
     }
   }, [size, viewport.width, viewport.height, nativeWidth, nativeHeight])
 
+  const center = useMemo(() => bounds.getCenter(new THREE.Vector3()), [bounds])
+
+  const position: [number, number, number] = useMemo(
+    () => [-center.x * scale, -center.y * scale, 0.1],
+    [center, scale]
+  )
+
   return (
-    <group scale={scale} position-z={0.1}>
+    <group scale={scale} position={position}>
       {geometries.map((geometry, idx) => (
         <mesh key={idx} geometry={geometry}>
           <meshBasicMaterial color={color} toneMapped={false} />
