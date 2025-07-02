@@ -33,9 +33,10 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **19** – Switched intra-frame blending to full-opacity normal mode to avoid dark trails and maintain union of poses. Lint and build pass.
 - **20** – Fixed snapshot compositing by disabling autoClear and removing unnecessary material resets. Interpolated poses now accumulate correctly. Lint and build pass.
 - **21** – Flushed interpolation queue when inactive so spring trails don't appear later. Lint and build pass.
+- **22** – Switched interpolator to distance-based step sizing with dynamic counts. Lint and build pass.
 
 ## Next Steps
 
 - Tune random paint blending for performance and visual quality.
-- Experiment with interpolation step counts and potential spline curves.
+- Experiment with interpolation step sizes and potential spline curves.
 - Explore path-based interpolation curves for even smoother motion.
