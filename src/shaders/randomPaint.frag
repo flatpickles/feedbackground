@@ -10,8 +10,13 @@ void main() {
   vec4 history = texture2D(uPrevFrame, vUv);
   float mask = texture2D(uSnapshot, vUv).a;
 
-  // Blend new color based on the snapshot alpha while fading history alpha
-  vec3 color = mix(history.rgb, uSessionRandom, mask);
+  // Accumulate using premultiplied alpha to avoid dark fringes
+  vec3 historyPremul = history.rgb * history.a * uDecay;
+  vec3 newPremul = uSessionRandom * mask;
+
   float alpha = clamp(history.a * uDecay + mask, 0.0, 1.0);
+  vec3 accum = historyPremul + newPremul;
+  vec3 color = alpha > 0.0 ? accum / alpha : vec3(0.0);
+
   gl_FragColor = vec4(color, alpha);
 }
