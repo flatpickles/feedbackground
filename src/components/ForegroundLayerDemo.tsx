@@ -81,14 +81,16 @@ export default function ForegroundLayerDemo() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     interpInput.on('change', (ev: any) => setStepSize(ev.value))
 
+    const blurParams = { blur: blurSnap }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const blurInput = (effectFolder as any).addInput(
-      { blur: blurSnap },
-      'blur',
-      { view: 'checkbox', label: 'blur' }
-    )
+    const blurInput = (effectFolder as any).addBinding(blurParams, 'blur', {
+      label: 'blur',
+    })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    blurInput.on('change', (ev: any) => setBlurSnap(ev.value))
+    blurInput.on('change', (ev: any) => {
+      blurParams.blur = ev.value
+      setBlurSnap(ev.value)
+    })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sizeInput = (fgFolder as any).addBlade({
