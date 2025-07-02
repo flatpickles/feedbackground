@@ -35,9 +35,11 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **21** – Flushed interpolation queue when inactive so spring trails don't appear later. Lint and build pass.
 - **22** – Switched interpolator to distance-based step sizing with dynamic counts. Lint and build pass.
 - **23** – Converted interpolation step controls to pixel units and resized all FBOs using device pixel ratio. Lint and build pass.
+- **24** – Updated Tweakpane controls with grouped folders. Decay now ranges 0.8–1, step is 1–25 with integer increments, and SVG size is configurable via dropdown and parameter blades. Lint and build pass.
 
 ## Next Steps
 
 - Tune random paint blending for performance and visual quality.
 - Explore path-based interpolation curves for even smoother motion.
 - Profile high-DPR rendering performance and optimize FBO sizing.
+- Expose additional shader uniforms via Tweakpane for experimentation.
