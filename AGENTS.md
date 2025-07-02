@@ -31,6 +31,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **17** – Added intra-frame compositing using queued poses in `useFeedbackFBO`, configurable interpolation steps via Tweakpane, and fixed premature spring reset bug. Lint and build pass.
 - **18** – Improved sub-frame blending with additive opacity per pose for smoother smears. Lint and build pass.
 - **19** – Switched intra-frame blending to full-opacity normal mode to avoid dark trails and maintain union of poses. Lint and build pass.
+- **20** – Fixed snapshot compositing by disabling autoClear and removing unnecessary material resets. Interpolated poses now accumulate correctly. Lint and build pass.
 
 ## Next Steps
 

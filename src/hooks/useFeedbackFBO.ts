@@ -97,42 +97,18 @@ export default function useFeedbackFBO(
       if (poses.length === 0) {
         poses.push({ x: group.position.x, y: group.position.y })
       }
-      const originals: [boolean, number, THREE.Blending][] = []
-      group.traverse((obj) => {
-        if ((obj as THREE.Mesh).isMesh) {
-          const mesh = obj as THREE.Mesh
-          const mat = mesh.material as THREE.Material & {
-            opacity?: number
-            transparent?: boolean
-            blending?: THREE.Blending
-          }
-          originals.push([!!mat.transparent, mat.opacity ?? 1, mat.blending])
-          mat.transparent = true
-          mat.opacity = 1
-          mat.blending = THREE.NormalBlending
-        }
-      })
+      const originalPos = { x: group.position.x, y: group.position.y }
+      const prevAuto = gl.autoClear
+      gl.autoClear = false
       for (const p of poses) {
         group.position.x = p.x
         group.position.y = p.y
         group.updateMatrixWorld()
         gl.render(group, camera)
       }
-      let idx = 0
-      group.traverse((obj) => {
-        if ((obj as THREE.Mesh).isMesh) {
-          const mesh = obj as THREE.Mesh
-          const mat = mesh.material as THREE.Material & {
-            opacity?: number
-            transparent?: boolean
-            blending?: THREE.Blending
-          }
-          const [t, o, b] = originals[idx++]!
-          mat.transparent = t
-          mat.opacity = o
-          mat.blending = b as THREE.Blending
-        }
-      })
+      gl.autoClear = prevAuto
+      group.position.set(originalPos.x, originalPos.y, group.position.z)
+      group.updateMatrixWorld()
     }
 
     // Feedback pass
