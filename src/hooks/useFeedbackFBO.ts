@@ -21,6 +21,7 @@ export default function useFeedbackFBO(
   interpQueue?: MutableRefObject<DragSpringPose[]>
 ) {
   const { gl, size, camera } = useThree()
+  const dpr = gl.getPixelRatio()
 
   const snapshotGroup = useRef<THREE.Group | null>(null)
 
@@ -28,10 +29,14 @@ export default function useFeedbackFBO(
     new THREE.Vector3(Math.random(), Math.random(), Math.random())
   )
 
-  const readRT = useRef(new THREE.WebGLRenderTarget(size.width, size.height))
-  const writeRT = useRef(new THREE.WebGLRenderTarget(size.width, size.height))
+  const readRT = useRef(
+    new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr)
+  )
+  const writeRT = useRef(
+    new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr)
+  )
   const snapshotRT = useRef(
-    new THREE.WebGLRenderTarget(size.width, size.height)
+    new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr)
   )
 
   const uniforms = useMemo(
@@ -68,10 +73,11 @@ export default function useFeedbackFBO(
   }, [sessionId, uniforms])
 
   useEffect(() => {
-    readRT.current.setSize(size.width, size.height)
-    writeRT.current.setSize(size.width, size.height)
-    snapshotRT.current.setSize(size.width, size.height)
-  }, [size])
+    const ratio = gl.getPixelRatio()
+    readRT.current.setSize(size.width * ratio, size.height * ratio)
+    writeRT.current.setSize(size.width * ratio, size.height * ratio)
+    snapshotRT.current.setSize(size.width * ratio, size.height * ratio)
+  }, [size, gl])
 
   useEffect(() => {
     const read = readRT.current
