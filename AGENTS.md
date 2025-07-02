@@ -47,6 +47,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **33** – Added optional snapshot blur sized by interpolation step and controlled via Tweakpane. Lint and build pass.
 - **34** – Fixed Tweakpane checkbox setup using `addInput` so blur toggle renders correctly. Lint and build pass.
 - **35** – Replaced `addInput` with `addBinding` for the blur toggle to match Tweakpane v4 API and updated state syncing. Lint and build pass.
+- **36** – Updated `randomPaint.frag` to blend snapshot alpha with history so blurred edges accumulate correctly. Lint and build pass.
 
 ## Next Steps
 
