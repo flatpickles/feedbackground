@@ -27,8 +27,9 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **13** – Modified `randomPaint.frag` to accumulate only alpha and ignore previous RGB history. Added ESLint ignores for Tweakpane usage. Lint passes with a warning; build succeeds despite a PostCSS warning.
 - **14** – Revised `randomPaint.frag` to preserve per-pixel color and fade history, enabling multi-color painting. Lint warns on hooks; build succeeds.
 - **15** – Added Prettier formatting, session-random reset on drag start, and fixed render blending so history color doesn't fade to black. Lint warns on hooks; build succeeds.
+- **16** – Implemented `useFrameInterpolator` hook and wired it into `ForegroundLayerDemo` for smoother motion trails. Lint warns on hooks; build succeeds.
 
 ## Next Steps
 
-- Implement sub-frame interpolation for smoother feedback trails.
 - Tune random paint blending for performance and visual quality.
+- Experiment with interpolation step counts and potential spline curves.
