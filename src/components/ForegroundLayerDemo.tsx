@@ -4,6 +4,7 @@ import { Pane } from 'tweakpane'
 import defaultSvgUrl from '../assets/diamond.svg?url'
 import useDragAndSpring from '../hooks/useDragAndSpring'
 import useFeedbackFBO from '../hooks/useFeedbackFBO'
+import useFrameInterpolator from '../hooks/useFrameInterpolator'
 import motionBlurFrag from '../shaders/motionBlur.frag'
 import randomPaintFrag from '../shaders/randomPaint.frag'
 import FeedbackPlane from './FeedbackPlane'
@@ -17,6 +18,7 @@ function useSvgUrl(): string {
 export default function ForegroundLayerDemo() {
   const svgUrl = useSvgUrl()
   const { bind, pose, active, interactionSession } = useDragAndSpring()
+  const interpPose = useFrameInterpolator(pose)
   const shaderMap = {
     motionBlur: motionBlurFrag,
     randomPaint: randomPaintFrag,
@@ -66,8 +68,8 @@ export default function ForegroundLayerDemo() {
       <FeedbackPlane texture={texture} />
       <a.group
         ref={snapshotRef}
-        position-x={pose.x}
-        position-y={pose.y}
+        position-x={interpPose.x}
+        position-y={interpPose.y}
         {...bind}
       >
         <ForegroundLayer
