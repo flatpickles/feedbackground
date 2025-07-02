@@ -1,39 +1,32 @@
 import { useFrame } from '@react-three/fiber'
 import { SpringValue } from '@react-spring/three'
-import { useRef, useState } from 'react'
+import { useRef } from 'react'
+import type { MutableRefObject } from 'react'
 import type { DragSpringPose } from './useDragAndSpring'
 
 export default function useFrameInterpolator(
   pose: { x: SpringValue<number>; y: SpringValue<number> },
   steps = 4
-): DragSpringPose {
-  const lastBase = useRef<DragSpringPose>({
+): MutableRefObject<DragSpringPose[]> {
+  const lastPose = useRef<DragSpringPose>({
     x: pose.x.get(),
     y: pose.y.get(),
   })
-  const lastOutput = useRef<DragSpringPose>(lastBase.current)
   const queue = useRef<DragSpringPose[]>([])
-  const [interp, setInterp] = useState<DragSpringPose>(lastBase.current)
 
   useFrame(() => {
     const current = { x: pose.x.get(), y: pose.y.get() }
-
-    if (current.x !== lastBase.current.x || current.y !== lastBase.current.y) {
-      queue.current = []
+    if (current.x !== lastPose.current.x || current.y !== lastPose.current.y) {
       for (let i = 1; i <= steps; i++) {
         const t = i / steps
         queue.current.push({
-          x: lastOutput.current.x + (current.x - lastOutput.current.x) * t,
-          y: lastOutput.current.y + (current.y - lastOutput.current.y) * t,
+          x: lastPose.current.x + (current.x - lastPose.current.x) * t,
+          y: lastPose.current.y + (current.y - lastPose.current.y) * t,
         })
       }
-      lastBase.current = current
+      lastPose.current = current
     }
-
-    const next = queue.current.shift() || current
-    lastOutput.current = next
-    setInterp(next)
   })
 
-  return interp
+  return queue
 }

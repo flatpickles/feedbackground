@@ -18,7 +18,8 @@ function useSvgUrl(): string {
 export default function ForegroundLayerDemo() {
   const svgUrl = useSvgUrl()
   const { bind, pose, active, interactionSession } = useDragAndSpring()
-  const interpPose = useFrameInterpolator(pose)
+  const [interpSteps, setInterpSteps] = useState(4)
+  const interpQueue = useFrameInterpolator(pose, interpSteps)
   const shaderMap = {
     motionBlur: motionBlurFrag,
     randomPaint: randomPaintFrag,
@@ -53,23 +54,36 @@ export default function ForegroundLayerDemo() {
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     decayInput.on('change', (ev: any) => setDecay(ev.value))
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const interpInput = (pane as any).addBlade({
+      view: 'slider',
+      label: 'interp',
+      min: 1,
+      max: 20,
+      value: interpSteps,
+      step: 1,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    interpInput.on('change', (ev: any) => setInterpSteps(ev.value))
 
     return () => pane.dispose()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const { snapshotRef, texture } = useFeedbackFBO(
     shaderMap[shaderName],
     decay,
     active,
-    interactionSession
+    interactionSession,
+    interpQueue
   )
   return (
     <>
       <FeedbackPlane texture={texture} />
       <a.group
         ref={snapshotRef}
-        position-x={interpPose.x}
-        position-y={interpPose.y}
+        position-x={pose.x}
+        position-y={pose.y}
         {...bind}
       >
         <ForegroundLayer

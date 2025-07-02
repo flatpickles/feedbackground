@@ -10,11 +10,15 @@ const vertexShader = `
   }
 `
 
+import type { MutableRefObject } from 'react'
+import type { DragSpringPose } from './useDragAndSpring'
+
 export default function useFeedbackFBO(
   fragmentShader: string,
   decay = 0.9,
   active = true,
-  sessionId = 0
+  sessionId = 0,
+  interpQueue?: MutableRefObject<DragSpringPose[]>
 ) {
   const { gl, size, camera } = useThree()
 
@@ -86,7 +90,19 @@ export default function useFeedbackFBO(
     gl.setClearColor(0x000000, 0)
     gl.clear(true, true, true)
     if (active && snapshotGroup.current) {
-      gl.render(snapshotGroup.current, camera)
+      const group = snapshotGroup.current
+      const poses = interpQueue
+        ? interpQueue.current.splice(0, interpQueue.current.length)
+        : []
+      if (poses.length === 0) {
+        poses.push({ x: group.position.x, y: group.position.y })
+      }
+      for (const p of poses) {
+        group.position.x = p.x
+        group.position.y = p.y
+        group.updateMatrixWorld()
+        gl.render(group, camera)
+      }
     }
 
     // Feedback pass

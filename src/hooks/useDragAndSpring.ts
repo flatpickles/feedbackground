@@ -80,9 +80,11 @@ export default function useDragAndSpring() {
 
   const onPointerLeave = useCallback(() => {
     overRef.current = false
-    setCursor('auto')
-    release()
-  }, [release, setCursor])
+    if (!isDragging) {
+      setCursor('auto')
+      release()
+    }
+  }, [isDragging, release, setCursor])
 
   return {
     bind: {
