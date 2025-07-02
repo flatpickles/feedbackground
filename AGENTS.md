@@ -40,6 +40,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **26** – Fixed overshoot in relative sizing by computing viewport at the SVG layer depth.
 - **27** – Corrected cursor state after drag release by checking pointer position and releasing pointer capture. Lint and build pass.
 - **28** – Improved drag-release logic to use `elementFromPoint` so the cursor resets reliably when releasing outside the canvas.
+- **29** – Simplified drag release handling with a requestAnimationFrame cursor check so the cursor resets once the shape moves. Lint and build pass.
 
 ## Next Steps
 
