@@ -76,12 +76,8 @@ export default function useDragAndSpring() {
       })
       let isOver = overRef.current
       if (e) {
-        const rect = gl.domElement.getBoundingClientRect()
-        isOver =
-          e.clientX >= rect.left &&
-          e.clientX <= rect.right &&
-          e.clientY >= rect.top &&
-          e.clientY <= rect.bottom
+        const el = document.elementFromPoint(e.clientX, e.clientY)
+        isOver = !!(el && gl.domElement.contains(el))
       }
       setCursor(isOver ? 'grab' : 'auto')
     },
