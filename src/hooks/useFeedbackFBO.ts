@@ -97,7 +97,6 @@ export default function useFeedbackFBO(
       if (poses.length === 0) {
         poses.push({ x: group.position.x, y: group.position.y })
       }
-      const alpha = 1 / poses.length
       const originals: [boolean, number, THREE.Blending][] = []
       group.traverse((obj) => {
         if ((obj as THREE.Mesh).isMesh) {
@@ -109,8 +108,8 @@ export default function useFeedbackFBO(
           }
           originals.push([!!mat.transparent, mat.opacity ?? 1, mat.blending])
           mat.transparent = true
-          mat.opacity = alpha
-          mat.blending = THREE.AdditiveBlending
+          mat.opacity = 1
+          mat.blending = THREE.NormalBlending
         }
       })
       for (const p of poses) {
