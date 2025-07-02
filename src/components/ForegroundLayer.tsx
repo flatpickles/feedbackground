@@ -15,7 +15,9 @@ export default function ForegroundLayer({
   color = '#ffffff',
   size = { type: 'scaled', factor: 1 },
 }: Props) {
-  const { viewport, size: viewportSize } = useThree()
+  const depth = 0.1
+  const { viewport, camera, size: viewportSize } = useThree()
+  const current = viewport.getCurrentViewport(camera, [0, 0, depth])
   const { paths } = useLoader(SVGLoader, url)
   const shapes = useMemo(() => paths.flatMap((p) => p.toShapes(true)), [paths])
   const geometries = useMemo(
@@ -34,10 +36,10 @@ export default function ForegroundLayer({
   const nativeWidth = bounds.max.x - bounds.min.x
   const nativeHeight = bounds.max.y - bounds.min.y
   const pixelScale = useMemo(() => {
-    const factorX = viewport.width / viewportSize.width
-    const factorY = viewport.height / viewportSize.height
+    const factorX = current.width / viewportSize.width
+    const factorY = current.height / viewportSize.height
     return Math.min(factorX, factorY)
-  }, [viewport.width, viewport.height, viewportSize.width, viewportSize.height])
+  }, [current.width, current.height, viewportSize.width, viewportSize.height])
 
   const scale = useMemo(() => {
     switch (size.type) {
@@ -46,18 +48,18 @@ export default function ForegroundLayer({
       case 'scaled':
         return pixelScale * size.factor
       case 'relative': {
-        const base = Math.min(viewport.width, viewport.height)
+        const base = Math.min(current.width, current.height)
         const largest = Math.max(nativeWidth, nativeHeight)
         return (size.fraction * base) / largest
       }
     }
-  }, [size, viewport.width, viewport.height, pixelScale, nativeWidth, nativeHeight])
+  }, [size, current.width, current.height, pixelScale, nativeWidth, nativeHeight])
 
   const center = useMemo(() => bounds.getCenter(new THREE.Vector3()), [bounds])
 
   const position: [number, number, number] = useMemo(
-    () => [-center.x * scale, -center.y * scale, 0.1],
-    [center, scale]
+    () => [-center.x * scale, -center.y * scale, depth],
+    [center, scale, depth]
   )
 
   return (
