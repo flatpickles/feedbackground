@@ -1,5 +1,6 @@
 import { a } from '@react-spring/three'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import * as THREE from 'three'
 import { Pane } from 'tweakpane'
 import defaultSvgUrl from '../assets/diamond.svg?url'
 import useDragAndSpring from '../hooks/useDragAndSpring'
@@ -18,7 +19,8 @@ function useSvgUrl(): string {
 
 export default function ForegroundLayerDemo() {
   const svgUrl = useSvgUrl()
-  const { bind, pose, active, interactionSession } = useDragAndSpring()
+  const dragRef = useRef<THREE.Group | null>(null)
+  const { bind, pose, active, interactionSession } = useDragAndSpring(dragRef)
   const [stepSize, setStepSize] = useState(20)
   const [svgSize, setSvgSize] = useState<SvgSize>({
     type: 'scaled',
@@ -148,7 +150,8 @@ export default function ForegroundLayerDemo() {
     decay,
     active,
     interactionSession,
-    interpQueue
+    interpQueue,
+    dragRef
   )
   return (
     <>
