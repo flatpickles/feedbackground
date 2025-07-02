@@ -82,11 +82,11 @@ export default function ForegroundLayerDemo() {
     interpInput.on('change', (ev: any) => setStepSize(ev.value))
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const blurInput = (effectFolder as any).addBlade({
-      view: 'checkbox',
-      label: 'blur',
-      value: blurSnap,
-    })
+    const blurInput = (effectFolder as any).addInput(
+      { blur: blurSnap },
+      'blur',
+      { view: 'checkbox', label: 'blur' }
+    )
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     blurInput.on('change', (ev: any) => setBlurSnap(ev.value))
 
