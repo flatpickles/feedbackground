@@ -22,7 +22,7 @@ export default function ForegroundLayerDemo() {
   const [stepSize, setStepSize] = useState(20)
   const [svgSize, setSvgSize] = useState<SvgSize>({
     type: 'scaled',
-    factor: 0.01,
+    factor: 1,
   })
   const interpQueue = useFrameInterpolator(pose, stepSize)
   const shaderMap = {
@@ -99,8 +99,8 @@ export default function ForegroundLayerDemo() {
           view: 'slider',
           label: 'factor',
           min: 0,
-          max: 0.1,
-          value: svgSize.type === 'scaled' ? svgSize.factor : 0.01,
+          max: 5,
+          value: svgSize.type === 'scaled' ? svgSize.factor : 1,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         paramBlade.on('change', (ev: any) =>
@@ -132,7 +132,7 @@ export default function ForegroundLayerDemo() {
       if (type === 'natural') {
         setSvgSize({ type: 'natural' })
       } else if (type === 'scaled') {
-        setSvgSize({ type: 'scaled', factor: 0.01 })
+        setSvgSize({ type: 'scaled', factor: 1 })
       } else if (type === 'relative') {
         setSvgSize({ type: 'relative', fraction: 0.5 })
       }
