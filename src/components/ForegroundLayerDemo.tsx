@@ -20,13 +20,14 @@ function useSvgUrl(): string {
 export default function ForegroundLayerDemo() {
   const svgUrl = useSvgUrl()
   const dragRef = useRef<THREE.Group | null>(null)
-  const { bind, pose, active, interactionSession } = useDragAndSpring(dragRef)
+  const { bind, pose, active, interactionSession, isDragging } =
+    useDragAndSpring(dragRef)
   const [stepSize, setStepSize] = useState(20)
   const [svgSize, setSvgSize] = useState<SvgSize>({
     type: 'scaled',
     factor: 1,
   })
-  const interpQueue = useFrameInterpolator(pose, stepSize)
+  const interpQueue = useFrameInterpolator(pose, isDragging, stepSize)
   const shaderMap = {
     motionBlur: motionBlurFrag,
     randomPaint: randomPaintFrag,
