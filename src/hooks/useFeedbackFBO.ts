@@ -10,27 +10,6 @@ const vertexShader = `
   }
 `
 
-const blurFragmentShader = `
-  precision highp float;
-  varying vec2 vUv;
-  uniform sampler2D uTexture;
-  uniform vec2 uTexelSize;
-  uniform float uRadius;
-
-  void main() {
-    vec2 off = uTexelSize * uRadius;
-    vec4 sum = texture2D(uTexture, vUv + off * vec2(-1.0, -1.0));
-    sum += texture2D(uTexture, vUv + off * vec2(0.0, -1.0));
-    sum += texture2D(uTexture, vUv + off * vec2(1.0, -1.0));
-    sum += texture2D(uTexture, vUv + off * vec2(-1.0, 0.0));
-    sum += texture2D(uTexture, vUv);
-    sum += texture2D(uTexture, vUv + off * vec2(1.0, 0.0));
-    sum += texture2D(uTexture, vUv + off * vec2(-1.0, 1.0));
-    sum += texture2D(uTexture, vUv + off * vec2(0.0, 1.0));
-    sum += texture2D(uTexture, vUv + off * vec2(1.0, 1.0));
-    gl_FragColor = sum / 9.0;
-  }
-`
 
 import type { MutableRefObject } from 'react'
 import type { DragSpringPose } from './useDragAndSpring'
@@ -42,8 +21,8 @@ export default function useFeedbackFBO(
   sessionId = 0,
   interpQueue?: MutableRefObject<DragSpringPose[]>,
   externalRef?: MutableRefObject<THREE.Group | null>,
-  blur = false,
-  blurRadius = 1
+  preprocessShader: string | null = null,
+  preprocessRadius = 1
 ) {
   const { gl, size, camera } = useThree()
   const dpr = gl.getPixelRatio()
@@ -64,33 +43,39 @@ export default function useFeedbackFBO(
   const snapshotRT = useRef(
     new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr)
   )
-  const blurRT = useRef(
+  const preprocessRT = useRef(
     new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr)
   )
 
-  const blurUniforms = useMemo(
+  const preprocessUniforms = useMemo(
     () => ({
       uTexture: { value: snapshotRT.current.texture },
       uTexelSize: {
-        value: new THREE.Vector2(1 / (size.width * dpr), 1 / (size.height * dpr)),
+        value: new THREE.Vector2(
+          1 / (size.width * dpr),
+          1 / (size.height * dpr)
+        ),
       },
-      uRadius: { value: blurRadius },
+      uRadius: { value: preprocessRadius },
     }),
-    [size, dpr, blurRadius]
+    [size, dpr, preprocessRadius]
   )
 
-  const blurScene = useMemo(() => {
+  const lastSnapshotPos = useRef(new THREE.Vector2(Infinity, Infinity))
+
+  const preprocessScene = useMemo<THREE.Scene | null>(() => {
+    if (!preprocessShader) return null
     const scene = new THREE.Scene()
     const material = new THREE.ShaderMaterial({
       vertexShader,
-      fragmentShader: blurFragmentShader,
-      uniforms: blurUniforms,
+      fragmentShader: preprocessShader,
+      uniforms: preprocessUniforms,
       blending: THREE.NoBlending,
     })
     const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material)
     scene.add(mesh)
     return scene
-  }, [blurUniforms])
+  }, [preprocessUniforms, preprocessShader])
 
   const uniforms = useMemo(
     () => ({
@@ -130,23 +115,23 @@ export default function useFeedbackFBO(
     readRT.current.setSize(size.width * ratio, size.height * ratio)
     writeRT.current.setSize(size.width * ratio, size.height * ratio)
     snapshotRT.current.setSize(size.width * ratio, size.height * ratio)
-    blurRT.current.setSize(size.width * ratio, size.height * ratio)
-    blurUniforms.uTexelSize.value.set(
+    preprocessRT.current.setSize(size.width * ratio, size.height * ratio)
+    preprocessUniforms.uTexelSize.value.set(
       1 / (size.width * ratio),
       1 / (size.height * ratio)
     )
-  }, [size, gl, blurUniforms])
+  }, [size, gl, preprocessUniforms])
 
   useEffect(() => {
     const read = readRT.current
     const write = writeRT.current
     const snap = snapshotRT.current
-    const blurT = blurRT.current
+    const preprocessT = preprocessRT.current
     return () => {
       read.dispose()
       write.dispose()
       snap.dispose()
-      blurT.dispose()
+      preprocessT.dispose()
     }
   }, [])
 
@@ -155,6 +140,7 @@ export default function useFeedbackFBO(
     gl.setRenderTarget(snapshotRT.current)
     gl.setClearColor(0x000000, 0)
     gl.clear(true, true, true)
+    let moved = false
     if (
       snapshotGroup.current &&
       (active || (interpQueue && interpQueue.current.length > 0))
@@ -174,20 +160,27 @@ export default function useFeedbackFBO(
         group.position.y = p.y
         group.updateMatrixWorld()
         gl.render(group, camera)
+        if (p.x !== lastSnapshotPos.current.x || p.y !== lastSnapshotPos.current.y) {
+          moved = true
+          lastSnapshotPos.current.set(p.x, p.y)
+        }
       }
       gl.autoClear = prevAuto
       group.position.set(originalPos.x, originalPos.y, group.position.z)
       group.updateMatrixWorld()
     }
 
-    if (blur) {
-      blurUniforms.uTexture.value = snapshotRT.current.texture
-      blurUniforms.uRadius.value = blurRadius
-      gl.setRenderTarget(blurRT.current)
-      gl.render(blurScene, orthoCam)
+    if (moved && preprocessShader && preprocessScene) {
+      preprocessUniforms.uTexture.value = snapshotRT.current.texture
+      preprocessUniforms.uRadius.value = preprocessRadius
+      gl.setRenderTarget(preprocessRT.current)
+      gl.render(preprocessScene, orthoCam)
       gl.setRenderTarget(null)
-      uniforms.uSnapshot.value = blurRT.current.texture
+      uniforms.uSnapshot.value = preprocessRT.current.texture
+    } else if (moved) {
+      uniforms.uSnapshot.value = snapshotRT.current.texture
     } else {
+      // No movement: use empty snapshot
       uniforms.uSnapshot.value = snapshotRT.current.texture
     }
 

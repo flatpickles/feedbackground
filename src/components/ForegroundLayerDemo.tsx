@@ -8,6 +8,8 @@ import useFeedbackFBO from '../hooks/useFeedbackFBO'
 import useFrameInterpolator from '../hooks/useFrameInterpolator'
 import motionBlurFrag from '../shaders/motionBlur.frag'
 import randomPaintFrag from '../shaders/randomPaint.frag'
+import boxBlurFrag from '../shaders/boxBlur.frag'
+import gaussianBlurFrag from '../shaders/gaussianBlur.frag'
 import FeedbackPlane from './FeedbackPlane'
 import ForegroundLayer from './ForegroundLayer'
 import type { SvgSize } from '../types/svg'
@@ -23,7 +25,13 @@ export default function ForegroundLayerDemo() {
   const { bind, pose, active, interactionSession, isDragging } =
     useDragAndSpring(dragRef)
   const [stepSize, setStepSize] = useState(20)
-  const [blurSnap, setBlurSnap] = useState(true)
+  const preprocessMap = {
+    none: null,
+    box: boxBlurFrag,
+    gaussian: gaussianBlurFrag,
+  }
+  const [preprocessName, setPreprocessName] =
+    useState<keyof typeof preprocessMap>('none')
   const [svgSize, setSvgSize] = useState<SvgSize>({
     type: 'scaled',
     factor: 1,
@@ -81,16 +89,21 @@ export default function ForegroundLayerDemo() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     interpInput.on('change', (ev: any) => setStepSize(ev.value))
 
-    const blurParams = { blur: blurSnap }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const blurInput = (effectFolder as any).addBinding(blurParams, 'blur', {
-      label: 'blur',
+    const preprocessInput = (effectFolder as any).addBlade({
+      view: 'list',
+      label: 'preprocess',
+      options: [
+        { text: 'None', value: 'none' },
+        { text: 'Box Blur', value: 'box' },
+        { text: 'Gaussian Blur', value: 'gaussian' },
+      ],
+      value: preprocessName,
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    blurInput.on('change', (ev: any) => {
-      blurParams.blur = ev.value
-      setBlurSnap(ev.value)
-    })
+    preprocessInput.on('change', (ev: any) =>
+      setPreprocessName(ev.value as keyof typeof preprocessMap)
+    )
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sizeInput = (fgFolder as any).addBlade({
@@ -165,7 +178,7 @@ export default function ForegroundLayerDemo() {
     interactionSession,
     interpQueue,
     dragRef,
-    blurSnap,
+    preprocessMap[preprocessName],
     stepSize
   )
   return (
