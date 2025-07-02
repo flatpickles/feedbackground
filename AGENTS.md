@@ -30,6 +30,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **16** – Implemented `useFrameInterpolator` hook and wired it into `ForegroundLayerDemo` for smoother motion trails. Lint warns on hooks; build succeeds.
 - **17** – Added intra-frame compositing using queued poses in `useFeedbackFBO`, configurable interpolation steps via Tweakpane, and fixed premature spring reset bug. Lint and build pass.
 - **18** – Improved sub-frame blending with additive opacity per pose for smoother smears. Lint and build pass.
+- **19** – Switched intra-frame blending to full-opacity normal mode to avoid dark trails and maintain union of poses. Lint and build pass.
 
 ## Next Steps
 
