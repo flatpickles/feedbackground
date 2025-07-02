@@ -13,9 +13,9 @@ type Props = {
 export default function ForegroundLayer({
   url,
   color = '#ffffff',
-  size = { type: 'scaled', factor: 0.01 },
+  size = { type: 'scaled', factor: 1 },
 }: Props) {
-  const { viewport } = useThree()
+  const { viewport, size: viewportSize } = useThree()
   const { paths } = useLoader(SVGLoader, url)
   const shapes = useMemo(() => paths.flatMap((p) => p.toShapes(true)), [paths])
   const geometries = useMemo(
@@ -33,19 +33,25 @@ export default function ForegroundLayer({
 
   const nativeWidth = bounds.max.x - bounds.min.x
   const nativeHeight = bounds.max.y - bounds.min.y
+  const pixelScale = useMemo(() => {
+    const factorX = viewport.width / viewportSize.width
+    const factorY = viewport.height / viewportSize.height
+    return Math.min(factorX, factorY)
+  }, [viewport.width, viewport.height, viewportSize.width, viewportSize.height])
+
   const scale = useMemo(() => {
     switch (size.type) {
       case 'natural':
-        return 1
+        return pixelScale
       case 'scaled':
-        return size.factor
+        return pixelScale * size.factor
       case 'relative': {
         const base = Math.min(viewport.width, viewport.height)
         const largest = Math.max(nativeWidth, nativeHeight)
         return (size.fraction * base) / largest
       }
     }
-  }, [size, viewport.width, viewport.height, nativeWidth, nativeHeight])
+  }, [size, viewport.width, viewport.height, pixelScale, nativeWidth, nativeHeight])
 
   const center = useMemo(() => bounds.getCenter(new THREE.Vector3()), [bounds])
 

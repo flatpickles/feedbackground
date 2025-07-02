@@ -36,6 +36,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **22** – Switched interpolator to distance-based step sizing with dynamic counts. Lint and build pass.
 - **23** – Converted interpolation step controls to pixel units and resized all FBOs using device pixel ratio. Lint and build pass.
 - **24** – Updated Tweakpane controls with grouped folders. Decay now ranges 0.8–1, step is 1–25 with integer increments, and SVG size is configurable via dropdown and parameter blades. Lint and build pass.
+- **25** – Corrected SVG sizing logic so "natural" uses viewbox pixels, "scaled" multiplies that by a factor, and "relative" sizes to the viewport. Lint and build pass.
 
 ## Next Steps
 
