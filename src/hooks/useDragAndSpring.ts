@@ -1,11 +1,15 @@
 import { useCallback, useRef, useState } from 'react'
+import type { RefObject } from 'react'
 import { useThree } from '@react-three/fiber'
+import * as THREE from 'three'
 import { useSpring } from '@react-spring/three'
 
 export type DragSpringPose = { x: number; y: number }
 
-export default function useDragAndSpring() {
-  const { size, viewport, gl } = useThree()
+export default function useDragAndSpring(
+  targetRef: RefObject<THREE.Object3D | null> | null = null
+) {
+  const { size, viewport, gl, camera, raycaster } = useThree()
   const factorX = viewport.width / size.width
   const factorY = viewport.height / size.height
 
@@ -71,9 +75,15 @@ export default function useDragAndSpring() {
 
   const checkCursor = useCallback(() => {
     const { x, y } = pointerRef.current
-    const el = document.elementFromPoint(x, y)
-    const isOver = !!(el && gl.domElement.contains(el))
-    if (!isOver) {
+    const ndc = new THREE.Vector2(
+      (x / size.width) * 2 - 1,
+      -(y / size.height) * 2 + 1
+    )
+    raycaster.setFromCamera(ndc, camera)
+    const hit =
+      !!targetRef?.current &&
+      raycaster.intersectObject(targetRef.current, true).length > 0
+    if (!hit) {
       setCursor('auto')
       checkRaf.current = null
     } else if (springingRef.current) {
@@ -82,7 +92,7 @@ export default function useDragAndSpring() {
       setCursor('grab')
       checkRaf.current = null
     }
-  }, [gl.domElement, setCursor])
+  }, [camera, raycaster, setCursor, size.height, size.width, targetRef])
 
   const release = useCallback(
     (e?: PointerEvent) => {

@@ -18,12 +18,14 @@ export default function useFeedbackFBO(
   decay = 0.9,
   active = true,
   sessionId = 0,
-  interpQueue?: MutableRefObject<DragSpringPose[]>
+  interpQueue?: MutableRefObject<DragSpringPose[]>,
+  externalRef?: MutableRefObject<THREE.Group | null>
 ) {
   const { gl, size, camera } = useThree()
   const dpr = gl.getPixelRatio()
 
-  const snapshotGroup = useRef<THREE.Group | null>(null)
+  const internalRef = useRef<THREE.Group | null>(null)
+  const snapshotGroup = externalRef ?? internalRef
 
   const sessionRandom = useRef(
     new THREE.Vector3(Math.random(), Math.random(), Math.random())
