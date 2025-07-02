@@ -89,7 +89,10 @@ export default function useFeedbackFBO(
     gl.setRenderTarget(snapshotRT.current)
     gl.setClearColor(0x000000, 0)
     gl.clear(true, true, true)
-    if (active && snapshotGroup.current) {
+    if (
+      snapshotGroup.current &&
+      (active || (interpQueue && interpQueue.current.length > 0))
+    ) {
       const group = snapshotGroup.current
       const poses = interpQueue
         ? interpQueue.current.splice(0, interpQueue.current.length)

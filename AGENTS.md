@@ -32,6 +32,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **18** – Improved sub-frame blending with additive opacity per pose for smoother smears. Lint and build pass.
 - **19** – Switched intra-frame blending to full-opacity normal mode to avoid dark trails and maintain union of poses. Lint and build pass.
 - **20** – Fixed snapshot compositing by disabling autoClear and removing unnecessary material resets. Interpolated poses now accumulate correctly. Lint and build pass.
+- **21** – Flushed interpolation queue when inactive so spring trails don't appear later. Lint and build pass.
 
 ## Next Steps
 
