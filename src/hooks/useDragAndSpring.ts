@@ -140,6 +140,7 @@ export default function useDragAndSpring(
     },
     pose: spring,
     active: isDragging || isSpringing,
+    isDragging,
     interactionSession,
   }
 }

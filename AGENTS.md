@@ -43,10 +43,10 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **29** – Simplified drag release handling with a requestAnimationFrame cursor check so the cursor resets once the shape moves. Lint and build pass.
 - **30** – Refactored cursor checking to raycast against the dragged group using a shared ref; hooks accept the ref so cursor updates even when the shape moves. Lint and build pass.
 - **31** – Fixed quick-release cursor bug by starting springing state before the animation and scheduling the cursor check reliably. Lint and build pass.
+- **32** – Added bezier-style smoothing in `useFrameInterpolator`, tracking a previous pose and resetting on drag release. Updated hooks and demo. Lint and build pass.
 
 ## Next Steps
 
 - Tune random paint blending for performance and visual quality.
-- Explore path-based interpolation curves for even smoother motion.
 - Profile high-DPR rendering performance and optimize FBO sizing.
 - Expose additional shader uniforms via Tweakpane for experimentation.
