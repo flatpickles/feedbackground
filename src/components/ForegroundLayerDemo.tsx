@@ -18,8 +18,8 @@ function useSvgUrl(): string {
 export default function ForegroundLayerDemo() {
   const svgUrl = useSvgUrl()
   const { bind, pose, active, interactionSession } = useDragAndSpring()
-  const [interpSteps, setInterpSteps] = useState(4)
-  const interpQueue = useFrameInterpolator(pose, interpSteps)
+  const [stepSize, setStepSize] = useState(0.25)
+  const interpQueue = useFrameInterpolator(pose, stepSize)
   const shaderMap = {
     motionBlur: motionBlurFrag,
     randomPaint: randomPaintFrag,
@@ -57,14 +57,14 @@ export default function ForegroundLayerDemo() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const interpInput = (pane as any).addBlade({
       view: 'slider',
-      label: 'interp',
-      min: 1,
-      max: 20,
-      value: interpSteps,
-      step: 1,
+      label: 'step',
+      min: 0.05,
+      max: 1,
+      value: stepSize,
+      step: 0.05,
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    interpInput.on('change', (ev: any) => setInterpSteps(ev.value))
+    interpInput.on('change', (ev: any) => setStepSize(ev.value))
 
     return () => pane.dispose()
     // eslint-disable-next-line react-hooks/exhaustive-deps
