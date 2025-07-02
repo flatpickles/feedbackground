@@ -99,13 +99,11 @@ export default function useDragAndSpring(
       if (!isDragging) return
       setDragging(false)
       if (e) pointerRef.current = { x: e.clientX, y: e.clientY }
+      setSpringing(true)
+      springingRef.current = true
       api.start({
         x: 0,
         y: 0,
-        onStart: () => {
-          setSpringing(true)
-          springingRef.current = true
-        },
         onRest: () => {
           setSpringing(false)
           springingRef.current = false

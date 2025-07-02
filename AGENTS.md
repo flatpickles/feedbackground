@@ -42,6 +42,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **28** – Improved drag-release logic to use `elementFromPoint` so the cursor resets reliably when releasing outside the canvas.
 - **29** – Simplified drag release handling with a requestAnimationFrame cursor check so the cursor resets once the shape moves. Lint and build pass.
 - **30** – Refactored cursor checking to raycast against the dragged group using a shared ref; hooks accept the ref so cursor updates even when the shape moves. Lint and build pass.
+- **31** – Fixed quick-release cursor bug by starting springing state before the animation and scheduling the cursor check reliably. Lint and build pass.
 
 ## Next Steps
 
