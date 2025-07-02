@@ -38,6 +38,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **24** – Updated Tweakpane controls with grouped folders. Decay now ranges 0.8–1, step is 1–25 with integer increments, and SVG size is configurable via dropdown and parameter blades. Lint and build pass.
 - **25** – Corrected SVG sizing logic so "natural" uses viewbox pixels, "scaled" multiplies that by a factor, and "relative" sizes to the viewport. Lint and build pass.
 - **26** – Fixed overshoot in relative sizing by computing viewport at the SVG layer depth.
+- **27** – Corrected cursor state after drag release by checking pointer position and releasing pointer capture. Lint and build pass.
 
 ## Next Steps
 

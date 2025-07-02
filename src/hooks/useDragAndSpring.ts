@@ -64,19 +64,37 @@ export default function useDragAndSpring() {
     [api, factorX, factorY, isDragging]
   )
 
-  const release = useCallback(() => {
-    if (!isDragging) return
-    setDragging(false)
-    api.start({
-      x: 0,
-      y: 0,
-      onStart: () => setSpringing(true),
-      onRest: () => setSpringing(false),
-    })
-    setCursor(overRef.current ? 'grab' : 'auto')
-  }, [api, isDragging, setCursor])
+  const release = useCallback(
+    (e?: PointerEvent) => {
+      if (!isDragging) return
+      setDragging(false)
+      api.start({
+        x: 0,
+        y: 0,
+        onStart: () => setSpringing(true),
+        onRest: () => setSpringing(false),
+      })
+      let isOver = overRef.current
+      if (e) {
+        const rect = gl.domElement.getBoundingClientRect()
+        isOver =
+          e.clientX >= rect.left &&
+          e.clientX <= rect.right &&
+          e.clientY >= rect.top &&
+          e.clientY <= rect.bottom
+      }
+      setCursor(isOver ? 'grab' : 'auto')
+    },
+    [api, gl.domElement, isDragging, setCursor]
+  )
 
-  const onPointerUp = useCallback(() => release(), [release])
+  const onPointerUp = useCallback(
+    (e: PointerEvent) => {
+      ;(e.target as Element).releasePointerCapture(e.pointerId)
+      release(e)
+    },
+    [release]
+  )
 
   const onPointerLeave = useCallback(() => {
     overRef.current = false
