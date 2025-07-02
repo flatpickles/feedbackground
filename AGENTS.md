@@ -34,9 +34,10 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **20** – Fixed snapshot compositing by disabling autoClear and removing unnecessary material resets. Interpolated poses now accumulate correctly. Lint and build pass.
 - **21** – Flushed interpolation queue when inactive so spring trails don't appear later. Lint and build pass.
 - **22** – Switched interpolator to distance-based step sizing with dynamic counts. Lint and build pass.
+- **23** – Converted interpolation step controls to pixel units and resized all FBOs using device pixel ratio. Lint and build pass.
 
 ## Next Steps
 
 - Tune random paint blending for performance and visual quality.
-- Experiment with interpolation step sizes and potential spline curves.
 - Explore path-based interpolation curves for even smoother motion.
+- Profile high-DPR rendering performance and optimize FBO sizing.

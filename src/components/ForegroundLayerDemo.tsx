@@ -18,7 +18,7 @@ function useSvgUrl(): string {
 export default function ForegroundLayerDemo() {
   const svgUrl = useSvgUrl()
   const { bind, pose, active, interactionSession } = useDragAndSpring()
-  const [stepSize, setStepSize] = useState(0.25)
+  const [stepSize, setStepSize] = useState(20)
   const interpQueue = useFrameInterpolator(pose, stepSize)
   const shaderMap = {
     motionBlur: motionBlurFrag,
@@ -57,11 +57,11 @@ export default function ForegroundLayerDemo() {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const interpInput = (pane as any).addBlade({
       view: 'slider',
-      label: 'step',
-      min: 0.05,
-      max: 1,
+      label: 'step(px)',
+      min: 5,
+      max: 200,
       value: stepSize,
-      step: 0.05,
+      step: 5,
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     interpInput.on('change', (ev: any) => setStepSize(ev.value))
