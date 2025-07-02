@@ -8,15 +8,15 @@ uniform vec3 uSessionRandom;
 
 void main() {
   vec4 history = texture2D(uPrevFrame, vUv);
-  float mask = texture2D(uSnapshot, vUv).a;
+  float oldAlpha = history.a * uDecay;
+  vec3 oldColor = history.rgb;
 
-  // Accumulate using premultiplied alpha to avoid dark fringes
-  vec3 historyPremul = history.rgb * history.a * uDecay;
-  vec3 newPremul = uSessionRandom * mask;
+  float newAlpha = texture2D(uSnapshot, vUv).a;
+  vec3 newColor = uSessionRandom;
 
-  float alpha = clamp(history.a * uDecay + mask, 0.0, 1.0);
-  vec3 accum = historyPremul + newPremul;
-  vec3 color = alpha > 0.0 ? accum / alpha : vec3(0.0);
+  float outAlpha = newAlpha + oldAlpha * (1.0 - newAlpha);
+  vec3 outColor = (newColor * newAlpha + oldColor * oldAlpha * (1.0 - newAlpha)) /
+                  max(outAlpha, 1e-5);
 
-  gl_FragColor = vec4(color, alpha);
+  gl_FragColor = vec4(outColor, outAlpha);
 }

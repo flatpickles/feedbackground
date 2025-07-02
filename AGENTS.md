@@ -49,6 +49,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **35** – Replaced `addInput` with `addBinding` for the blur toggle to match Tweakpane v4 API and updated state syncing. Lint and build pass.
 - **36** – Updated `randomPaint.frag` to blend snapshot alpha with history so blurred edges accumulate correctly. Lint and build pass.
 - **37** – Switched `randomPaint.frag` to premultiplied alpha blending to remove dark edges. Lint and build pass.
+- **38** – Revised `randomPaint.frag` to use alpha compositing with decay, preventing color blowout and keeping edges smooth. Lint and build pass.
 
 ## Next Steps
 
