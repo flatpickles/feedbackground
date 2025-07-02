@@ -28,6 +28,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **14** – Revised `randomPaint.frag` to preserve per-pixel color and fade history, enabling multi-color painting. Lint warns on hooks; build succeeds.
 - **15** – Added Prettier formatting, session-random reset on drag start, and fixed render blending so history color doesn't fade to black. Lint warns on hooks; build succeeds.
 - **16** – Implemented `useFrameInterpolator` hook and wired it into `ForegroundLayerDemo` for smoother motion trails. Lint warns on hooks; build succeeds.
+- **17** – Added intra-frame compositing using queued poses in `useFeedbackFBO`, configurable interpolation steps via Tweakpane, and fixed premature spring reset bug. Lint and build pass.
 
 ## Next Steps
 
