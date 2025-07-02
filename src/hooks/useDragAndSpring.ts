@@ -24,6 +24,9 @@ export default function useDragAndSpring() {
     bx: 0,
     by: 0,
   })
+  const pointerRef = useRef({ x: 0, y: 0 })
+  const checkRaf = useRef<number | null>(null)
+  const springingRef = useRef(false)
   const [isDragging, setDragging] = useState(false)
   const [isSpringing, setSpringing] = useState(false)
   const [spring, api] = useSpring(() => ({ x: 0, y: 0 }))
@@ -39,6 +42,7 @@ export default function useDragAndSpring() {
       setInteractionSession((s) => s + 1)
       setDragging(true)
       setCursor('grabbing')
+      pointerRef.current = { x: e.clientX, y: e.clientY }
       startRef.current = {
         sx: e.clientX,
         sy: e.clientY,
@@ -52,6 +56,7 @@ export default function useDragAndSpring() {
 
   const onPointerMove = useCallback(
     (e: PointerEvent) => {
+      pointerRef.current = { x: e.clientX, y: e.clientY }
       if (!isDragging) return
       const dx = (e.clientX - startRef.current.sx) * factorX
       const dy = -(e.clientY - startRef.current.sy) * factorY
@@ -64,29 +69,46 @@ export default function useDragAndSpring() {
     [api, factorX, factorY, isDragging]
   )
 
+  const checkCursor = useCallback(() => {
+    const { x, y } = pointerRef.current
+    const el = document.elementFromPoint(x, y)
+    const isOver = !!(el && gl.domElement.contains(el))
+    if (!isOver) {
+      setCursor('auto')
+      checkRaf.current = null
+    } else if (springingRef.current) {
+      checkRaf.current = requestAnimationFrame(checkCursor)
+    } else {
+      setCursor('grab')
+      checkRaf.current = null
+    }
+  }, [gl.domElement, setCursor])
+
   const release = useCallback(
     (e?: PointerEvent) => {
       if (!isDragging) return
       setDragging(false)
+      if (e) pointerRef.current = { x: e.clientX, y: e.clientY }
       api.start({
         x: 0,
         y: 0,
-        onStart: () => setSpringing(true),
-        onRest: () => setSpringing(false),
+        onStart: () => {
+          setSpringing(true)
+          springingRef.current = true
+        },
+        onRest: () => {
+          setSpringing(false)
+          springingRef.current = false
+        },
       })
-      let isOver = overRef.current
-      if (e) {
-        const el = document.elementFromPoint(e.clientX, e.clientY)
-        isOver = !!(el && gl.domElement.contains(el))
-      }
-      setCursor(isOver ? 'grab' : 'auto')
+      if (checkRaf.current) cancelAnimationFrame(checkRaf.current)
+      checkRaf.current = requestAnimationFrame(checkCursor)
     },
-    [api, gl.domElement, isDragging, setCursor]
+    [api, checkCursor, isDragging]
   )
 
   const onPointerUp = useCallback(
     (e: PointerEvent) => {
-      ;(e.target as Element).releasePointerCapture(e.pointerId)
       release(e)
     },
     [release]
