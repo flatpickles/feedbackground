@@ -23,6 +23,7 @@ export default function ForegroundLayerDemo() {
   const { bind, pose, active, interactionSession, isDragging } =
     useDragAndSpring(dragRef)
   const [stepSize, setStepSize] = useState(20)
+  const [blurSnap, setBlurSnap] = useState(true)
   const [svgSize, setSvgSize] = useState<SvgSize>({
     type: 'scaled',
     factor: 1,
@@ -79,6 +80,15 @@ export default function ForegroundLayerDemo() {
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     interpInput.on('change', (ev: any) => setStepSize(ev.value))
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const blurInput = (effectFolder as any).addBlade({
+      view: 'checkbox',
+      label: 'blur',
+      value: blurSnap,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    blurInput.on('change', (ev: any) => setBlurSnap(ev.value))
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sizeInput = (fgFolder as any).addBlade({
@@ -152,7 +162,9 @@ export default function ForegroundLayerDemo() {
     active,
     interactionSession,
     interpQueue,
-    dragRef
+    dragRef,
+    blurSnap,
+    stepSize
   )
   return (
     <>
