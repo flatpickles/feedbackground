@@ -26,8 +26,19 @@ export default function TextMesh({
     const troika = textRef.current
     if (troika) {
       troika.sync(() => {
-        const box = new THREE.Box3().setFromObject(troika)
-        setBounds(box)
+        // `Text` computes layout asynchronously; pull bounds from
+        // `textRenderInfo` once it's ready so sizing works reliably.
+        // `visibleBounds` tightly wraps the glyph shapes and avoids
+        // extra padding from `lineHeight` or anchoring offsets.
+        if (troika.textRenderInfo && troika.textRenderInfo.visibleBounds) {
+          const [minX, minY, maxX, maxY] = troika.textRenderInfo.visibleBounds
+          setBounds(
+            new THREE.Box3(
+              new THREE.Vector3(minX, minY, 0),
+              new THREE.Vector3(maxX, maxY, 0)
+            )
+          )
+        }
       })
     }
   }, [text])
