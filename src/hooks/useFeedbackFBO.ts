@@ -35,16 +35,24 @@ export default function useFeedbackFBO(
   )
 
   const readRT = useRef(
-    new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr)
+    new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
+      type: THREE.HalfFloatType,
+    })
   )
   const writeRT = useRef(
-    new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr)
+    new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
+      type: THREE.HalfFloatType,
+    })
   )
   const snapshotRT = useRef(
-    new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr)
+    new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
+      type: THREE.HalfFloatType,
+    })
   )
   const preprocessRT = useRef(
-    new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr)
+    new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
+      type: THREE.HalfFloatType,
+    })
   )
 
   const preprocessUniforms = useMemo(
