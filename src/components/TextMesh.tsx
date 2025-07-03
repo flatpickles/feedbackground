@@ -26,11 +26,16 @@ export default function TextMesh({
     const troika = textRef.current
     if (troika) {
       troika.sync(() => {
-        if (troika.geometry) {
-          troika.geometry.computeBoundingBox()
-          if (troika.geometry.boundingBox) {
-            setBounds(troika.geometry.boundingBox.clone())
-          }
+        // `Text` computes layout asynchronously; pull bounds from
+        // `textRenderInfo` once it's ready so sizing works reliably
+        if (troika.textRenderInfo && troika.textRenderInfo.blockBounds) {
+          const [minX, minY, maxX, maxY] = troika.textRenderInfo.blockBounds
+          setBounds(
+            new THREE.Box3(
+              new THREE.Vector3(minX, minY, 0),
+              new THREE.Vector3(maxX, maxY, 0)
+            )
+          )
         }
       })
     }

@@ -55,6 +55,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **40** – Added text foreground option with tweakpane controls and new `TextMesh`. Updated demo to choose between diamond SVG and custom text. Lint and build pass.
 
 - **41** – Reorganized Tweakpane controls with a new "Foreground Sizing" section, moved preprocess under "Foreground", and fixed text relative sizing by computing bounds from unscaled geometry. Lint warns on hooks; build succeeds.
+- **42** – Updated text bounds to use `textRenderInfo.blockBounds` so relative sizing scales correctly. Lint warns on hooks; build succeeds.
 
 ## Next Steps
 
