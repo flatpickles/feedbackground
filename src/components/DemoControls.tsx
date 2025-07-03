@@ -66,26 +66,38 @@ export default function DemoControls({
       if (textBlade) fgFolder.remove(textBlade)
       if (type === 'text') {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        fontBlade = (fgFolder as any).addBlade({
-          view: 'list',
-          label: 'font',
-          options: [
-            { text: 'Sans', value: 'sans-serif' },
-            { text: 'Serif', value: 'serif' },
-            { text: 'Mono', value: 'monospace' },
-          ],
-          value: textFont,
-        })
+        fontBlade = (fgFolder as any).addBlade(
+          {
+            view: 'list',
+            label: 'font',
+            options: [
+              { text: 'Arial', value: 'Arial, sans-serif' },
+              { text: 'Verdana', value: 'Verdana, sans-serif' },
+              { text: 'Tahoma', value: 'Tahoma, sans-serif' },
+              { text: 'Trebuchet MS', value: '"Trebuchet MS", sans-serif' },
+              { text: 'Times New Roman', value: '"Times New Roman", serif' },
+              { text: 'Georgia', value: 'Georgia, serif' },
+              { text: 'Garamond', value: 'Garamond, serif' },
+              { text: 'Courier New', value: '"Courier New", monospace' },
+              { text: 'Brush Script MT', value: '"Brush Script MT", cursive' },
+            ],
+            value: textFont,
+          },
+          { index: 1 }
+        )
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         fontBlade.on('change', (ev: any) => setTextFont(ev.value))
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        textBlade = (fgFolder as any).addBlade({
-          view: 'text',
-          label: 'text',
-          parse: (v: unknown) => String(v),
-          value: textValue,
-        })
+        textBlade = (fgFolder as any).addBlade(
+          {
+            view: 'text',
+            label: 'text',
+            parse: (v: unknown) => String(v),
+            value: textValue,
+          },
+          { index: 2 }
+        )
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         textBlade.on('change', (ev: any) => setTextValue(ev.value))
       } else {

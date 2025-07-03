@@ -1,7 +1,6 @@
-import { Text } from '@react-three/drei'
+import { Html } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
-import { useEffect, useMemo, useRef, useState } from 'react'
-import * as THREE from 'three'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 import type { SvgSize } from '../types/svg'
 
 export type TextMeshProps = {
@@ -13,26 +12,28 @@ export type TextMeshProps = {
 
 export default function TextMesh({
   text,
-  font = 'sans-serif',
+  font = 'Arial, sans-serif',
   color = '#ffffff',
   size = { type: 'scaled', factor: 1 },
 }: TextMeshProps) {
   const depth = 0.1
   const { viewport, camera, size: viewportSize } = useThree()
   const current = viewport.getCurrentViewport(camera, [0, 0, depth])
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const textRef = useRef<any>(null)
-  const [bounds, setBounds] = useState<THREE.Box3 | null>(null)
+  const textRef = useRef<HTMLDivElement | null>(null)
+  const [bounds, setBounds] = useState<{ width: number; height: number } | null>(
+    null
+  )
 
-  useEffect(() => {
-    const troika = textRef.current
-    if (troika) {
-      troika.sync(() => {
-        const box = new THREE.Box3().setFromObject(troika)
-        setBounds(box)
-      })
-    }
-  }, [text])
+  useLayoutEffect(() => {
+    const el = textRef.current
+    if (!el) return
+    const measure = () =>
+      setBounds({ width: el.offsetWidth, height: el.offsetHeight })
+    measure()
+    const ro = new ResizeObserver(measure)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [text, font])
 
   const pixelScale = useMemo(() => {
     const factorX = current.width / viewportSize.width
@@ -40,8 +41,8 @@ export default function TextMesh({
     return Math.min(factorX, factorY)
   }, [current.width, current.height, viewportSize.width, viewportSize.height])
 
-  const nativeWidth = bounds ? bounds.max.x - bounds.min.x : 1
-  const nativeHeight = bounds ? bounds.max.y - bounds.min.y : 1
+  const nativeWidth = bounds ? bounds.width : 1
+  const nativeHeight = bounds ? bounds.height : 1
 
   const scale = useMemo(() => {
     switch (size.type) {
@@ -61,16 +62,20 @@ export default function TextMesh({
 
   return (
     <group scale={scale} position={position}>
-      <Text
-        ref={textRef}
-        font={font}
-        fontSize={48}
-        color={color}
-        anchorX="center"
-        anchorY="middle"
-      >
-        {text}
-      </Text>
+      <Html transform>
+        <div
+          ref={textRef}
+          style={{
+            fontFamily: font,
+            fontSize: '48px',
+            color,
+            whiteSpace: 'pre',
+            lineHeight: '1em',
+          }}
+        >
+          {text}
+        </div>
+      </Html>
     </group>
   )
 }

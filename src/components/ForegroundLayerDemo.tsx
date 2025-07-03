@@ -30,7 +30,7 @@ export default function ForegroundLayerDemo() {
   })
   const [sourceName, setSourceName] = useState<'diamond' | 'text'>('diamond')
   const [textValue, setTextValue] = useState('Hello World')
-  const [textFont, setTextFont] = useState('sans-serif')
+  const [textFont, setTextFont] = useState('Arial, sans-serif')
   const shaderMap = {
     motionBlur: motionBlurFrag,
     randomPaint: randomPaintFrag,
