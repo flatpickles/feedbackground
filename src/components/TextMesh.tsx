@@ -26,8 +26,12 @@ export default function TextMesh({
     const troika = textRef.current
     if (troika) {
       troika.sync(() => {
-        const box = new THREE.Box3().setFromObject(troika)
-        setBounds(box)
+        if (troika.geometry) {
+          troika.geometry.computeBoundingBox()
+          if (troika.geometry.boundingBox) {
+            setBounds(troika.geometry.boundingBox.clone())
+          }
+        }
       })
     }
   }, [text])
