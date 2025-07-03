@@ -41,6 +41,22 @@ export default function DemoControls({
     const effectFolder = (pane as any).addFolder({ title: 'Effect' })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fgFolder = (pane as any).addFolder({ title: 'Foreground' })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sizeFolder = (pane as any).addFolder({ title: 'Foreground Sizing' })
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const preprocessInput = (fgFolder as any).addBlade({
+      view: 'list',
+      label: 'preprocess',
+      options: [
+        { text: 'None', value: 'none' },
+        { text: 'Box Blur', value: 'box' },
+        { text: 'Gaussian Blur', value: 'gaussian' },
+      ],
+      value: preprocessName,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    preprocessInput.on('change', (ev: any) => setPreprocessName(ev.value))
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sourceInput = (fgFolder as any).addBlade({
@@ -118,21 +134,7 @@ export default function DemoControls({
     interpInput.on('change', (ev: any) => setStepSize(ev.value))
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const preprocessInput = (effectFolder as any).addBlade({
-      view: 'list',
-      label: 'preprocess',
-      options: [
-        { text: 'None', value: 'none' },
-        { text: 'Box Blur', value: 'box' },
-        { text: 'Gaussian Blur', value: 'gaussian' },
-      ],
-      value: preprocessName,
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    preprocessInput.on('change', (ev: any) => setPreprocessName(ev.value))
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sizeInput = (fgFolder as any).addBlade({
+    const sizeInput = (sizeFolder as any).addBlade({
       view: 'list',
       label: 'size',
       options: [
@@ -146,10 +148,10 @@ export default function DemoControls({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let paramBlade: any
     const updateParamBlade = (type: SvgSize['type']) => {
-      if (paramBlade) fgFolder.remove(paramBlade)
+      if (paramBlade) sizeFolder.remove(paramBlade)
       if (type === 'scaled') {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        paramBlade = (fgFolder as any).addBlade({
+        paramBlade = (sizeFolder as any).addBlade({
           view: 'slider',
           label: 'factor',
           min: 0,
@@ -162,7 +164,7 @@ export default function DemoControls({
         )
       } else if (type === 'relative') {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        paramBlade = (fgFolder as any).addBlade({
+        paramBlade = (sizeFolder as any).addBlade({
           view: 'slider',
           label: 'fraction',
           min: 0,
