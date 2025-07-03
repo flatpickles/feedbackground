@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { Pane } from 'tweakpane'
 import type { SvgSize } from '../types/svg'
 
@@ -35,6 +35,11 @@ export default function DemoControls({
   textValue,
   setTextValue,
 }: DemoControlsProps) {
+  const sizeRef = useRef(svgSize)
+  useEffect(() => {
+    sizeRef.current = svgSize
+  }, [svgSize])
+  /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const pane = new Pane()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -95,6 +100,7 @@ export default function DemoControls({
       const val = ev.value as 'diamond' | 'text'
       setSourceName(val)
       updateTextBlade(val)
+      createSizeInput(val)
     })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -134,17 +140,7 @@ export default function DemoControls({
     interpInput.on('change', (ev: any) => setStepSize(ev.value))
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sizeInput = (sizeFolder as any).addBlade({
-      view: 'list',
-      label: 'size',
-      options: [
-        { text: 'Natural', value: 'natural' },
-        { text: 'Scaled', value: 'scaled' },
-        { text: 'Relative', value: 'relative' },
-      ],
-      value: svgSize.type,
-    })
-
+    let sizeInput: any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let paramBlade: any
     const updateParamBlade = (type: SvgSize['type']) => {
@@ -156,7 +152,7 @@ export default function DemoControls({
           label: 'factor',
           min: 0,
           max: 5,
-          value: svgSize.type === 'scaled' ? svgSize.factor : 1,
+          value: sizeRef.current.type === 'scaled' ? sizeRef.current.factor : 1,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         paramBlade.on('change', (ev: any) =>
@@ -169,7 +165,10 @@ export default function DemoControls({
           label: 'fraction',
           min: 0,
           max: 1,
-          value: svgSize.type === 'relative' ? svgSize.fraction : 0.5,
+          value:
+            sizeRef.current.type === 'relative'
+              ? sizeRef.current.fraction
+              : 0.5,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         paramBlade.on('change', (ev: any) =>
@@ -180,23 +179,51 @@ export default function DemoControls({
       }
     }
 
-    updateParamBlade(svgSize.type)
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    sizeInput.on('change', (ev: any) => {
-      const type = ev.value as SvgSize['type']
-      if (type === 'natural') {
-        setSvgSize({ type: 'natural' })
-      } else if (type === 'scaled') {
-        setSvgSize({ type: 'scaled', factor: 1 })
-      } else if (type === 'relative') {
-        setSvgSize({ type: 'relative', fraction: 0.5 })
+    const createSizeInput = (src: 'diamond' | 'text') => {
+      if (sizeInput) sizeFolder.remove(sizeInput)
+      const options = [
+        { text: 'Natural', value: 'natural' },
+        { text: 'Scaled', value: 'scaled' },
+      ]
+      if (src === 'diamond') {
+        options.push({ text: 'Relative', value: 'relative' })
       }
-      updateParamBlade(type)
-    })
+
+      let value: SvgSize['type'] = sizeRef.current.type
+      if (src === 'text' && value === 'relative') {
+        value = 'scaled'
+        setSvgSize({ type: 'scaled', factor: 1 })
+      }
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      sizeInput = (sizeFolder as any).addBlade({
+        view: 'list',
+        label: 'size',
+        options,
+        value,
+      })
+
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      sizeInput.on('change', (ev: any) => {
+        const type = ev.value as SvgSize['type']
+        if (type === 'natural') {
+          setSvgSize({ type: 'natural' })
+        } else if (type === 'scaled') {
+          setSvgSize({ type: 'scaled', factor: 1 })
+        } else if (type === 'relative') {
+          setSvgSize({ type: 'relative', fraction: 0.5 })
+        }
+        updateParamBlade(type)
+      })
+
+      updateParamBlade(value)
+    }
+
+    createSizeInput(sourceName)
 
     return () => pane.dispose()
   }, [])
+  /* eslint-enable react-hooks/exhaustive-deps */
 
   return null
 }
