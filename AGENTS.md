@@ -58,10 +58,11 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **42** – Updated text bounds to use `textRenderInfo.blockBounds` so relative sizing scales correctly. Lint warns on hooks; build succeeds.
 - **43** – Retrieved text bounds from the generated geometry to further fix relative sizing. Lint warns on hooks; build succeeds.
 - **44** – Calculated text bounds from `visibleBounds` scaled by `fontSize` and added console logging for debugging. Lint warns on hooks; build succeeds.
+- **45** – Investigated text sizing further; troika-three-text metrics use font units and don't map cleanly to viewport pixels. Concluded reliable relative sizing isn't feasible without major redesign. Lint and build pass.
 
 ## Next Steps
 
 - Tune random paint blending for performance and visual quality.
 - Profile high-DPR rendering performance and optimize FBO sizing.
 - Expose additional shader uniforms via Tweakpane for experimentation.
-- Evaluate debug logs and refine text sizing approach if needed.
+- Consider alternate text display since reliable relative sizing is not feasible.
