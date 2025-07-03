@@ -48,7 +48,8 @@ App
  ├─ <Canvas> (R3F)
  │   ├─ BackgroundPlane           – Static backdrop
  │   ├─ FeedbackPlane             – Full-screen quad sampling `readRT`
- │   └─ ForegroundLayer           – Mesh from any closed-path SVG (ShapeGeometry), applies pose
+ │   ├─ SvgMesh                   – Mesh from any closed-path SVG (ShapeGeometry)
+ │   └─ DraggableSvg              – Input + feedback hierarchy using `SvgMesh`
  ├─ hooks/
  │   ├─ useDragAndSpring()        – Pointer events + spring pose emitter
  │   ├─ useFrameInterpolator()    – Emit sub-frame poses for smooth trails
@@ -73,7 +74,7 @@ App
 ## 3 · Rendering Pipeline (per animation frame)
 
 1. **Pose computation:** `useDragAndSpring` + `useFrameInterpolator` yield one or more `{ x, y }` transforms.
-2. **Snapshot pass (A):** If motion active, render `ForegroundLayer` to offscreen `snapshotRT`.
+2. **Snapshot pass (A):** If motion active, render `SvgMesh` via `DraggableSvg` to offscreen `snapshotRT`.
 3. **Feedback pass (B):** Draw full-screen quad with the active shader:
    ```glsl
    vec4 history = texture2D(uPrevFrame, vUv);
@@ -81,7 +82,7 @@ App
    gl_FragColor = customBlend(history, snap);
    ```
    Swap `writeRT` ↔ `readRT`.
-4. **Composite pass (C):** Render `BackgroundPlane`, then `FeedbackPlane` (sampling `readRT`), then `ForegroundLayer` on top.
+4. **Composite pass (C):** Render `BackgroundPlane`, then `FeedbackPlane` (sampling `readRT`), then `SvgMesh` on top.
 
 ---
 
@@ -103,7 +104,7 @@ App
 | Milestone                     | Deliverable                                                                         | Tests                                                                        |
 | ----------------------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
 | **M0 – Boilerplate**          | Vite + React + R3F setup; CanvasStage smoke.                                        | Lint passes; CanvasStage renders.                                            |
-| **M1 – SVG support**          | Load arbitrary closed-path SVG in ForegroundLayer.                                  | Storybook: snapshots for text, icon, logo.                                   |
+| **M1 – SVG support**          | Load arbitrary closed-path SVG in SvgMesh.                                  | Storybook: snapshots for text, icon, logo.                                   |
 | **M2 – Drag & Spring**        | `useDragAndSpring`: pointer drag + spring-back.                                     | Unit: hook outputs; integration: drag moves mesh; spring-on-release.         |
 | **M3 – FBO core + shader**    | `useFeedbackFBO` + `motionBlur.frag`; manual snapshot via test control.             | Unit: shaders compile; integration: snapshot decay over frames.              |
 | **M4 – Automatic trail**      | Link snapshot pass to drag/spring flags; trail visible & decays correctly.          | Visual regression: trail only during/after motion; fade timing as specified. |
