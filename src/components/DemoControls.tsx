@@ -43,11 +43,11 @@ export default function DemoControls({
   useEffect(() => {
     const pane = new Pane()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const effectFolder = (pane as any).addFolder({ title: 'Effect' })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fgFolder = (pane as any).addFolder({ title: 'Foreground' })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sizeFolder = (pane as any).addFolder({ title: 'Foreground Sizing' })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const effectFolder = (pane as any).addFolder({ title: 'Effect' })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const preprocessInput = (fgFolder as any).addBlade({
@@ -123,6 +123,7 @@ export default function DemoControls({
       min: 0.8,
       max: 1,
       value: decay,
+      step: 0.01,
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     decayInput.on('change', (ev: any) => setDecay(ev.value))
@@ -132,7 +133,7 @@ export default function DemoControls({
       view: 'slider',
       label: 'step(px)',
       min: 1,
-      max: 25,
+      max: 10,
       value: stepSize,
       step: 1,
     })
@@ -153,6 +154,7 @@ export default function DemoControls({
           min: 0,
           max: 5,
           value: sizeRef.current.type === 'scaled' ? sizeRef.current.factor : 1,
+          step: 0.01
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         paramBlade.on('change', (ev: any) =>
@@ -169,6 +171,7 @@ export default function DemoControls({
             sizeRef.current.type === 'relative'
               ? sizeRef.current.fraction
               : 0.5,
+          step: 0.01
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         paramBlade.on('change', (ev: any) =>

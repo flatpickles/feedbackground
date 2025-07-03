@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import defaultSvgUrl from '../assets/diamond.svg?url'
-import DraggableForeground from './DraggableForeground'
-import DemoControls from './DemoControls'
-import motionBlurFrag from '../shaders/motionBlur.frag'
-import randomPaintFrag from '../shaders/randomPaint.frag'
 import boxBlurFrag from '../shaders/boxBlur.frag'
 import gaussianBlurFrag from '../shaders/gaussianBlur.frag'
-import type { SvgSize } from '../types/svg'
+import motionBlurFrag from '../shaders/motionBlur.frag'
+import randomPaintFrag from '../shaders/randomPaint.frag'
 import type { ForegroundContent } from '../types/foreground'
+import type { SvgSize } from '../types/svg'
+import DemoControls from './DemoControls'
+import DraggableForeground from './DraggableForeground'
 
 function useSvgUrl(): string {
   const params = new URLSearchParams(window.location.search)
@@ -16,14 +16,14 @@ function useSvgUrl(): string {
 
 export default function ForegroundLayerDemo() {
   const svgUrl = useSvgUrl()
-  const [stepSize, setStepSize] = useState(20)
+  const [stepSize, setStepSize] = useState(2)
   const preprocessMap = {
     none: null,
     box: boxBlurFrag,
     gaussian: gaussianBlurFrag,
   }
   const [preprocessName, setPreprocessName] =
-    useState<keyof typeof preprocessMap>('none')
+    useState<keyof typeof preprocessMap>('gaussian')
   const [svgSize, setSvgSize] = useState<SvgSize>({
     type: 'scaled',
     factor: 1,
@@ -35,8 +35,8 @@ export default function ForegroundLayerDemo() {
     randomPaint: randomPaintFrag,
   }
   const [shaderName, setShaderName] =
-    useState<keyof typeof shaderMap>('motionBlur')
-  const [decay, setDecay] = useState(0.9)
+    useState<keyof typeof shaderMap>('randomPaint')
+  const [decay, setDecay] = useState(0.95)
 
   const content: ForegroundContent =
     sourceName === 'text'
