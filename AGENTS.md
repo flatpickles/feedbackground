@@ -52,6 +52,8 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **38** – Revised `randomPaint.frag` to use alpha compositing with decay, preventing color blowout and keeping edges smooth. Lint and build pass.
 - **39** – Refactored `ForegroundLayer` into `SvgMesh`, extracted `DraggableSvg` and `DemoControls` components, and updated README. Lint and build pass.
 
+- **40** – Added text foreground option with tweakpane controls and new `TextMesh`. Updated demo to choose between diamond SVG and custom text. Lint and build pass.
+
 ## Next Steps
 
 - Tune random paint blending for performance and visual quality.

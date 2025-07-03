@@ -13,6 +13,10 @@ export type DemoControlsProps = {
   setPreprocessName: (name: string) => void
   svgSize: SvgSize
   setSvgSize: (size: SvgSize) => void
+  sourceName: 'diamond' | 'text'
+  setSourceName: (name: 'diamond' | 'text') => void
+  textValue: string
+  setTextValue: (val: string) => void
 }
 
 export default function DemoControls({
@@ -26,6 +30,10 @@ export default function DemoControls({
   setPreprocessName,
   svgSize,
   setSvgSize,
+  sourceName,
+  setSourceName,
+  textValue,
+  setTextValue,
 }: DemoControlsProps) {
   useEffect(() => {
     const pane = new Pane()
@@ -33,6 +41,45 @@ export default function DemoControls({
     const effectFolder = (pane as any).addFolder({ title: 'Effect' })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fgFolder = (pane as any).addFolder({ title: 'Foreground' })
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sourceInput = (fgFolder as any).addBlade({
+      view: 'list',
+      label: 'source',
+      options: [
+        { text: 'Diamond', value: 'diamond' },
+        { text: 'Text', value: 'text' },
+      ],
+      value: sourceName,
+    })
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let textBlade: any
+    const updateTextBlade = (type: 'diamond' | 'text') => {
+      if (textBlade) fgFolder.remove(textBlade)
+      if (type === 'text') {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        textBlade = (fgFolder as any).addBlade({
+          view: 'text',
+          label: 'text',
+          parse: (v: unknown) => String(v),
+          value: textValue,
+        })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        textBlade.on('change', (ev: any) => setTextValue(ev.value))
+      } else {
+        textBlade = undefined
+      }
+    }
+
+    updateTextBlade(sourceName)
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    sourceInput.on('change', (ev: any) => {
+      const val = ev.value as 'diamond' | 'text'
+      setSourceName(val)
+      updateTextBlade(val)
+    })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const shaderInput = (effectFolder as any).addBlade({
