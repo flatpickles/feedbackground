@@ -59,7 +59,7 @@ export default function TextMesh({
 
   return (
     <group scale={scale} position={position}>
-      <Text ref={textRef} fontSize={24} color={color} anchorX="center" anchorY="middle">
+      <Text ref={textRef} fontSize={48} font={'GeneralSans-Bold.woff'} color={color} anchorX="center" anchorY="middle">
         {text}
       </Text>
     </group>
