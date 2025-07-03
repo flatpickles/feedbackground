@@ -1,6 +1,6 @@
-import { Html } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
-import { useLayoutEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
+import * as THREE from 'three'
 import type { SvgSize } from '../types/svg'
 
 export type TextMeshProps = {
@@ -19,21 +19,41 @@ export default function TextMesh({
   const depth = 0.1
   const { viewport, camera, size: viewportSize } = useThree()
   const current = viewport.getCurrentViewport(camera, [0, 0, depth])
-  const textRef = useRef<HTMLDivElement | null>(null)
+  const canvasRef = useRef<HTMLCanvasElement | null>(null)
+  const texRef = useRef<THREE.CanvasTexture | null>(null)
+  const meshRef = useRef<THREE.Mesh | null>(null)
   const [bounds, setBounds] = useState<{ width: number; height: number } | null>(
     null
   )
 
-  useLayoutEffect(() => {
-    const el = textRef.current
-    if (!el) return
-    const measure = () =>
-      setBounds({ width: el.offsetWidth, height: el.offsetHeight })
-    measure()
-    const ro = new ResizeObserver(measure)
-    ro.observe(el)
-    return () => ro.disconnect()
-  }, [text, font])
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    const ctx = canvas.getContext('2d')
+    if (!ctx) return
+    const fontSpec = `48px ${font}`
+    ctx.font = fontSpec
+    const metrics = ctx.measureText(text)
+    const width = Math.ceil(metrics.width)
+    const height = 48
+    canvas.width = width
+    canvas.height = height
+    ctx.font = fontSpec
+    ctx.fillStyle = color
+    ctx.textBaseline = 'top'
+    ctx.fillText(text, 0, 0)
+    if (!texRef.current) {
+      texRef.current = new THREE.CanvasTexture(canvas)
+      texRef.current.needsUpdate = true
+    } else {
+      texRef.current.needsUpdate = true
+    }
+    setBounds({ width, height })
+    if (meshRef.current) {
+      meshRef.current.geometry.dispose()
+      meshRef.current.geometry = new THREE.PlaneGeometry(width, height)
+    }
+  }, [text, font, color])
 
   const pixelScale = useMemo(() => {
     const factorX = current.width / viewportSize.width
@@ -58,24 +78,26 @@ export default function TextMesh({
     }
   }, [size, pixelScale, current.width, current.height, nativeWidth, nativeHeight])
 
-  const position: [number, number, number] = [0, 0, depth]
+  const position: [number, number, number] = useMemo(
+    () =>
+      bounds
+        ? [-bounds.width * 0.5 * scale, -bounds.height * 0.5 * scale, depth]
+        : [0, 0, depth],
+    [bounds, scale, depth]
+  )
 
   return (
     <group scale={scale} position={position}>
-      <Html transform>
-        <div
-          ref={textRef}
-          style={{
-            fontFamily: font,
-            fontSize: '48px',
-            color,
-            whiteSpace: 'pre',
-            lineHeight: '1em',
-          }}
-        >
-          {text}
-        </div>
-      </Html>
+      <mesh ref={meshRef}>
+        {/* geometry will be replaced when canvas draws */}
+        <planeGeometry args={[1, 1]} />
+        <meshBasicMaterial
+          map={texRef.current ?? undefined}
+          transparent
+          toneMapped={false}
+        />
+      </mesh>
+      <canvas ref={canvasRef} style={{ display: 'none' }} />
     </group>
   )
 }

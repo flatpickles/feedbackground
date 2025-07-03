@@ -166,16 +166,19 @@ export default function DemoControls({
     preprocessInput.on('change', (ev: any) => setPreprocessName(ev.value))
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sizeInput = (fgFolder as any).addBlade({
-      view: 'list',
-      label: 'size',
-      options: [
-        { text: 'Natural', value: 'natural' },
-        { text: 'Scaled', value: 'scaled' },
-        { text: 'Relative', value: 'relative' },
-      ],
-      value: svgSize.type,
-    })
+    const sizeInput = (fgFolder as any).addBlade(
+      {
+        view: 'list',
+        label: 'size',
+        options: [
+          { text: 'Natural', value: 'natural' },
+          { text: 'Scaled', value: 'scaled' },
+          { text: 'Relative', value: 'relative' },
+        ],
+        value: svgSize.type,
+      },
+      { index: 99 }
+    )
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let paramBlade: any
@@ -183,26 +186,32 @@ export default function DemoControls({
       if (paramBlade) fgFolder.remove(paramBlade)
       if (type === 'scaled') {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        paramBlade = (fgFolder as any).addBlade({
-          view: 'slider',
-          label: 'factor',
-          min: 0,
-          max: 5,
-          value: svgSize.type === 'scaled' ? svgSize.factor : 1,
-        })
+        paramBlade = (fgFolder as any).addBlade(
+          {
+            view: 'slider',
+            label: 'factor',
+            min: 0,
+            max: 5,
+            value: svgSize.type === 'scaled' ? svgSize.factor : 1,
+          },
+          { index: 100 }
+        )
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         paramBlade.on('change', (ev: any) =>
           setSvgSize({ type: 'scaled', factor: ev.value })
         )
       } else if (type === 'relative') {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        paramBlade = (fgFolder as any).addBlade({
-          view: 'slider',
-          label: 'fraction',
-          min: 0,
-          max: 1,
-          value: svgSize.type === 'relative' ? svgSize.fraction : 0.5,
-        })
+        paramBlade = (fgFolder as any).addBlade(
+          {
+            view: 'slider',
+            label: 'fraction',
+            min: 0,
+            max: 1,
+            value: svgSize.type === 'relative' ? svgSize.fraction : 0.5,
+          },
+          { index: 100 }
+        )
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         paramBlade.on('change', (ev: any) =>
           setSvgSize({ type: 'relative', fraction: ev.value })

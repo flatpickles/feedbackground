@@ -56,6 +56,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **41** – Added font selection for text foreground with a new tweakpane list and increased default text size to 48pt. Lint and build pass.
 - **42** – Fixed font rendering by switching TextMesh to HTML overlay, expanded font list, and reordered size controls. Lint and build pass.
+- **43** – Reworked TextMesh to draw text on a canvas so fonts render in-scene and kept font choices for common web-safe faces. Size controls pinned to bottom. Lint and build pass.
 
 ## Next Steps
 
