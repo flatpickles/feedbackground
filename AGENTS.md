@@ -56,9 +56,11 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **41** – Reorganized Tweakpane controls with a new "Foreground Sizing" section, moved preprocess under "Foreground", and fixed text relative sizing by computing bounds from unscaled geometry. Lint warns on hooks; build succeeds.
 - **42** – Updated text bounds to use `textRenderInfo.blockBounds` so relative sizing scales correctly. Lint warns on hooks; build succeeds.
+- **43** – Retrieved text bounds from the generated geometry to further fix relative sizing. Lint warns on hooks; build succeeds.
 
 ## Next Steps
 
 - Tune random paint blending for performance and visual quality.
 - Profile high-DPR rendering performance and optimize FBO sizing.
 - Expose additional shader uniforms via Tweakpane for experimentation.
+- Investigate additional text sizing options for more reliable bounds.
