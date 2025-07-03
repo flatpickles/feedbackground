@@ -26,8 +26,17 @@ export default function TextMesh({
     const troika = textRef.current
     if (troika) {
       troika.sync(() => {
-        const box = new THREE.Box3().setFromObject(troika)
-        setBounds(box)
+        const info = troika.textRenderInfo
+        if (info && info.visibleBounds) {
+          const [minX, minY, maxX, maxY] = info.visibleBounds
+          const scaleFactor = troika.fontSize
+          const box = new THREE.Box3(
+            new THREE.Vector3(minX * scaleFactor, minY * scaleFactor, 0),
+            new THREE.Vector3(maxX * scaleFactor, maxY * scaleFactor, 0)
+          )
+          setBounds(box)
+          console.log('Text bounds', box.min, box.max)
+        }
       })
     }
   }, [text])
