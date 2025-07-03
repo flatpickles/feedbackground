@@ -54,8 +54,11 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **40** – Added text foreground option with tweakpane controls and new `TextMesh`. Updated demo to choose between diamond SVG and custom text. Lint and build pass.
 
+- **41** – Integrated General Sans font for text meshes with new Tweakpane font field and updated layout. Default text size doubled to 48pt. Lint warns on hooks; build succeeds.
+
 ## Next Steps
 
 - Tune random paint blending for performance and visual quality.
 - Profile high-DPR rendering performance and optimize FBO sizing.
 - Expose additional shader uniforms via Tweakpane for experimentation.
+- Add more font options and styling controls for text mode.

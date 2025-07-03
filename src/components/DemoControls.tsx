@@ -17,6 +17,8 @@ export type DemoControlsProps = {
   setSourceName: (name: 'diamond' | 'text') => void
   textValue: string
   setTextValue: (val: string) => void
+  fontUrl: string
+  setFontUrl: (val: string) => void
 }
 
 export default function DemoControls({
@@ -34,6 +36,8 @@ export default function DemoControls({
   setSourceName,
   textValue,
   setTextValue,
+  fontUrl,
+  setFontUrl,
 }: DemoControlsProps) {
   useEffect(() => {
     const pane = new Pane()
@@ -52,6 +56,16 @@ export default function DemoControls({
       ],
       value: sourceName,
     })
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const fontInput = (fgFolder as any).addBlade({
+      view: 'text',
+      label: 'font',
+      parse: (v: unknown) => String(v),
+      value: fontUrl,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    fontInput.on('change', (ev: any) => setFontUrl(ev.value))
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let textBlade: any

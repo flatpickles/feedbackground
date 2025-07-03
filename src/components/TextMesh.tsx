@@ -2,18 +2,21 @@ import { Text } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
+import generalSansUrl from '../assets/GeneralSans-Bold.woff2?url'
 import type { SvgSize } from '../types/svg'
 
 export type TextMeshProps = {
   text: string
   color?: string
   size?: SvgSize
+  fontUrl?: string
 }
 
 export default function TextMesh({
   text,
   color = '#ffffff',
   size = { type: 'scaled', factor: 1 },
+  fontUrl = generalSansUrl,
 }: TextMeshProps) {
   const depth = 0.1
   const { viewport, camera, size: viewportSize } = useThree()
@@ -30,7 +33,7 @@ export default function TextMesh({
         setBounds(box)
       })
     }
-  }, [text])
+  }, [text, fontUrl])
 
   const pixelScale = useMemo(() => {
     const factorX = current.width / viewportSize.width
@@ -59,7 +62,14 @@ export default function TextMesh({
 
   return (
     <group scale={scale} position={position}>
-      <Text ref={textRef} fontSize={24} color={color} anchorX="center" anchorY="middle">
+      <Text
+        ref={textRef}
+        fontSize={48}
+        font={fontUrl}
+        color={color}
+        anchorX="center"
+        anchorY="middle"
+      >
         {text}
       </Text>
     </group>
