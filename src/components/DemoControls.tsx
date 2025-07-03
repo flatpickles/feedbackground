@@ -17,6 +17,8 @@ export type DemoControlsProps = {
   setSourceName: (name: 'diamond' | 'text') => void
   textValue: string
   setTextValue: (val: string) => void
+  textFont: string
+  setTextFont: (val: string) => void
 }
 
 export default function DemoControls({
@@ -34,6 +36,8 @@ export default function DemoControls({
   setSourceName,
   textValue,
   setTextValue,
+  textFont,
+  setTextFont,
 }: DemoControlsProps) {
   useEffect(() => {
     const pane = new Pane()
@@ -54,10 +58,27 @@ export default function DemoControls({
     })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let fontBlade: any
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let textBlade: any
-    const updateTextBlade = (type: 'diamond' | 'text') => {
+    const updateTextBlades = (type: 'diamond' | 'text') => {
+      if (fontBlade) fgFolder.remove(fontBlade)
       if (textBlade) fgFolder.remove(textBlade)
       if (type === 'text') {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        fontBlade = (fgFolder as any).addBlade({
+          view: 'list',
+          label: 'font',
+          options: [
+            { text: 'Sans', value: 'sans-serif' },
+            { text: 'Serif', value: 'serif' },
+            { text: 'Mono', value: 'monospace' },
+          ],
+          value: textFont,
+        })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        fontBlade.on('change', (ev: any) => setTextFont(ev.value))
+
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         textBlade = (fgFolder as any).addBlade({
           view: 'text',
@@ -68,17 +89,18 @@ export default function DemoControls({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         textBlade.on('change', (ev: any) => setTextValue(ev.value))
       } else {
+        fontBlade = undefined
         textBlade = undefined
       }
     }
 
-    updateTextBlade(sourceName)
+    updateTextBlades(sourceName)
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     sourceInput.on('change', (ev: any) => {
       const val = ev.value as 'diamond' | 'text'
       setSourceName(val)
-      updateTextBlade(val)
+      updateTextBlades(val)
     })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -17,6 +17,7 @@ export type DraggableForegroundProps = {
   stepSize: number
   preprocessShader: string | null
   svgSize: SvgSize
+  textFont?: string
 }
 
 export default function DraggableForeground({
@@ -26,6 +27,7 @@ export default function DraggableForeground({
   stepSize,
   preprocessShader,
   svgSize,
+  textFont,
 }: DraggableForegroundProps) {
   const dragRef = useRef<THREE.Group | null>(null)
   const { bind, pose, active, interactionSession, isDragging } =
@@ -54,7 +56,12 @@ export default function DraggableForeground({
         {content.kind === 'svg' ? (
           <SvgMesh url={content.url} color="#000000" size={svgSize} />
         ) : (
-          <TextMesh text={content.text} color="#000000" size={svgSize} />
+          <TextMesh
+            text={content.text}
+            font={textFont}
+            color="#000000"
+            size={svgSize}
+          />
         )}
       </a.group>
     </>

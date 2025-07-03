@@ -6,12 +6,14 @@ import type { SvgSize } from '../types/svg'
 
 export type TextMeshProps = {
   text: string
+  font?: string
   color?: string
   size?: SvgSize
 }
 
 export default function TextMesh({
   text,
+  font = 'sans-serif',
   color = '#ffffff',
   size = { type: 'scaled', factor: 1 },
 }: TextMeshProps) {
@@ -59,7 +61,14 @@ export default function TextMesh({
 
   return (
     <group scale={scale} position={position}>
-      <Text ref={textRef} fontSize={24} color={color} anchorX="center" anchorY="middle">
+      <Text
+        ref={textRef}
+        font={font}
+        fontSize={48}
+        color={color}
+        anchorX="center"
+        anchorY="middle"
+      >
         {text}
       </Text>
     </group>

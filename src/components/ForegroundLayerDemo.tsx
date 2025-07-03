@@ -30,6 +30,7 @@ export default function ForegroundLayerDemo() {
   })
   const [sourceName, setSourceName] = useState<'diamond' | 'text'>('diamond')
   const [textValue, setTextValue] = useState('Hello World')
+  const [textFont, setTextFont] = useState('sans-serif')
   const shaderMap = {
     motionBlur: motionBlurFrag,
     randomPaint: randomPaintFrag,
@@ -62,6 +63,8 @@ export default function ForegroundLayerDemo() {
         setSourceName={(n) => setSourceName(n as 'diamond' | 'text')}
         textValue={textValue}
         setTextValue={setTextValue}
+        textFont={textFont}
+        setTextFont={setTextFont}
       />
       <DraggableForeground
         content={content}
@@ -70,6 +73,7 @@ export default function ForegroundLayerDemo() {
         stepSize={stepSize}
         preprocessShader={preprocessMap[preprocessName]}
         svgSize={svgSize}
+        textFont={textFont}
       />
     </>
   )

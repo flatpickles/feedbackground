@@ -54,6 +54,8 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **40** – Added text foreground option with tweakpane controls and new `TextMesh`. Updated demo to choose between diamond SVG and custom text. Lint and build pass.
 
+- **41** – Added font selection for text foreground with a new tweakpane list and increased default text size to 48pt. Lint and build pass.
+
 ## Next Steps
 
 - Tune random paint blending for performance and visual quality.
