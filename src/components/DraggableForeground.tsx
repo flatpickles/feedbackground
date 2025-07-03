@@ -54,12 +54,7 @@ export default function DraggableForeground({
         {content.kind === 'svg' ? (
           <SvgMesh url={content.url} color="#000000" size={svgSize} />
         ) : (
-          <TextMesh
-            text={content.text}
-            font={content.font}
-            color="#000000"
-            size={svgSize}
-          />
+          <TextMesh text={content.text} color="#000000" size={svgSize} />
         )}
       </a.group>
     </>

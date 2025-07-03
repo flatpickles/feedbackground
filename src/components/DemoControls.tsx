@@ -15,8 +15,6 @@ export type DemoControlsProps = {
   setSvgSize: (size: SvgSize) => void
   sourceName: 'diamond' | 'text'
   setSourceName: (name: 'diamond' | 'text') => void
-  fontUrl: string
-  setFontUrl: (url: string) => void
   textValue: string
   setTextValue: (val: string) => void
 }
@@ -34,8 +32,6 @@ export default function DemoControls({
   setSvgSize,
   sourceName,
   setSourceName,
-  fontUrl,
-  setFontUrl,
   textValue,
   setTextValue,
 }: DemoControlsProps) {
@@ -57,15 +53,6 @@ export default function DemoControls({
       value: sourceName,
     })
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fontInput = (fgFolder as any).addBlade({
-      view: 'text',
-      label: 'font',
-      parse: (v: unknown) => String(v),
-      value: fontUrl,
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    fontInput.on('change', (ev: any) => setFontUrl(ev.value))
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let textBlade: any

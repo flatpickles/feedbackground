@@ -54,6 +54,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **40** – Added text foreground option with tweakpane controls and new `TextMesh`. Updated demo to choose between diamond SVG and custom text. Lint and build pass.
 - **41** – Added font URL control below source selection, moved text input accordingly, and defaulted text to 48pt bold Roboto. Lint and build pass.
+- **42** – Removed font URL option, kept bundled Roboto Bold font by default, and ensured text blade appears under source when selecting Text. Lint and build pass.
 
 ## Next Steps
 
