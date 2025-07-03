@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import defaultSvgUrl from '../assets/diamond.svg?url'
-import DraggableSvg from './DraggableSvg'
+import DraggableForeground from './DraggableForeground'
 import DemoControls from './DemoControls'
 import motionBlurFrag from '../shaders/motionBlur.frag'
 import randomPaintFrag from '../shaders/randomPaint.frag'
 import boxBlurFrag from '../shaders/boxBlur.frag'
 import gaussianBlurFrag from '../shaders/gaussianBlur.frag'
 import type { SvgSize } from '../types/svg'
+import type { ForegroundContent } from '../types/foreground'
 
 function useSvgUrl(): string {
   const params = new URLSearchParams(window.location.search)
@@ -27,6 +28,8 @@ export default function ForegroundLayerDemo() {
     type: 'scaled',
     factor: 1,
   })
+  const [sourceName, setSourceName] = useState<'diamond' | 'text'>('diamond')
+  const [textValue, setTextValue] = useState('Hello World')
   const shaderMap = {
     motionBlur: motionBlurFrag,
     randomPaint: randomPaintFrag,
@@ -34,6 +37,11 @@ export default function ForegroundLayerDemo() {
   const [shaderName, setShaderName] =
     useState<keyof typeof shaderMap>('motionBlur')
   const [decay, setDecay] = useState(0.9)
+
+  const content: ForegroundContent =
+    sourceName === 'text'
+      ? { kind: 'text', text: textValue }
+      : { kind: 'svg', url: svgUrl }
 
   return (
     <>
@@ -50,9 +58,13 @@ export default function ForegroundLayerDemo() {
         }
         svgSize={svgSize}
         setSvgSize={setSvgSize}
+        sourceName={sourceName}
+        setSourceName={(n) => setSourceName(n as 'diamond' | 'text')}
+        textValue={textValue}
+        setTextValue={setTextValue}
       />
-      <DraggableSvg
-        svgUrl={svgUrl}
+      <DraggableForeground
+        content={content}
         shader={shaderMap[shaderName]}
         decay={decay}
         stepSize={stepSize}

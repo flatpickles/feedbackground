@@ -6,10 +6,12 @@ import useFrameInterpolator from '../hooks/useFrameInterpolator'
 import useFeedbackFBO from '../hooks/useFeedbackFBO'
 import FeedbackPlane from './FeedbackPlane'
 import SvgMesh from './SvgMesh'
+import TextMesh from './TextMesh'
 import type { SvgSize } from '../types/svg'
+import type { ForegroundContent } from '../types/foreground'
 
-export type DraggableSvgProps = {
-  svgUrl: string
+export type DraggableForegroundProps = {
+  content: ForegroundContent
   shader: string
   decay: number
   stepSize: number
@@ -17,14 +19,14 @@ export type DraggableSvgProps = {
   svgSize: SvgSize
 }
 
-export default function DraggableSvg({
-  svgUrl,
+export default function DraggableForeground({
+  content,
   shader,
   decay,
   stepSize,
   preprocessShader,
   svgSize,
-}: DraggableSvgProps) {
+}: DraggableForegroundProps) {
   const dragRef = useRef<THREE.Group | null>(null)
   const { bind, pose, active, interactionSession, isDragging } =
     useDragAndSpring(dragRef)
@@ -49,7 +51,11 @@ export default function DraggableSvg({
         position-y={pose.y}
         {...bind}
       >
-        <SvgMesh url={svgUrl} color="#000000" size={svgSize} />
+        {content.kind === 'svg' ? (
+          <SvgMesh url={content.url} color="#000000" size={svgSize} />
+        ) : (
+          <TextMesh text={content.text} color="#000000" size={svgSize} />
+        )}
       </a.group>
     </>
   )
