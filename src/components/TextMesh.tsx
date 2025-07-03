@@ -2,18 +2,21 @@ import { Text } from '@react-three/drei'
 import { useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef, useState } from 'react'
 import * as THREE from 'three'
+import defaultFontUrl from '../assets/Roboto-Bold.ttf?url'
 import type { SvgSize } from '../types/svg'
 
 export type TextMeshProps = {
   text: string
   color?: string
   size?: SvgSize
+  font?: string
 }
 
 export default function TextMesh({
   text,
   color = '#ffffff',
   size = { type: 'scaled', factor: 1 },
+  font,
 }: TextMeshProps) {
   const depth = 0.1
   const { viewport, camera, size: viewportSize } = useThree()
@@ -57,9 +60,19 @@ export default function TextMesh({
 
   const position: [number, number, number] = [0, 0, depth]
 
+  const fontUrl = font || defaultFontUrl
+
   return (
     <group scale={scale} position={position}>
-      <Text ref={textRef} fontSize={24} color={color} anchorX="center" anchorY="middle">
+      <Text
+        ref={textRef}
+        fontSize={48}
+        font={fontUrl}
+        fontWeight="bold"
+        color={color}
+        anchorX="center"
+        anchorY="middle"
+      >
         {text}
       </Text>
     </group>

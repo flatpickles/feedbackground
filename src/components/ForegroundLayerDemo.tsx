@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import defaultSvgUrl from '../assets/diamond.svg?url'
+import defaultFontUrl from '../assets/Roboto-Bold.ttf?url'
 import DraggableForeground from './DraggableForeground'
 import DemoControls from './DemoControls'
 import motionBlurFrag from '../shaders/motionBlur.frag'
@@ -30,6 +31,7 @@ export default function ForegroundLayerDemo() {
   })
   const [sourceName, setSourceName] = useState<'diamond' | 'text'>('diamond')
   const [textValue, setTextValue] = useState('Hello World')
+  const [fontUrl, setFontUrl] = useState(defaultFontUrl)
   const shaderMap = {
     motionBlur: motionBlurFrag,
     randomPaint: randomPaintFrag,
@@ -40,7 +42,7 @@ export default function ForegroundLayerDemo() {
 
   const content: ForegroundContent =
     sourceName === 'text'
-      ? { kind: 'text', text: textValue }
+      ? { kind: 'text', text: textValue, font: fontUrl }
       : { kind: 'svg', url: svgUrl }
 
   return (
@@ -60,6 +62,8 @@ export default function ForegroundLayerDemo() {
         setSvgSize={setSvgSize}
         sourceName={sourceName}
         setSourceName={(n) => setSourceName(n as 'diamond' | 'text')}
+        fontUrl={fontUrl}
+        setFontUrl={setFontUrl}
         textValue={textValue}
         setTextValue={setTextValue}
       />

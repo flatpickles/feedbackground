@@ -1,3 +1,3 @@
 export type ForegroundContent =
   | { kind: 'svg'; url: string }
-  | { kind: 'text'; text: string }
+  | { kind: 'text'; text: string; font: string }
