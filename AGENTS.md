@@ -60,6 +60,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **44** – Calculated text bounds from `visibleBounds` scaled by `fontSize` and added console logging for debugging. Lint warns on hooks; build succeeds.
 - **45** – Investigated text sizing further; troika-three-text metrics use font units and don't map cleanly to viewport pixels. Concluded reliable relative sizing isn't feasible without major redesign. Lint and build pass.
 - **46** – Disabled 'relative' size mode when text source is active; Tweakpane now hides the option and reverts to scaled. Lint and build pass.
+- **47** – Added SoftMesh with deform.vert, rigidity control via DemoControls, and updated DraggableForeground. Lint and build pass.
 
 ## Next Steps
 

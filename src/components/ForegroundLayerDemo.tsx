@@ -37,6 +37,7 @@ export default function ForegroundLayerDemo() {
   const [shaderName, setShaderName] =
     useState<keyof typeof shaderMap>('randomPaint')
   const [decay, setDecay] = useState(0.95)
+  const [rigidity, setRigidity] = useState(5)
 
   const content: ForegroundContent =
     sourceName === 'text'
@@ -52,6 +53,8 @@ export default function ForegroundLayerDemo() {
         setDecay={setDecay}
         stepSize={stepSize}
         setStepSize={setStepSize}
+        rigidity={rigidity}
+        setRigidity={setRigidity}
         preprocessName={preprocessName}
         setPreprocessName={(n) =>
           setPreprocessName(n as keyof typeof preprocessMap)
@@ -70,6 +73,7 @@ export default function ForegroundLayerDemo() {
         stepSize={stepSize}
         preprocessShader={preprocessMap[preprocessName]}
         svgSize={svgSize}
+        rigidity={rigidity}
       />
     </>
   )

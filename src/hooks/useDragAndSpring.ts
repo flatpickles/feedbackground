@@ -35,6 +35,25 @@ export default function useDragAndSpring(
   const [isSpringing, setSpringing] = useState(false)
   const [spring, api] = useSpring(() => ({ x: 0, y: 0 }))
   const [interactionSession, setInteractionSession] = useState(0)
+  const grabPoint = useRef(new THREE.Vector3())
+  const delta = useRef(new THREE.Vector3())
+
+  const eventToLocal = useCallback(
+    (x: number, y: number): THREE.Vector3 | null => {
+      if (!targetRef?.current) return null
+      const ndc = new THREE.Vector2(
+        (x / size.width) * 2 - 1,
+        -(y / size.height) * 2 + 1
+      )
+      raycaster.setFromCamera(ndc, camera)
+      const hit = raycaster.intersectObject(targetRef.current, true)[0]
+      if (hit) {
+        return targetRef.current.worldToLocal(hit.point.clone())
+      }
+      return null
+    },
+    [camera, raycaster, size.height, size.width, targetRef]
+  )
 
   const onPointerEnter = useCallback(() => {
     overRef.current = true
@@ -53,9 +72,12 @@ export default function useDragAndSpring(
         bx: spring.x.get(),
         by: spring.y.get(),
       }
+      const local = eventToLocal(e.clientX, e.clientY)
+      if (local) grabPoint.current.copy(local)
+      delta.current.set(0, 0, 0)
       ;(e.target as Element).setPointerCapture(e.pointerId)
     },
-    [spring.x, spring.y, setCursor]
+    [spring.x, spring.y, setCursor, eventToLocal]
   )
 
   const onPointerMove = useCallback(
@@ -69,8 +91,10 @@ export default function useDragAndSpring(
         y: startRef.current.by + dy,
         immediate: true,
       })
+      const local = eventToLocal(e.clientX, e.clientY)
+      if (local) delta.current.copy(local).sub(grabPoint.current)
     },
-    [api, factorX, factorY, isDragging]
+    [api, factorX, factorY, isDragging, eventToLocal]
   )
 
   const checkCursor = useCallback(() => {
@@ -104,6 +128,9 @@ export default function useDragAndSpring(
       api.start({
         x: 0,
         y: 0,
+        onChange: (res) => {
+          delta.current.set(res.value.x, res.value.y, 0)
+        },
         onRest: () => {
           setSpringing(false)
           springingRef.current = false
@@ -142,5 +169,7 @@ export default function useDragAndSpring(
     active: isDragging || isSpringing,
     isDragging,
     interactionSession,
+    grabPoint: grabPoint.current,
+    delta: delta.current,
   }
 }

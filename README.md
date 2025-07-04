@@ -49,7 +49,9 @@ App
  │   ├─ BackgroundPlane           – Static backdrop
  │   ├─ FeedbackPlane             – Full-screen quad sampling `readRT`
  │   ├─ SvgMesh                   – Mesh from any closed-path SVG (ShapeGeometry)
- │   └─ DraggableSvg              – Input + feedback hierarchy using `SvgMesh`
+ │   ├─ TextMesh                  – Troika text wrapped as mesh
+ │   ├─ SoftMesh                  – Deformable wrapper using `rigidity`
+ │   └─ DraggableForeground       – Input + feedback hierarchy using SoftMesh
  ├─ hooks/
  │   ├─ useDragAndSpring()        – Pointer events + spring pose emitter
  │   ├─ useFrameInterpolator()    – Emit sub-frame poses for smooth trails
@@ -60,8 +62,12 @@ App
  │   └─ shaderRegistry.ts         – Register, compile, hot-swap shaders
  ├─ components/
  │   └─ UIControls.tsx            – Shader chooser, decay slider (optional)
- └─ tests/ (Jest, RTL, Storybook)
+└─ tests/ (Jest, RTL, Storybook)
 ```
+
+`DraggableForeground` accepts a `rigidity` prop that controls how strongly
+`SoftMesh` deforms around the pointer. Higher values keep the shape stiff while
+lower values allow more displacement.
 
 ### 2.1 Always-On Feedback Loop
 

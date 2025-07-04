@@ -8,12 +8,14 @@ export type TextMeshProps = {
   text: string
   color?: string
   size?: SvgSize
+  material?: THREE.Material
 }
 
 export default function TextMesh({
   text,
   color = '#ffffff',
   size = { type: 'scaled', factor: 1 },
+  material,
 }: TextMeshProps) {
   const depth = 0.1
   const { viewport, camera, size: viewportSize } = useThree()
@@ -68,7 +70,15 @@ export default function TextMesh({
 
   return (
     <group scale={scale} position={position}>
-      <Text ref={textRef} fontSize={48} font={'GeneralSans-Bold.woff'} color={color} anchorX="center" anchorY="middle">
+      <Text
+        ref={textRef}
+        fontSize={48}
+        font={'GeneralSans-Bold.woff'}
+        color={color}
+        anchorX="center"
+        anchorY="middle"
+        material={material}
+      >
         {text}
       </Text>
     </group>

@@ -9,6 +9,8 @@ export type DemoControlsProps = {
   setDecay: (val: number) => void
   stepSize: number
   setStepSize: (val: number) => void
+  rigidity: number
+  setRigidity: (val: number) => void
   preprocessName: string
   setPreprocessName: (name: string) => void
   svgSize: SvgSize
@@ -26,6 +28,8 @@ export default function DemoControls({
   setDecay,
   stepSize,
   setStepSize,
+  rigidity,
+  setRigidity,
   preprocessName,
   setPreprocessName,
   svgSize,
@@ -139,6 +143,18 @@ export default function DemoControls({
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     interpInput.on('change', (ev: any) => setStepSize(ev.value))
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rigidInput = (effectFolder as any).addBlade({
+      view: 'slider',
+      label: 'rigidity',
+      min: 0,
+      max: 10,
+      value: rigidity,
+      step: 0.1,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    rigidInput.on('change', (ev: any) => setRigidity(ev.value))
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let sizeInput: any

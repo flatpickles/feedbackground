@@ -8,12 +8,14 @@ type Props = {
   url: string
   color?: string
   size?: SvgSize
+  material?: THREE.Material
 }
 
 export default function SvgMesh({
   url,
   color = '#ffffff',
   size = { type: 'scaled', factor: 1 },
+  material,
 }: Props) {
   const depth = 0.1
   const { viewport, camera, size: viewportSize } = useThree()
@@ -65,8 +67,10 @@ export default function SvgMesh({
   return (
     <group scale={scale} position={position}>
       {geometries.map((geometry, idx) => (
-        <mesh key={idx} geometry={geometry}>
-          <meshBasicMaterial color={color} toneMapped={false} />
+        <mesh key={idx} geometry={geometry} material={material}>
+          {!material && (
+            <meshBasicMaterial color={color} toneMapped={false} />
+          )}
         </mesh>
       ))}
     </group>
