@@ -45,7 +45,7 @@ export default function SoftMesh({
     if (content.kind !== 'text') return null
     const canvas = document.createElement('canvas')
     const ctx = canvas.getContext('2d')!
-    const fontSize = 64
+    const fontSize = 256
     ctx.font = `${fontSize}px sans-serif`
     const metrics = ctx.measureText(content.text)
     canvas.width = metrics.width + fontSize
@@ -96,6 +96,8 @@ export default function SoftMesh({
     return new THREE.PlaneGeometry(nativeWidth, nativeHeight, density, density)
   }, [nativeWidth, nativeHeight, density])
 
+  const extent = useMemo(() => Math.max(nativeWidth, nativeHeight), [nativeWidth, nativeHeight])
+
   /* eslint-disable react-hooks/exhaustive-deps */
   const material = useMemo(() => {
     return new THREE.ShaderMaterial({
@@ -107,6 +109,7 @@ export default function SoftMesh({
         uGrabPoint: { value: grabPoint.clone() },
         uDelta: { value: delta.clone() },
         uRigidity: { value: rigidity },
+        uExtent: { value: extent },
       },
       transparent: true,
       toneMapped: false,
@@ -122,10 +125,13 @@ export default function SoftMesh({
     material.uniforms.uMap.value = map
   }, [map, material])
 
-
   useEffect(() => {
     material.uniforms.uRigidity.value = rigidity
   }, [rigidity, material])
+
+  useEffect(() => {
+    material.uniforms.uExtent.value = extent
+  }, [extent, material])
 
   useFrame(() => {
     material.uniforms.uGrabPoint.value.copy(grabPoint).divideScalar(scale)
