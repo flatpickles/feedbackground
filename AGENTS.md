@@ -63,6 +63,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **47** – Allocated feedback render targets with `HalfFloatType` to eliminate residual trails at high decay. Lint and build pass.
 - **48** – Cleared feedback render targets when motion stops so faint outlines vanish immediately. Lint and build pass.
+- **49** – Added alpha threshold in `randomPaint.frag` so near-transparent pixels drop to zero, preventing outlines after release. Lint and build failed due to missing dependencies; build failed due to missing packages.
 
 ## Next Steps
 

@@ -18,5 +18,9 @@ void main() {
   vec3 outColor = (newColor * newAlpha + oldColor * oldAlpha * (1.0 - newAlpha)) /
                   max(outAlpha, 1e-5);
 
-  gl_FragColor = vec4(outColor, outAlpha);
+  if (outAlpha < 1e-3) {
+    gl_FragColor = vec4(0.0, 0.0, 0.0, 0.0);
+  } else {
+    gl_FragColor = vec4(outColor, outAlpha);
+  }
 }
