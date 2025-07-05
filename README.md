@@ -50,8 +50,9 @@ App
  │   ├─ FeedbackPlane             – Full-screen quad sampling `readRT`
  │   ├─ SvgMesh                   – Mesh from any closed-path SVG (ShapeGeometry)
  │   ├─ TextMesh                  – Troika text wrapped as mesh
- │   ├─ SoftMesh                  – Deformable wrapper using `rigidity`; offsets
- │                                  vertices based on pointer lag
+ │   ├─ SoftMesh                  – Deformable plane texturized from the
+ │                                  foreground; vertex `density` and `rigidity`
+ │                                  control how it warps with pointer lag
  │   └─ DraggableForeground       – Input + feedback hierarchy using SoftMesh
  ├─ hooks/
  │   ├─ useDragAndSpring()        – Pointer events + spring pose emitter
@@ -69,7 +70,9 @@ App
 `DraggableForeground` accepts a `rigidity` prop that controls how strongly
 `SoftMesh` deforms around the pointer. Deformation comes from the difference
 between the pointer target position and the mesh’s spring pose. Higher values
-keep the shape stiff while lower values allow more displacement.
+keep the shape stiff while lower values allow more displacement. The new
+`density` prop defines how many segments the underlying plane uses, providing
+finer or coarser flexibility.
 
 ### 2.1 Always-On Feedback Loop
 

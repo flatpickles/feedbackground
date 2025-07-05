@@ -11,6 +11,8 @@ export type DemoControlsProps = {
   setStepSize: (val: number) => void
   rigidity: number
   setRigidity: (val: number) => void
+  density: number
+  setDensity: (val: number) => void
   preprocessName: string
   setPreprocessName: (name: string) => void
   svgSize: SvgSize
@@ -30,6 +32,8 @@ export default function DemoControls({
   setStepSize,
   rigidity,
   setRigidity,
+  density,
+  setDensity,
   preprocessName,
   setPreprocessName,
   svgSize,
@@ -155,6 +159,18 @@ export default function DemoControls({
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     rigidInput.on('change', (ev: any) => setRigidity(ev.value))
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const densInput = (effectFolder as any).addBlade({
+      view: 'slider',
+      label: 'density',
+      min: 4,
+      max: 64,
+      value: density,
+      step: 1,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    densInput.on('change', (ev: any) => setDensity(ev.value))
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let sizeInput: any

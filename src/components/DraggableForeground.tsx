@@ -17,6 +17,7 @@ export type DraggableForegroundProps = {
   preprocessShader: string | null
   svgSize: SvgSize
   rigidity: number
+  density: number
 }
 
 export default function DraggableForeground({
@@ -27,6 +28,7 @@ export default function DraggableForeground({
   preprocessShader,
   svgSize,
   rigidity,
+  density,
 }: DraggableForegroundProps) {
   const dragRef = useRef<THREE.Group | null>(null)
   const { bind, pose, active, interactionSession, isDragging, grabPoint, delta } =
@@ -59,6 +61,7 @@ export default function DraggableForeground({
           grabPoint={grabPoint}
           delta={delta}
           rigidity={rigidity}
+          density={density}
         />
       </a.group>
     </>
