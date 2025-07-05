@@ -70,6 +70,7 @@ export default function useFeedbackFBO(
   )
 
   const lastSnapshotPos = useRef(new THREE.Vector2(Infinity, Infinity))
+  const wasActive = useRef(active)
 
   const preprocessScene = useMemo<THREE.Scene | null>(() => {
     if (!preprocessShader) return null
@@ -144,6 +145,15 @@ export default function useFeedbackFBO(
   }, [])
 
   useFrame(() => {
+    if (wasActive.current && !active) {
+      gl.setRenderTarget(readRT.current)
+      gl.setClearColor(0x000000, 0)
+      gl.clear(true, true, true)
+      gl.setRenderTarget(writeRT.current)
+      gl.clear(true, true, true)
+      gl.setRenderTarget(null)
+    }
+    wasActive.current = active
     // Prepare snapshot texture
     gl.setRenderTarget(snapshotRT.current)
     gl.setClearColor(0x000000, 0)

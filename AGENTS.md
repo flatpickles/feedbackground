@@ -62,6 +62,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **46** – Disabled 'relative' size mode when text source is active; Tweakpane now hides the option and reverts to scaled. Lint and build pass.
 
 - **47** – Allocated feedback render targets with `HalfFloatType` to eliminate residual trails at high decay. Lint and build pass.
+- **48** – Cleared feedback render targets when motion stops so faint outlines vanish immediately. Lint and build pass.
 
 ## Next Steps
 
