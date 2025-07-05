@@ -4,8 +4,6 @@ uniform vec3 uGrabPoint;
 uniform vec3 uDelta;
 uniform float uRigidity;
 
-attribute vec3 position;
-attribute vec2 uv;
 
 varying vec2 vUv;
 

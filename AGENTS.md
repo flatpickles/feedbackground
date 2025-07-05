@@ -62,6 +62,10 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **46** – Disabled 'relative' size mode when text source is active; Tweakpane now hides the option and reverts to scaled. Lint and build pass.
 - **47** – Added SoftMesh with deform.vert, rigidity control via DemoControls, and updated DraggableForeground. Lint and build pass.
 
+## Progress Log (continued)
+
+- **48** – Fixed vertex shader compile error by removing redundant attribute declarations.
+
 ## Next Steps
 
 - Tune random paint blending for performance and visual quality.
