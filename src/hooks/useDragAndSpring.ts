@@ -33,7 +33,18 @@ export default function useDragAndSpring(
   const springingRef = useRef(false)
   const [isDragging, setDragging] = useState(false)
   const [isSpringing, setSpringing] = useState(false)
-  const [spring, api] = useSpring(() => ({ x: 0, y: 0 }))
+  const pointerTarget = useRef({ x: 0, y: 0 })
+  const [spring, api] = useSpring(() => ({
+    x: 0,
+    y: 0,
+    onChange: (res) => {
+      delta.current.set(
+        pointerTarget.current.x - res.value.x,
+        pointerTarget.current.y - res.value.y,
+        0
+      )
+    },
+  }))
   const [interactionSession, setInteractionSession] = useState(0)
   const grabPoint = useRef(new THREE.Vector3())
   const delta = useRef(new THREE.Vector3())
@@ -72,6 +83,7 @@ export default function useDragAndSpring(
         bx: spring.x.get(),
         by: spring.y.get(),
       }
+      pointerTarget.current = { x: spring.x.get(), y: spring.y.get() }
       const local = eventToLocal(e.clientX, e.clientY)
       if (local) grabPoint.current.copy(local)
       delta.current.set(0, 0, 0)
@@ -86,15 +98,16 @@ export default function useDragAndSpring(
       if (!isDragging) return
       const dx = (e.clientX - startRef.current.sx) * factorX
       const dy = -(e.clientY - startRef.current.sy) * factorY
-      api.start({
+      pointerTarget.current = {
         x: startRef.current.bx + dx,
         y: startRef.current.by + dy,
-        immediate: true,
+      }
+      api.start({
+        x: pointerTarget.current.x,
+        y: pointerTarget.current.y,
       })
-      const local = eventToLocal(e.clientX, e.clientY)
-      if (local) delta.current.copy(local).sub(grabPoint.current)
     },
-    [api, factorX, factorY, isDragging, eventToLocal]
+    [api, factorX, factorY, isDragging]
   )
 
   const checkCursor = useCallback(() => {
@@ -125,12 +138,10 @@ export default function useDragAndSpring(
       if (e) pointerRef.current = { x: e.clientX, y: e.clientY }
       setSpringing(true)
       springingRef.current = true
+      pointerTarget.current = { x: 0, y: 0 }
       api.start({
         x: 0,
         y: 0,
-        onChange: (res) => {
-          delta.current.set(res.value.x, res.value.y, 0)
-        },
         onRest: () => {
           setSpringing(false)
           springingRef.current = false

@@ -65,6 +65,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 ## Progress Log (continued)
 
 - **48** – Fixed vertex shader compile error by removing redundant attribute declarations.
+- **49** – Corrected soft deformation by computing pointer lag in `useDragAndSpring` and updating docs.
 
 ## Next Steps
 
