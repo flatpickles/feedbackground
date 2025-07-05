@@ -59,7 +59,8 @@ export default function useDragAndSpring(
       raycaster.setFromCamera(ndc, camera)
       const hit = raycaster.intersectObject(targetRef.current, true)[0]
       if (hit) {
-        return targetRef.current.worldToLocal(hit.point.clone())
+        // grab point relative to the hit mesh so scaling is accounted for
+        return hit.object.worldToLocal(hit.point.clone())
       }
       return null
     },

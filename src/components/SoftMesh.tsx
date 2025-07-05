@@ -36,8 +36,9 @@ export default function SoftMesh({
   rigidity,
   density = 32,
 }: Props) {
+  // 1×1 transparent PNG for loader placeholder
   const BLANK =
-    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAAAAQMAAACTPskLAAAACVBMVEUAAAD///9fX1/X1/8AAAAAXRSTlMAQObYZgAAAApJREFUCJljYAAAAAIAAeIhvDMAAAAASUVORK5CYII='
+    'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mP8/x8AAwMCAO+qCKEAAAAASUVORK5CYII='
   const svgTex = useLoader(TextureLoader, content.kind === 'svg' ? content.url : BLANK)
 
   const textTexture = useMemo(() => {
@@ -127,8 +128,8 @@ export default function SoftMesh({
   }, [rigidity, material])
 
   useFrame(() => {
-    material.uniforms.uGrabPoint.value.copy(grabPoint)
-    material.uniforms.uDelta.value.copy(delta)
+    material.uniforms.uGrabPoint.value.copy(grabPoint).divideScalar(scale)
+    material.uniforms.uDelta.value.copy(delta).divideScalar(scale)
   })
 
   return (

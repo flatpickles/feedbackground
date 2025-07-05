@@ -67,6 +67,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **48** – Fixed vertex shader compile error by removing redundant attribute declarations.
 - **49** – Corrected soft deformation by computing pointer lag in `useDragAndSpring` and updating docs.
 - **50** – Reimplemented SoftMesh as a texture-mapped grid with adjustable `density` for local deformation and updated controls/docs.
+- **51** – Fixed SoftMesh deformation by normalizing grab point and delta with mesh scale and loading a placeholder texture for text to avoid crashes. Updated raycast logic for accurate grab points. Lint and build pass.
 
 ## Next Steps
 
