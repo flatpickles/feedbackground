@@ -96,14 +96,16 @@ export default function DemoControls({
       value: sourceName,
     })
 
+    const paintParams = { paint: paintWhileStill }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const paintInput = (fgFolder as any).addBlade({
-      view: 'checkbox',
+    const paintInput = (fgFolder as any).addBinding(paintParams, 'paint', {
       label: 'paint while still',
-      value: paintWhileStill,
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    paintInput.on('change', (ev: any) => setPaintWhileStill(ev.value))
+    paintInput.on('change', (ev: any) => {
+      paintParams.paint = ev.value
+      setPaintWhileStill(ev.value)
+    })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let textBlade: any
