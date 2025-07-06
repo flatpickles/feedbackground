@@ -47,7 +47,8 @@ export default function DraggableForeground({
     preprocessShader,
     stepSize,
     noiseSpeed,
-    noiseSize
+    noiseSize,
+    paintWhileStill
   )
 
   return (

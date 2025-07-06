@@ -23,7 +23,8 @@ export default function useFeedbackFBO(
   preprocessShader: string | null = null,
   preprocessRadius = 1,
   noiseSpeed = 1,
-  noiseSize = 0.05
+  noiseSize = 0.05,
+  paintWhileStill = false
 ) {
   const { gl, size, camera } = useThree()
   const dpr = gl.getPixelRatio()
@@ -174,6 +175,7 @@ export default function useFeedbackFBO(
       gl.autoClear = false
       for (const p of poses) {
         if (
+          paintWhileStill ||
           p.x !== lastSnapshotPos.current.x ||
           p.y !== lastSnapshotPos.current.y
         ) {
