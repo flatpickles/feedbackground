@@ -110,6 +110,7 @@ export default function DemoControls({
       options: [
         { text: 'Motion Blur', value: 'motionBlur' },
         { text: 'Random Paint', value: 'randomPaint' },
+        { text: 'Ripple Fade', value: 'rippleFade' },
       ],
       value: shaderName,
     })

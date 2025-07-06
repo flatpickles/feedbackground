@@ -60,12 +60,13 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **44** – Calculated text bounds from `visibleBounds` scaled by `fontSize` and added console logging for debugging. Lint warns on hooks; build succeeds.
 - **45** – Investigated text sizing further; troika-three-text metrics use font units and don't map cleanly to viewport pixels. Concluded reliable relative sizing isn't feasible without major redesign. Lint and build pass.
 - **46** – Disabled 'relative' size mode when text source is active; Tweakpane now hides the option and reverts to scaled. Lint and build pass.
+- **47** – Added `rippleFade.frag` shader to effect dropdown and updated shader map in demo. Lint and build pass.
 
 - **47** – Allocated feedback render targets with `HalfFloatType` to eliminate residual trails at high decay. Lint and build pass.
 
 ## Next Steps
 
-- Tune random paint blending for performance and visual quality.
+- Tune random paint and ripple fade blending for performance and visual quality.
 - Profile high-DPR rendering performance and optimize FBO sizing.
 - Expose additional shader uniforms via Tweakpane for experimentation.
 - Consider alternate text display since reliable relative sizing is not feasible.

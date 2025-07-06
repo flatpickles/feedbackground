@@ -4,6 +4,7 @@ import boxBlurFrag from '../shaders/boxBlur.frag'
 import gaussianBlurFrag from '../shaders/gaussianBlur.frag'
 import motionBlurFrag from '../shaders/motionBlur.frag'
 import randomPaintFrag from '../shaders/randomPaint.frag'
+import rippleFadeFrag from '../shaders/rippleFade.frag'
 import type { ForegroundContent } from '../types/foreground'
 import type { SvgSize } from '../types/svg'
 import DemoControls from './DemoControls'
@@ -33,6 +34,7 @@ export default function ForegroundLayerDemo() {
   const shaderMap = {
     motionBlur: motionBlurFrag,
     randomPaint: randomPaintFrag,
+    rippleFade: rippleFadeFrag,
   }
   const [shaderName, setShaderName] =
     useState<keyof typeof shaderMap>('randomPaint')
