@@ -149,6 +149,7 @@ export default function useFeedbackFBO(
   useFrame((state) => {
     timeRef.current = state.clock.getElapsedTime()
     uniforms.uTime.value = timeRef.current
+
     // Prepare snapshot texture
     gl.setRenderTarget(snapshotRT.current)
     gl.setClearColor(0x000000, 0)
@@ -169,11 +170,14 @@ export default function useFeedbackFBO(
       const prevAuto = gl.autoClear
       gl.autoClear = false
       for (const p of poses) {
-        group.position.x = p.x
-        group.position.y = p.y
-        group.updateMatrixWorld()
-        gl.render(group, camera)
-        if (p.x !== lastSnapshotPos.current.x || p.y !== lastSnapshotPos.current.y) {
+        if (
+          p.x !== lastSnapshotPos.current.x ||
+          p.y !== lastSnapshotPos.current.y
+        ) {
+          group.position.x = p.x
+          group.position.y = p.y
+          group.updateMatrixWorld()
+          gl.render(group, camera)
           moved = true
           lastSnapshotPos.current.set(p.x, p.y)
         }
@@ -183,6 +187,7 @@ export default function useFeedbackFBO(
       group.updateMatrixWorld()
     }
 
+    // Preprocess snapshot
     if (moved && preprocessShader && preprocessScene) {
       preprocessUniforms.uTexture.value = snapshotRT.current.texture
       preprocessUniforms.uRadius.value = preprocessRadius
@@ -190,10 +195,7 @@ export default function useFeedbackFBO(
       gl.render(preprocessScene, orthoCam)
       gl.setRenderTarget(null)
       uniforms.uSnapshot.value = preprocessRT.current.texture
-    } else if (moved) {
-      uniforms.uSnapshot.value = snapshotRT.current.texture
     } else {
-      // No movement: use empty snapshot
       uniforms.uSnapshot.value = snapshotRT.current.texture
     }
 
