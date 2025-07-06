@@ -70,6 +70,8 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **50** – Fixed "paint while still" checkbox using `addBinding` so it renders correctly. Lint and build pass.
 - **51** – Added Perlin-noise offset to `rippleFade.frag` with tweakable speed and size; new sliders wired through `DemoControls` and `useFeedbackFBO`.
 
+- **52** – Fixed "paint while still" so snapshots render every frame when enabled. Updated `useFeedbackFBO` and its call site. Lint and build pass.
+
 ## Next Steps
 
 - Tune random paint and ripple fade blending for performance and visual quality.
