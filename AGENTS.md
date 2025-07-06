@@ -64,6 +64,8 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **47** – Allocated feedback render targets with `HalfFloatType` to eliminate residual trails at high decay. Lint and build pass.
 
+- **48** – Added `uTime` uniform in `useFeedbackFBO` and implemented noise-driven warp in `rippleFade.frag`. Lint and build pass.
+
 ## Next Steps
 
 - Tune random paint and ripple fade blending for performance and visual quality.

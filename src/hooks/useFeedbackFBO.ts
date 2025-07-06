@@ -34,6 +34,8 @@ export default function useFeedbackFBO(
     new THREE.Vector3(Math.random(), Math.random(), Math.random())
   )
 
+  const timeRef = useRef(0)
+
   const readRT = useRef(
     new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
       type: THREE.HalfFloatType,
@@ -91,6 +93,7 @@ export default function useFeedbackFBO(
       uSnapshot: { value: snapshotRT.current.texture },
       uDecay: { value: decay },
       uSessionRandom: { value: sessionRandom.current.clone() },
+      uTime: { value: 0 },
     }),
     [decay]
   )
@@ -143,7 +146,9 @@ export default function useFeedbackFBO(
     }
   }, [])
 
-  useFrame(() => {
+  useFrame((state) => {
+    timeRef.current = state.clock.getElapsedTime()
+    uniforms.uTime.value = timeRef.current
     // Prepare snapshot texture
     gl.setRenderTarget(snapshotRT.current)
     gl.setClearColor(0x000000, 0)
