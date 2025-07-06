@@ -18,6 +18,8 @@ export type DraggableForegroundProps = {
   preprocessShader: string | null
   svgSize: SvgSize
   paintWhileStill: boolean
+  noiseSpeed: number
+  noiseSize: number
 }
 
 export default function DraggableForeground({
@@ -28,6 +30,8 @@ export default function DraggableForeground({
   preprocessShader,
   svgSize,
   paintWhileStill,
+  noiseSpeed,
+  noiseSize,
 }: DraggableForegroundProps) {
   const dragRef = useRef<THREE.Group | null>(null)
   const { bind, pose, active, interactionSession, isDragging } =
@@ -41,7 +45,9 @@ export default function DraggableForeground({
     interpQueue,
     dragRef,
     preprocessShader,
-    stepSize
+    stepSize,
+    noiseSpeed,
+    noiseSize
   )
 
   return (

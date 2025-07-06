@@ -10,7 +10,6 @@ const vertexShader = `
   }
 `
 
-
 import type { MutableRefObject } from 'react'
 import type { DragSpringPose } from './useDragAndSpring'
 
@@ -22,7 +21,9 @@ export default function useFeedbackFBO(
   interpQueue?: MutableRefObject<DragSpringPose[]>,
   externalRef?: MutableRefObject<THREE.Group | null>,
   preprocessShader: string | null = null,
-  preprocessRadius = 1
+  preprocessRadius = 1,
+  noiseSpeed = 1,
+  noiseSize = 0.05
 ) {
   const { gl, size, camera } = useThree()
   const dpr = gl.getPixelRatio()
@@ -94,8 +95,10 @@ export default function useFeedbackFBO(
       uDecay: { value: decay },
       uSessionRandom: { value: sessionRandom.current.clone() },
       uTime: { value: 0 },
+      uNoiseSpeed: { value: noiseSpeed },
+      uNoiseSize: { value: noiseSize },
     }),
-    [decay]
+    [decay, noiseSpeed, noiseSize]
   )
 
   const quadScene = useMemo(() => {
