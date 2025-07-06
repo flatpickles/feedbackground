@@ -9,7 +9,6 @@ import type { ForegroundContent } from '../types/foreground'
 import type { SvgSize } from '../types/svg'
 import DemoControls from './DemoControls'
 import DraggableForeground from './DraggableForeground'
-import IntroOverlay from './IntroOverlay'
 
 function useSvgUrl(): string {
   const params = new URLSearchParams(window.location.search)
@@ -19,11 +18,13 @@ function useSvgUrl(): string {
 export type ForegroundLayerDemoProps = {
   backgroundName: 'wildflowers' | 'white'
   setBackgroundName: (name: 'wildflowers' | 'white') => void
+  onInteract: () => void
 }
 
 export default function ForegroundLayerDemo({
   backgroundName,
   setBackgroundName,
+  onInteract,
 }: ForegroundLayerDemoProps) {
   const svgUrl = useSvgUrl()
   const [stepSize, setStepSize] = useState(2)
@@ -51,9 +52,6 @@ export default function ForegroundLayerDemo({
   const [paintWhileStill, setPaintWhileStill] = useState(false)
   const [noiseSpeed, setNoiseSpeed] = useState(1)
   const [noiseSize, setNoiseSize] = useState(0.05)
-  const [showIntro, setShowIntro] = useState(true)
-
-  const handleInteract = () => setShowIntro(false)
 
   const content: ForegroundContent =
     sourceName === 'text'
@@ -62,7 +60,6 @@ export default function ForegroundLayerDemo({
 
   return (
     <>
-      <IntroOverlay visible={showIntro} />
       <DemoControls
         backgroundName={backgroundName}
         setBackgroundName={setBackgroundName}
@@ -99,7 +96,7 @@ export default function ForegroundLayerDemo({
         paintWhileStill={paintWhileStill}
         noiseSpeed={noiseSpeed}
         noiseSize={noiseSize}
-        onInteract={handleInteract}
+        onInteract={onInteract}
       />
     </>
   )

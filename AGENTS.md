@@ -73,6 +73,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **52** – Fixed "paint while still" so snapshots render every frame when enabled. Updated `useFeedbackFBO` and its call site. Lint and build pass.
 - **53** – Added IntroOverlay with project description that fades out on drag start.
 - **54** – Fixed overlay rendering by wrapping it in Drei's Html so it doesn't break the R3F canvas. Lint and build pass.
+- **55** – Moved IntroOverlay outside Canvas; now rendered in App with absolute positioning and responsive width. State lifted to hide on drag. Lint and build pass.
 
 ## Next Steps
 
