@@ -11,6 +11,10 @@ export type DemoControlsProps = {
   setDecay: (val: number) => void
   stepSize: number
   setStepSize: (val: number) => void
+  noiseSpeed: number
+  setNoiseSpeed: (val: number) => void
+  noiseSize: number
+  setNoiseSize: (val: number) => void
   preprocessName: string
   setPreprocessName: (name: string) => void
   svgSize: SvgSize
@@ -32,6 +36,10 @@ export default function DemoControls({
   setDecay,
   stepSize,
   setStepSize,
+  noiseSpeed,
+  setNoiseSpeed,
+  noiseSize,
+  setNoiseSize,
   preprocessName,
   setPreprocessName,
   svgSize,
@@ -175,6 +183,30 @@ export default function DemoControls({
     interpInput.on('change', (ev: any) => setStepSize(ev.value))
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const speedInput = (effectFolder as any).addBlade({
+      view: 'slider',
+      label: 'noise speed',
+      min: 0,
+      max: 5,
+      value: noiseSpeed,
+      step: 0.01,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    speedInput.on('change', (ev: any) => setNoiseSpeed(ev.value))
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const sizeInputNoise = (effectFolder as any).addBlade({
+      view: 'slider',
+      label: 'noise size',
+      min: 0,
+      max: 0.2,
+      value: noiseSize,
+      step: 0.001,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    sizeInputNoise.on('change', (ev: any) => setNoiseSize(ev.value))
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let sizeInput: any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let paramBlade: any
@@ -188,7 +220,7 @@ export default function DemoControls({
           min: 0,
           max: 5,
           value: sizeRef.current.type === 'scaled' ? sizeRef.current.factor : 1,
-          step: 0.01
+          step: 0.01,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         paramBlade.on('change', (ev: any) =>
@@ -205,7 +237,7 @@ export default function DemoControls({
             sizeRef.current.type === 'relative'
               ? sizeRef.current.fraction
               : 0.5,
-          step: 0.01
+          step: 0.01,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         paramBlade.on('change', (ev: any) =>

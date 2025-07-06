@@ -48,6 +48,8 @@ export default function ForegroundLayerDemo({
     useState<keyof typeof shaderMap>('randomPaint')
   const [decay, setDecay] = useState(0.95)
   const [paintWhileStill, setPaintWhileStill] = useState(false)
+  const [noiseSpeed, setNoiseSpeed] = useState(1)
+  const [noiseSize, setNoiseSize] = useState(0.05)
 
   const content: ForegroundContent =
     sourceName === 'text'
@@ -77,6 +79,10 @@ export default function ForegroundLayerDemo({
         setSourceName={(n) => setSourceName(n as 'diamond' | 'text')}
         textValue={textValue}
         setTextValue={setTextValue}
+        noiseSpeed={noiseSpeed}
+        setNoiseSpeed={setNoiseSpeed}
+        noiseSize={noiseSize}
+        setNoiseSize={setNoiseSize}
       />
       <DraggableForeground
         content={content}
@@ -86,6 +92,8 @@ export default function ForegroundLayerDemo({
         preprocessShader={preprocessMap[preprocessName]}
         svgSize={svgSize}
         paintWhileStill={paintWhileStill}
+        noiseSpeed={noiseSpeed}
+        noiseSize={noiseSize}
       />
     </>
   )
