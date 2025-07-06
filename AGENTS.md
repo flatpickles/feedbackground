@@ -68,6 +68,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **48** – Added `uTime` uniform in `useFeedbackFBO` and implemented noise-driven warp in `rippleFade.frag`. Lint and build pass.
 - **49** – Added "paint while still" option with Tweakpane checkbox to control snapshot painting at rest. Lint and build pass.
 - **50** – Fixed "paint while still" checkbox using `addBinding` so it renders correctly. Lint and build pass.
+- **51** – Synchronized `useFeedbackFBO` with a ref so the "paint while still" toggle works after dragging. Lint and build pass.
 
 ## Next Steps
 

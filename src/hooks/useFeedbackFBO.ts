@@ -10,7 +10,6 @@ const vertexShader = `
   }
 `
 
-
 import type { MutableRefObject } from 'react'
 import type { DragSpringPose } from './useDragAndSpring'
 
@@ -29,6 +28,11 @@ export default function useFeedbackFBO(
 
   const internalRef = useRef<THREE.Group | null>(null)
   const snapshotGroup = externalRef ?? internalRef
+
+  const activeRef = useRef(active)
+  useEffect(() => {
+    activeRef.current = active
+  }, [active])
 
   const sessionRandom = useRef(
     new THREE.Vector3(Math.random(), Math.random(), Math.random())
@@ -156,7 +160,7 @@ export default function useFeedbackFBO(
     let moved = false
     if (
       snapshotGroup.current &&
-      (active || (interpQueue && interpQueue.current.length > 0))
+      (activeRef.current || (interpQueue && interpQueue.current.length > 0))
     ) {
       const group = snapshotGroup.current
       const poses = interpQueue
@@ -173,7 +177,10 @@ export default function useFeedbackFBO(
         group.position.y = p.y
         group.updateMatrixWorld()
         gl.render(group, camera)
-        if (p.x !== lastSnapshotPos.current.x || p.y !== lastSnapshotPos.current.y) {
+        if (
+          p.x !== lastSnapshotPos.current.x ||
+          p.y !== lastSnapshotPos.current.y
+        ) {
           moved = true
           lastSnapshotPos.current.set(p.x, p.y)
         }
