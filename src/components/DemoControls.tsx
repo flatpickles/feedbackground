@@ -15,6 +15,8 @@ export type DemoControlsProps = {
   setPreprocessName: (name: string) => void
   svgSize: SvgSize
   setSvgSize: (size: SvgSize) => void
+  paintWhileStill: boolean
+  setPaintWhileStill: (val: boolean) => void
   sourceName: 'diamond' | 'text'
   setSourceName: (name: 'diamond' | 'text') => void
   textValue: string
@@ -34,6 +36,8 @@ export default function DemoControls({
   setPreprocessName,
   svgSize,
   setSvgSize,
+  paintWhileStill,
+  setPaintWhileStill,
   sourceName,
   setSourceName,
   textValue,
@@ -91,6 +95,15 @@ export default function DemoControls({
       ],
       value: sourceName,
     })
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const paintInput = (fgFolder as any).addBlade({
+      view: 'checkbox',
+      label: 'paint while still',
+      value: paintWhileStill,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    paintInput.on('change', (ev: any) => setPaintWhileStill(ev.value))
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let textBlade: any

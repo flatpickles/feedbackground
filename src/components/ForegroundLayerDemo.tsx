@@ -47,6 +47,7 @@ export default function ForegroundLayerDemo({
   const [shaderName, setShaderName] =
     useState<keyof typeof shaderMap>('randomPaint')
   const [decay, setDecay] = useState(0.95)
+  const [paintWhileStill, setPaintWhileStill] = useState(false)
 
   const content: ForegroundContent =
     sourceName === 'text'
@@ -70,6 +71,8 @@ export default function ForegroundLayerDemo({
         }
         svgSize={svgSize}
         setSvgSize={setSvgSize}
+        paintWhileStill={paintWhileStill}
+        setPaintWhileStill={setPaintWhileStill}
         sourceName={sourceName}
         setSourceName={(n) => setSourceName(n as 'diamond' | 'text')}
         textValue={textValue}
@@ -82,6 +85,7 @@ export default function ForegroundLayerDemo({
         stepSize={stepSize}
         preprocessShader={preprocessMap[preprocessName]}
         svgSize={svgSize}
+        paintWhileStill={paintWhileStill}
       />
     </>
   )
