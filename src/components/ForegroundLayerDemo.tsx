@@ -15,7 +15,15 @@ function useSvgUrl(): string {
   return params.get('svg') || defaultSvgUrl
 }
 
-export default function ForegroundLayerDemo() {
+export type ForegroundLayerDemoProps = {
+  backgroundName: 'wildflowers' | 'white'
+  setBackgroundName: (name: 'wildflowers' | 'white') => void
+}
+
+export default function ForegroundLayerDemo({
+  backgroundName,
+  setBackgroundName,
+}: ForegroundLayerDemoProps) {
   const svgUrl = useSvgUrl()
   const [stepSize, setStepSize] = useState(2)
   const preprocessMap = {
@@ -48,6 +56,8 @@ export default function ForegroundLayerDemo() {
   return (
     <>
       <DemoControls
+        backgroundName={backgroundName}
+        setBackgroundName={setBackgroundName}
         shaderName={shaderName}
         setShaderName={(n) => setShaderName(n as keyof typeof shaderMap)}
         decay={decay}

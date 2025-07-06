@@ -63,6 +63,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **47** – Added `rippleFade.frag` shader to effect dropdown and updated shader map in demo. Lint and build pass.
 
 - **47** – Allocated feedback render targets with `HalfFloatType` to eliminate residual trails at high decay. Lint and build pass.
+- **48** – Added background chooser (wildflowers or white) in Tweakpane and threaded state through components. Lint and build pass.
 
 ## Next Steps
 
@@ -70,3 +71,4 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - Profile high-DPR rendering performance and optimize FBO sizing.
 - Expose additional shader uniforms via Tweakpane for experimentation.
 - Consider alternate text display since reliable relative sizing is not feasible.
+- Add more background images and color options to the new selector.
