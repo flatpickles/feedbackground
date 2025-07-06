@@ -3,6 +3,8 @@ import { Pane } from 'tweakpane'
 import type { SvgSize } from '../types/svg'
 
 export type DemoControlsProps = {
+  backgroundName: 'wildflowers' | 'white'
+  setBackgroundName: (name: 'wildflowers' | 'white') => void
   shaderName: string
   setShaderName: (name: string) => void
   decay: number
@@ -20,6 +22,8 @@ export type DemoControlsProps = {
 }
 
 export default function DemoControls({
+  backgroundName,
+  setBackgroundName,
   shaderName,
   setShaderName,
   decay,
@@ -48,6 +52,20 @@ export default function DemoControls({
     const sizeFolder = (pane as any).addFolder({ title: 'Foreground Sizing' })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const effectFolder = (pane as any).addFolder({ title: 'Effect' })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const bgFolder = (pane as any).addFolder({ title: 'Background' })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const bgInput = (bgFolder as any).addBlade({
+      view: 'list',
+      label: 'image',
+      options: [
+        { text: 'Wildflowers', value: 'wildflowers' },
+        { text: 'White', value: 'white' },
+      ],
+      value: backgroundName,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    bgInput.on('change', (ev: any) => setBackgroundName(ev.value))
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const preprocessInput = (fgFolder as any).addBlade({
