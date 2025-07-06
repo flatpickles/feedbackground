@@ -72,6 +72,8 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **52** – Fixed "paint while still" so snapshots render every frame when enabled. Updated `useFeedbackFBO` and its call site. Lint and build pass.
 
+- **53** – Reorganized Tweakpane sections, added effect-parameter folder with noise controls gated by shader selection, removed box blur, and adjusted defaults. Lint and build pass.
+
 ## Next Steps
 
 - Tune random paint and ripple fade blending for performance and visual quality.
@@ -79,3 +81,4 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - Expose additional shader uniforms via Tweakpane for experimentation.
 - Consider alternate text display since reliable relative sizing is not feasible.
 - Add more background images and color options to the new selector.
+- Hook up effect-specific parameters for additional shaders.

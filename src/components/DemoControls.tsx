@@ -61,11 +61,48 @@ export default function DemoControls({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fgFolder = (pane as any).addFolder({ title: 'Foreground' })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sizeFolder = (pane as any).addFolder({ title: 'Foreground Sizing' })
+    const bgFolder = (pane as any).addFolder({ title: 'Background' })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const effectFolder = (pane as any).addFolder({ title: 'Effect' })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const bgFolder = (pane as any).addFolder({ title: 'Background' })
+    let effectParamsFolder: any
+
+    const createEffectParamsFolder = (shader: string) => {
+      if (effectParamsFolder) {
+        ;(pane as any).remove(effectParamsFolder)
+        effectParamsFolder = null
+      }
+      if (shader === 'rippleFade') {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        effectParamsFolder = (pane as any).addFolder({
+          title: 'Effect Params',
+          index: 3,
+        })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const speedInput = (effectParamsFolder as any).addBlade({
+          view: 'slider',
+          label: 'noise speed',
+          min: 0,
+          max: 0.3,
+          value: noiseSpeed,
+          step: 0.001,
+        })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        speedInput.on('change', (ev: any) => setNoiseSpeed(ev.value))
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const sizeInputNoise = (effectParamsFolder as any).addBlade({
+          view: 'slider',
+          label: 'noise size',
+          min: 0,
+          max: 0.01,
+          value: noiseSize,
+          step: 0.0001,
+        })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        sizeInputNoise.on('change', (ev: any) => setNoiseSize(ev.value))
+      }
+    }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const bgInput = (bgFolder as any).addBlade({
       view: 'list',
@@ -80,20 +117,6 @@ export default function DemoControls({
     bgInput.on('change', (ev: any) => setBackgroundName(ev.value))
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const preprocessInput = (fgFolder as any).addBlade({
-      view: 'list',
-      label: 'preprocess',
-      options: [
-        { text: 'None', value: 'none' },
-        { text: 'Box Blur', value: 'box' },
-        { text: 'Gaussian Blur', value: 'gaussian' },
-      ],
-      value: preprocessName,
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    preprocessInput.on('change', (ev: any) => setPreprocessName(ev.value))
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const sourceInput = (fgFolder as any).addBlade({
       view: 'list',
       label: 'source',
@@ -102,12 +125,14 @@ export default function DemoControls({
         { text: 'Text', value: 'text' },
       ],
       value: sourceName,
+      index: 0,
     })
 
     const paintParams = { paint: paintWhileStill }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const paintInput = (fgFolder as any).addBinding(paintParams, 'paint', {
       label: 'paint while still',
+      index: 4,
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     paintInput.on('change', (ev: any) => {
@@ -126,6 +151,7 @@ export default function DemoControls({
           label: 'text',
           parse: (v: unknown) => String(v),
           value: textValue,
+          index: 1,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         textBlade.on('change', (ev: any) => setTextValue(ev.value))
@@ -145,6 +171,46 @@ export default function DemoControls({
     })
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const decayInput = (effectFolder as any).addBlade({
+      view: 'slider',
+      label: 'decay',
+      min: 0.9,
+      max: 1,
+      value: decay,
+      step: 0.01,
+      index: 0,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    decayInput.on('change', (ev: any) => setDecay(ev.value))
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const interpInput = (effectFolder as any).addBlade({
+      view: 'slider',
+      label: 'interp (px)',
+      min: 1,
+      max: 10,
+      value: stepSize,
+      step: 1,
+      index: 1,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    interpInput.on('change', (ev: any) => setStepSize(ev.value))
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const preprocessInput = (effectFolder as any).addBlade({
+      view: 'list',
+      label: 'preprocess',
+      options: [
+        { text: 'None', value: 'none' },
+        { text: 'Blur', value: 'blur' },
+      ],
+      value: preprocessName,
+      index: 2,
+    })
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    preprocessInput.on('change', (ev: any) => setPreprocessName(ev.value))
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const shaderInput = (effectFolder as any).addBlade({
       view: 'list',
       label: 'shader',
@@ -154,73 +220,32 @@ export default function DemoControls({
         { text: 'Ripple Fade', value: 'rippleFade' },
       ],
       value: shaderName,
+      index: 3,
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    shaderInput.on('change', (ev: any) => setShaderName(ev.value))
+    shaderInput.on('change', (ev: any) => {
+      setShaderName(ev.value)
+      createEffectParamsFolder(ev.value)
+    })
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const decayInput = (effectFolder as any).addBlade({
-      view: 'slider',
-      label: 'decay',
-      min: 0.8,
-      max: 1,
-      value: decay,
-      step: 0.01,
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    decayInput.on('change', (ev: any) => setDecay(ev.value))
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const interpInput = (effectFolder as any).addBlade({
-      view: 'slider',
-      label: 'step(px)',
-      min: 1,
-      max: 10,
-      value: stepSize,
-      step: 1,
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    interpInput.on('change', (ev: any) => setStepSize(ev.value))
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const speedInput = (effectFolder as any).addBlade({
-      view: 'slider',
-      label: 'noise speed',
-      min: 0,
-      max: 5,
-      value: noiseSpeed,
-      step: 0.01,
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    speedInput.on('change', (ev: any) => setNoiseSpeed(ev.value))
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sizeInputNoise = (effectFolder as any).addBlade({
-      view: 'slider',
-      label: 'noise size',
-      min: 0,
-      max: 0.2,
-      value: noiseSize,
-      step: 0.001,
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    sizeInputNoise.on('change', (ev: any) => setNoiseSize(ev.value))
+    createEffectParamsFolder(shaderName)
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let sizeInput: any
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let paramBlade: any
     const updateParamBlade = (type: SvgSize['type']) => {
-      if (paramBlade) sizeFolder.remove(paramBlade)
+      if (paramBlade) fgFolder.remove(paramBlade)
       if (type === 'scaled') {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        paramBlade = (sizeFolder as any).addBlade({
+        paramBlade = (fgFolder as any).addBlade({
           view: 'slider',
           label: 'factor',
           min: 0,
           max: 5,
           value: sizeRef.current.type === 'scaled' ? sizeRef.current.factor : 1,
           step: 0.01,
+          index: 3,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         paramBlade.on('change', (ev: any) =>
@@ -228,7 +253,7 @@ export default function DemoControls({
         )
       } else if (type === 'relative') {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        paramBlade = (sizeFolder as any).addBlade({
+        paramBlade = (fgFolder as any).addBlade({
           view: 'slider',
           label: 'fraction',
           min: 0,
@@ -238,6 +263,7 @@ export default function DemoControls({
               ? sizeRef.current.fraction
               : 0.5,
           step: 0.01,
+          index: 3,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         paramBlade.on('change', (ev: any) =>
@@ -249,7 +275,7 @@ export default function DemoControls({
     }
 
     const createSizeInput = (src: 'diamond' | 'text') => {
-      if (sizeInput) sizeFolder.remove(sizeInput)
+      if (sizeInput) fgFolder.remove(sizeInput)
       const options = [
         { text: 'Natural', value: 'natural' },
         { text: 'Scaled', value: 'scaled' },
@@ -265,11 +291,12 @@ export default function DemoControls({
       }
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      sizeInput = (sizeFolder as any).addBlade({
+      sizeInput = (fgFolder as any).addBlade({
         view: 'list',
         label: 'size',
         options,
         value,
+        index: 2,
       })
 
       // eslint-disable-next-line @typescript-eslint/no-explicit-any

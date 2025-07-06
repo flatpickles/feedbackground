@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import defaultSvgUrl from '../assets/diamond.svg?url'
-import boxBlurFrag from '../shaders/boxBlur.frag'
 import gaussianBlurFrag from '../shaders/gaussianBlur.frag'
 import motionBlurFrag from '../shaders/motionBlur.frag'
 import randomPaintFrag from '../shaders/randomPaint.frag'
@@ -28,11 +27,10 @@ export default function ForegroundLayerDemo({
   const [stepSize, setStepSize] = useState(2)
   const preprocessMap = {
     none: null,
-    box: boxBlurFrag,
-    gaussian: gaussianBlurFrag,
+    blur: gaussianBlurFrag,
   }
   const [preprocessName, setPreprocessName] =
-    useState<keyof typeof preprocessMap>('gaussian')
+    useState<keyof typeof preprocessMap>('blur')
   const [svgSize, setSvgSize] = useState<SvgSize>({
     type: 'scaled',
     factor: 1,
@@ -45,11 +43,11 @@ export default function ForegroundLayerDemo({
     rippleFade: rippleFadeFrag,
   }
   const [shaderName, setShaderName] =
-    useState<keyof typeof shaderMap>('randomPaint')
+    useState<keyof typeof shaderMap>('rippleFade')
   const [decay, setDecay] = useState(0.95)
   const [paintWhileStill, setPaintWhileStill] = useState(false)
-  const [noiseSpeed, setNoiseSpeed] = useState(1)
-  const [noiseSize, setNoiseSize] = useState(0.05)
+  const [noiseSpeed, setNoiseSpeed] = useState(0.2)
+  const [noiseSize, setNoiseSize] = useState(0.005)
 
   const content: ForegroundContent =
     sourceName === 'text'
