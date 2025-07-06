@@ -241,6 +241,7 @@ export default function DemoControls({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let paramBlade: any
     const updateParamBlade = (type: SvgSize['type']) => {
+      if (paintInput) fgFolder.remove(paintInput)
       if (paramBlade) fgFolder.remove(paramBlade)
       if (type === 'scaled') {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -278,6 +279,7 @@ export default function DemoControls({
       } else {
         paramBlade = undefined
       }
+      addPaintInput()
     }
 
     const createSizeInput = (src: 'diamond' | 'text') => {
