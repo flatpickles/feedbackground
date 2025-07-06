@@ -22,8 +22,8 @@ export default function useFeedbackFBO(
   externalRef?: MutableRefObject<THREE.Group | null>,
   preprocessShader: string | null = null,
   preprocessRadius = 1,
-  noiseSpeed = 1,
-  noiseSize = 0.05,
+  noiseSpeed = 0.2,
+  noiseSize = 0.005,
   paintWhileStill = false
 ) {
   const { gl, size, camera } = useThree()
