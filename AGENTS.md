@@ -66,6 +66,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **48** – Added background chooser (wildflowers or white) in Tweakpane and threaded state through components. Lint and build pass.
 
 - **48** – Added `uTime` uniform in `useFeedbackFBO` and implemented noise-driven warp in `rippleFade.frag`. Lint and build pass.
+- **49** – Added "paint while still" option with Tweakpane checkbox to control snapshot painting at rest. Lint and build pass.
 
 ## Next Steps
 

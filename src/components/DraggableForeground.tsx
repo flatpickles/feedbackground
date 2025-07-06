@@ -17,6 +17,7 @@ export type DraggableForegroundProps = {
   stepSize: number
   preprocessShader: string | null
   svgSize: SvgSize
+  paintWhileStill: boolean
 }
 
 export default function DraggableForeground({
@@ -26,6 +27,7 @@ export default function DraggableForeground({
   stepSize,
   preprocessShader,
   svgSize,
+  paintWhileStill,
 }: DraggableForegroundProps) {
   const dragRef = useRef<THREE.Group | null>(null)
   const { bind, pose, active, interactionSession, isDragging } =
@@ -34,7 +36,7 @@ export default function DraggableForeground({
   const { snapshotRef, texture } = useFeedbackFBO(
     shader,
     decay,
-    active,
+    paintWhileStill || active,
     interactionSession,
     interpQueue,
     dragRef,
