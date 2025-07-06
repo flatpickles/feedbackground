@@ -1,5 +1,5 @@
 import { a } from '@react-spring/three'
-import { useRef } from 'react'
+import { useRef, useEffect } from 'react'
 import * as THREE from 'three'
 import useDragAndSpring from '../hooks/useDragAndSpring'
 import useFrameInterpolator from '../hooks/useFrameInterpolator'
@@ -20,6 +20,7 @@ export type DraggableForegroundProps = {
   paintWhileStill: boolean
   noiseSpeed: number
   noiseSize: number
+  onInteract?: () => void
 }
 
 export default function DraggableForeground({
@@ -32,6 +33,7 @@ export default function DraggableForeground({
   paintWhileStill,
   noiseSpeed,
   noiseSize,
+  onInteract,
 }: DraggableForegroundProps) {
   const dragRef = useRef<THREE.Group | null>(null)
   const { bind, pose, active, interactionSession, isDragging } =
@@ -50,6 +52,10 @@ export default function DraggableForeground({
     noiseSize,
     paintWhileStill
   )
+
+  useEffect(() => {
+    if (interactionSession > 0) onInteract?.()
+  }, [interactionSession, onInteract])
 
   return (
     <>
