@@ -69,6 +69,7 @@ export default function DemoControls({
 
     const createEffectParamsFolder = (shader: string) => {
       if (effectParamsFolder) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ;(pane as any).remove(effectParamsFolder)
         effectParamsFolder = null
       }
@@ -130,15 +131,20 @@ export default function DemoControls({
 
     const paintParams = { paint: paintWhileStill }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const paintInput = (fgFolder as any).addBinding(paintParams, 'paint', {
-      label: 'paint while still',
-      index: 4,
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    paintInput.on('change', (ev: any) => {
-      paintParams.paint = ev.value
-      setPaintWhileStill(ev.value)
-    })
+    let paintInput: any
+    const addPaintInput = () => {
+      if (paintInput) fgFolder.remove(paintInput)
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      paintInput = (fgFolder as any).addBinding(paintParams, 'paint', {
+        label: 'paint while still',
+        index: 4,
+      })
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      paintInput.on('change', (ev: any) => {
+        paintParams.paint = ev.value
+        setPaintWhileStill(ev.value)
+      })
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let textBlade: any
@@ -313,6 +319,7 @@ export default function DemoControls({
       })
 
       updateParamBlade(value)
+      addPaintInput()
     }
 
     createSizeInput(sourceName)

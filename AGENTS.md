@@ -74,6 +74,8 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **53** – Reorganized Tweakpane sections, added effect-parameter folder with noise controls gated by shader selection, removed box blur, and adjusted defaults. Lint and build pass.
 
+- **54** – Fixed foreground control ordering so size parameters stay above "paint while still" when switching options. Lint and build pass.
+
 ## Next Steps
 
 - Tune random paint and ripple fade blending for performance and visual quality.
