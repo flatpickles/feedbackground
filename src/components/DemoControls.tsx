@@ -60,12 +60,13 @@ export default function DemoControls({
   setTextValue,
 }: DemoControlsProps) {
   const sizeRef = useRef(svgSize)
+  const containerRef = useRef<HTMLDivElement | null>(null)
   useEffect(() => {
     sizeRef.current = svgSize
   }, [svgSize])
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
-    const pane = new Pane()
+    const pane = new Pane({ container: containerRef.current ?? undefined })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const fgFolder = (pane as any).addFolder({ title: 'Foreground' })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -363,5 +364,5 @@ export default function DemoControls({
   }, [])
   /* eslint-enable react-hooks/exhaustive-deps */
 
-  return null
+  return <div ref={containerRef} className="hidden sm:block fixed top-0 right-0 z-10" />
 }

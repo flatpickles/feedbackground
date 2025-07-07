@@ -22,11 +22,13 @@ function useInitialText(): string {
 export type ForegroundLayerDemoProps = {
   backgroundName: 'wildflowers' | 'white'
   setBackgroundName: (name: 'wildflowers' | 'white') => void
+  onInteract: () => void
 }
 
 export default function ForegroundLayerDemo({
   backgroundName,
   setBackgroundName,
+  onInteract,
 }: ForegroundLayerDemoProps) {
   const svgUrl = useSvgUrl()
   const [stepSize, setStepSize] = useState(1)
@@ -105,6 +107,7 @@ export default function ForegroundLayerDemo({
         displacement={displacement}
         zoom={zoom}
         centerZoom={centerZoom}
+        onGrab={onInteract}
       />
     </>
   )

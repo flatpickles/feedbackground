@@ -22,6 +22,7 @@ export type DraggableForegroundProps = {
   displacement: number
   zoom: number
   centerZoom: boolean
+  onGrab?: () => void
 }
 
 export default function DraggableForeground({
@@ -36,10 +37,16 @@ export default function DraggableForeground({
   displacement,
   zoom,
   centerZoom,
+  onGrab,
 }: DraggableForegroundProps) {
   const dragRef = useRef<THREE.Group | null>(null)
   const { bind, pose, active, interactionSession, isDragging } =
     useDragAndSpring(dragRef)
+  const { onPointerDown, ...restBind } = bind
+  const handlePointerDown = (e: PointerEvent) => {
+    onPointerDown(e)
+    onGrab?.()
+  }
   const interpQueue = useFrameInterpolator(pose, isDragging, stepSize)
   const { snapshotRef, texture } = useFeedbackFBO(
     shader,
@@ -64,7 +71,8 @@ export default function DraggableForeground({
         ref={snapshotRef}
         position-x={pose.x}
         position-y={pose.y}
-        {...bind}
+        {...restBind}
+        onPointerDown={handlePointerDown}
       >
         {content.kind === 'svg' ? (
           <SvgMesh url={content.url} color="#000000" size={svgSize} />
