@@ -29,11 +29,11 @@ export default function App() {
   const [shaderName, setShaderName] = useState<
     'motionBlur' | 'randomPaint' | 'rippleFade'
   >('rippleFade')
-  const [decay, setDecay] = useState(0.975)
+  const [decay, setDecay] = useState(0.98)
   const [paintWhileStill, setPaintWhileStill] = useState(false)
   const [speed, setSpeed] = useState(0.05)
   const [displacement, setDisplacement] = useState(0.0015)
-  const [detail, setDetail] = useState(1)
+  const [detail, setDetail] = useState(2)
   const [zoom, setZoom] = useState(0)
   const [centerZoom, setCenterZoom] = useState(false)
   const style =
