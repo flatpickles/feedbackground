@@ -11,10 +11,12 @@ export type DemoControlsProps = {
   setDecay: (val: number) => void
   stepSize: number
   setStepSize: (val: number) => void
-  noiseSpeed: number
-  setNoiseSpeed: (val: number) => void
-  noiseSize: number
-  setNoiseSize: (val: number) => void
+  speed: number
+  setSpeed: (val: number) => void
+  displacement: number
+  setDisplacement: (val: number) => void
+  zoom: number
+  setZoom: (val: number) => void
   preprocessName: string
   setPreprocessName: (name: string) => void
   svgSize: SvgSize
@@ -36,10 +38,12 @@ export default function DemoControls({
   setDecay,
   stepSize,
   setStepSize,
-  noiseSpeed,
-  setNoiseSpeed,
-  noiseSize,
-  setNoiseSize,
+  speed,
+  setSpeed,
+  displacement,
+  setDisplacement,
+  zoom,
+  setZoom,
   preprocessName,
   setPreprocessName,
   svgSize,
@@ -82,26 +86,38 @@ export default function DemoControls({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const speedInput = (effectParamsFolder as any).addBlade({
           view: 'slider',
-          label: 'noise speed',
+          label: 'speed',
           min: 0,
           max: 0.3,
-          value: noiseSpeed,
+          value: speed,
           step: 0.001,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        speedInput.on('change', (ev: any) => setNoiseSpeed(ev.value))
+        speedInput.on('change', (ev: any) => setSpeed(ev.value))
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const sizeInputNoise = (effectParamsFolder as any).addBlade({
           view: 'slider',
-          label: 'noise size',
+          label: 'displacement',
           min: 0,
-          max: 0.01,
-          value: noiseSize,
+          max: 0.003,
+          value: displacement,
           step: 0.0001,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        sizeInputNoise.on('change', (ev: any) => setNoiseSize(ev.value))
+        sizeInputNoise.on('change', (ev: any) => setDisplacement(ev.value))
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const zoomInput = (effectParamsFolder as any).addBlade({
+          view: 'slider',
+          label: 'zoom',
+          min: -1,
+          max: 1,
+          value: zoom,
+          step: 0.01,
+        })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        zoomInput.on('change', (ev: any) => setZoom(ev.value))
       }
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -180,10 +196,10 @@ export default function DemoControls({
     const decayInput = (effectFolder as any).addBlade({
       view: 'slider',
       label: 'decay',
-      min: 0.9,
+      min: 0.95,
       max: 1,
       value: decay,
-      step: 0.01,
+      step: 0.001,
       index: 0,
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any

@@ -5,7 +5,7 @@ import { useState } from 'react'
 
 function useInitialBgName(): 'wildflowers' | 'white' {
   const params = new URLSearchParams(window.location.search)
-  return (params.get('bg') as 'wildflowers' | 'white') || 'wildflowers'
+  return (params.get('bg') as 'wildflowers' | 'white') || 'white'
 }
 
 export default function App() {
