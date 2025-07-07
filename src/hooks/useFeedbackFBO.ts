@@ -27,7 +27,7 @@ export default function useFeedbackFBO(
   zoom = 0,
   paintWhileStill = false
 ) {
-  const { gl, size, camera } = useThree()
+  const { gl, size, camera, viewport } = useThree()
   const dpr = gl.getPixelRatio()
 
   const internalRef = useRef<THREE.Group | null>(null)
@@ -100,6 +100,7 @@ export default function useFeedbackFBO(
       uSpeed: { value: speed },
       uDisplacement: { value: displacement },
       uZoom: { value: zoom },
+      uCenter: { value: new THREE.Vector2(0.5, 0.5) },
     }),
     [decay, speed, displacement, zoom]
   )
@@ -155,6 +156,12 @@ export default function useFeedbackFBO(
   useFrame((state) => {
     timeRef.current = state.clock.getElapsedTime()
     uniforms.uTime.value = timeRef.current
+    if (snapshotGroup.current) {
+      uniforms.uCenter.value.set(
+        snapshotGroup.current.position.x / viewport.width + 0.5,
+        snapshotGroup.current.position.y / viewport.height + 0.5
+      )
+    }
 
     // Prepare snapshot texture
     gl.setRenderTarget(snapshotRT.current)
