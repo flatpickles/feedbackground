@@ -54,6 +54,7 @@ export default function ForegroundLayerDemo({
   const [speed, setSpeed] = useState(0.05)
   const [displacement, setDisplacement] = useState(0.0015)
   const [zoom, setZoom] = useState(0)
+  const [centerZoom, setCenterZoom] = useState(false)
 
   const content: ForegroundContent =
     sourceName === 'text'
@@ -89,6 +90,8 @@ export default function ForegroundLayerDemo({
         setDisplacement={setDisplacement}
         zoom={zoom}
         setZoom={setZoom}
+        centerZoom={centerZoom}
+        setCenterZoom={setCenterZoom}
       />
       <DraggableForeground
         content={content}
@@ -101,6 +104,7 @@ export default function ForegroundLayerDemo({
         speed={speed}
         displacement={displacement}
         zoom={zoom}
+        centerZoom={centerZoom}
       />
     </>
   )

@@ -17,6 +17,8 @@ export type DemoControlsProps = {
   setDisplacement: (val: number) => void
   zoom: number
   setZoom: (val: number) => void
+  centerZoom: boolean
+  setCenterZoom: (val: boolean) => void
   preprocessName: string
   setPreprocessName: (name: string) => void
   svgSize: SvgSize
@@ -44,6 +46,8 @@ export default function DemoControls({
   setDisplacement,
   zoom,
   setZoom,
+  centerZoom,
+  setCenterZoom,
   preprocessName,
   setPreprocessName,
   svgSize,
@@ -118,6 +122,19 @@ export default function DemoControls({
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         zoomInput.on('change', (ev: any) => setZoom(ev.value))
+
+        const centerParams = { center: centerZoom }
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const centerInput = (effectParamsFolder as any).addBinding(
+          centerParams,
+          'center',
+          { label: 'center zoom' }
+        )
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        centerInput.on('change', (ev: any) => {
+          centerParams.center = ev.value
+          setCenterZoom(ev.value)
+        })
       }
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
