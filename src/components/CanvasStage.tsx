@@ -1,24 +1,55 @@
 import { Canvas } from '@react-three/fiber'
 import { Suspense } from 'react'
 import ForegroundLayerDemo from './ForegroundLayerDemo'
+import type { SvgSize } from '../types/svg'
 
 export type CanvasStageProps = {
-  backgroundName: 'wildflowers' | 'white'
-  setBackgroundName: (name: 'wildflowers' | 'white') => void
+  shaderName: 'motionBlur' | 'randomPaint' | 'rippleFade'
+  decay: number
+  stepSize: number
+  preprocessName: 'none' | 'blur'
+  svgSize: SvgSize
+  paintWhileStill: boolean
+  sourceName: 'diamond' | 'text'
+  textValue: string
+  speed: number
+  displacement: number
+  zoom: number
+  centerZoom: boolean
   onInteract: () => void
 }
 
 export default function CanvasStage({
-  backgroundName,
-  setBackgroundName,
+  shaderName,
+  decay,
+  stepSize,
+  preprocessName,
+  svgSize,
+  paintWhileStill,
+  sourceName,
+  textValue,
+  speed,
+  displacement,
+  zoom,
+  centerZoom,
   onInteract,
 }: CanvasStageProps) {
   return (
     <Canvas className="w-full h-full">
       <Suspense fallback={null}>
         <ForegroundLayerDemo
-          backgroundName={backgroundName}
-          setBackgroundName={setBackgroundName}
+          shaderName={shaderName}
+          decay={decay}
+          stepSize={stepSize}
+          preprocessName={preprocessName}
+          svgSize={svgSize}
+          paintWhileStill={paintWhileStill}
+          sourceName={sourceName}
+          textValue={textValue}
+          speed={speed}
+          displacement={displacement}
+          zoom={zoom}
+          centerZoom={centerZoom}
           onInteract={onInteract}
         />
       </Suspense>
