@@ -20,6 +20,7 @@ export type DraggableForegroundProps = {
   paintWhileStill: boolean
   speed: number
   displacement: number
+  detail: number
   zoom: number
   centerZoom: boolean
   onGrab?: () => void
@@ -35,6 +36,7 @@ export default function DraggableForeground({
   paintWhileStill,
   speed,
   displacement,
+  detail,
   zoom,
   centerZoom,
   onGrab,
@@ -59,6 +61,7 @@ export default function DraggableForeground({
     stepSize,
     speed,
     displacement,
+    detail,
     zoom,
     centerZoom,
     paintWhileStill

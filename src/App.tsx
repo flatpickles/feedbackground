@@ -17,19 +17,23 @@ function useInitialText(): string {
 }
 
 export default function App() {
-  const [bgName, setBgName] = useState<'wildflowers' | 'white'>(useInitialBgName)
+  const [bgName, setBgName] = useState<'wildflowers' | 'white'>(
+    useInitialBgName
+  )
   const [overviewHidden, setOverviewHidden] = useState(false)
   const [stepSize, setStepSize] = useState(1)
   const [preprocessName, setPreprocessName] = useState<'none' | 'blur'>('blur')
   const [svgSize, setSvgSize] = useState<SvgSize>({ type: 'scaled', factor: 2 })
   const [sourceName, setSourceName] = useState<'diamond' | 'text'>('text')
   const [textValue, setTextValue] = useState(useInitialText())
-  const [shaderName, setShaderName] =
-    useState<'motionBlur' | 'randomPaint' | 'rippleFade'>('rippleFade')
+  const [shaderName, setShaderName] = useState<
+    'motionBlur' | 'randomPaint' | 'rippleFade'
+  >('rippleFade')
   const [decay, setDecay] = useState(0.975)
   const [paintWhileStill, setPaintWhileStill] = useState(false)
   const [speed, setSpeed] = useState(0.05)
   const [displacement, setDisplacement] = useState(0.0015)
+  const [detail, setDetail] = useState(1)
   const [zoom, setZoom] = useState(0)
   const [centerZoom, setCenterZoom] = useState(false)
   const style =
@@ -62,6 +66,8 @@ export default function App() {
         setSpeed={setSpeed}
         displacement={displacement}
         setDisplacement={setDisplacement}
+        detail={detail}
+        setDetail={setDetail}
         zoom={zoom}
         setZoom={setZoom}
         centerZoom={centerZoom}
@@ -82,6 +88,7 @@ export default function App() {
           textValue={textValue}
           speed={speed}
           displacement={displacement}
+          detail={detail}
           zoom={zoom}
           centerZoom={centerZoom}
           onInteract={() => setOverviewHidden(true)}

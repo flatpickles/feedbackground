@@ -12,7 +12,6 @@ function useSvgUrl(): string {
   return params.get('svg') || defaultSvgUrl
 }
 
-
 export type ForegroundLayerDemoProps = {
   shaderName: 'motionBlur' | 'randomPaint' | 'rippleFade'
   decay: number
@@ -24,6 +23,7 @@ export type ForegroundLayerDemoProps = {
   textValue: string
   speed: number
   displacement: number
+  detail: number
   zoom: number
   centerZoom: boolean
   onInteract: () => void
@@ -40,6 +40,7 @@ export default function ForegroundLayerDemo({
   textValue,
   speed,
   displacement,
+  detail,
   zoom,
   centerZoom,
   onInteract,
@@ -72,6 +73,7 @@ export default function ForegroundLayerDemo({
         paintWhileStill={paintWhileStill}
         speed={speed}
         displacement={displacement}
+        detail={detail}
         zoom={zoom}
         centerZoom={centerZoom}
         onGrab={onInteract}
