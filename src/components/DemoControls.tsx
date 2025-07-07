@@ -111,10 +111,10 @@ export default function DemoControls({
         const zoomInput = (effectParamsFolder as any).addBlade({
           view: 'slider',
           label: 'zoom',
-          min: -1,
-          max: 1,
+          min: -0.02,
+          max: 0.02,
           value: zoom,
-          step: 0.01,
+          step: 0.0001,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         zoomInput.on('change', (ev: any) => setZoom(ev.value))

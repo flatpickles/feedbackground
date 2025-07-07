@@ -77,6 +77,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **54** – Fixed foreground control ordering so size parameters stay above "paint while still" when switching options. Lint and build pass.
 - **55** – Reordered size parameter logic so sliders reinsert above paint control when switching options. Lint and build pass.
 - **56** – Updated defaults and parameter names, added URL param for text, new ripple fade zoom control, and renamed noise params to speed/displacement. Lint and build pass.
+- **57** – Centered ripple zoom on foreground position with new uniform and limited range. Lint and build pass.
 
 ## Next Steps
 

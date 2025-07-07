@@ -8,6 +8,7 @@ uniform float uTime;
 uniform float uSpeed;
 uniform float uDisplacement;
 uniform float uZoom;
+uniform vec2 uCenter;
 uniform vec3 uSessionRandom;
 
 vec3 mod289(vec3 x) {
@@ -107,7 +108,7 @@ float cnoise(vec3 P) {
 }
 
 void main() {
-  vec2 zoomed = (vUv - 0.5) * (1.0 + uZoom) + 0.5;
+  vec2 zoomed = (vUv - uCenter) * (1.0 + uZoom) + uCenter;
   vec2 lookup = zoomed * 4.0;
   float t = uTime * uSpeed;
   vec2 offset;
