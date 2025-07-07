@@ -364,5 +364,10 @@ export default function DemoControls({
   }, [])
   /* eslint-enable react-hooks/exhaustive-deps */
 
-  return <div ref={containerRef} className="hidden sm:block fixed top-0 right-0 z-10" />
+  return (
+    <div
+      ref={containerRef}
+      className="hidden md:block fixed top-0 right-0 z-10 p-2"
+    />
+  )
 }

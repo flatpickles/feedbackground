@@ -35,7 +35,7 @@ export default function useFeedbackFBO(
   const snapshotGroup = externalRef ?? internalRef
 
   const sessionRandom = useRef(
-    new THREE.Vector3(Math.random(), Math.random(), Math.random())
+    new THREE.Vector3(Math.random() / 2, Math.random() / 2, Math.random() / 2)
   )
 
   const timeRef = useRef(0)
@@ -125,7 +125,11 @@ export default function useFeedbackFBO(
   )
 
   useEffect(() => {
-    sessionRandom.current.set(Math.random(), Math.random(), Math.random())
+    sessionRandom.current.set(
+      Math.random() / 2,
+      Math.random() / 2,
+      Math.random() / 2
+    )
     uniforms.uSessionRandom.value.copy(sessionRandom.current)
   }, [sessionId, uniforms])
 
