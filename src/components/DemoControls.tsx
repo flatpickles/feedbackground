@@ -15,6 +15,8 @@ export type DemoControlsProps = {
   setSpeed: (val: number) => void
   displacement: number
   setDisplacement: (val: number) => void
+  detail: number
+  setDetail: (val: number) => void
   zoom: number
   setZoom: (val: number) => void
   centerZoom: boolean
@@ -44,6 +46,8 @@ export default function DemoControls({
   setSpeed,
   displacement,
   setDisplacement,
+  detail,
+  setDetail,
   zoom,
   setZoom,
   centerZoom,
@@ -111,6 +115,18 @@ export default function DemoControls({
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         sizeInputNoise.on('change', (ev: any) => setDisplacement(ev.value))
+
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const detailInput = (effectParamsFolder as any).addBlade({
+          view: 'slider',
+          label: 'detail',
+          min: 0.1,
+          max: 5,
+          value: detail,
+          step: 0.01,
+        })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        detailInput.on('change', (ev: any) => setDetail(ev.value))
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const zoomInput = (effectParamsFolder as any).addBlade({

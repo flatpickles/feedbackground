@@ -7,6 +7,7 @@ uniform float uDecay;
 uniform float uTime;
 uniform float uSpeed;
 uniform float uDisplacement;
+uniform float uDetail;
 uniform float uZoom;
 uniform vec2 uCenter;
 uniform vec3 uSessionRandom;
@@ -109,7 +110,7 @@ float cnoise(vec3 P) {
 
 void main() {
   vec2 zoomed = (vUv - uCenter) * (1.0 + uZoom) + uCenter;
-  vec2 lookup = zoomed * 4.0;
+  vec2 lookup = zoomed * 4.0 * uDetail;
   float t = uTime * uSpeed;
   vec2 offset;
   offset.x = cnoise(vec3(lookup, t));

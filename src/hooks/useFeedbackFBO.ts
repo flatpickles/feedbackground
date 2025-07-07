@@ -24,6 +24,7 @@ export default function useFeedbackFBO(
   preprocessRadius = 1,
   speed = 0.05,
   displacement = 0.0015,
+  detail = 1,
   zoom = 0,
   centerZoom = false,
   paintWhileStill = false
@@ -100,10 +101,11 @@ export default function useFeedbackFBO(
       uTime: { value: 0 },
       uSpeed: { value: speed },
       uDisplacement: { value: displacement },
+      uDetail: { value: detail },
       uZoom: { value: zoom },
       uCenter: { value: new THREE.Vector2(0.5, 0.5) },
     }),
-    [decay, speed, displacement, zoom]
+    [decay, speed, displacement, detail, zoom]
   )
 
   const quadScene = useMemo(() => {

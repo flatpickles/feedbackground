@@ -81,6 +81,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **58** – Added "center zoom" toggle to switch ripple zoom between canvas center and foreground. Lint and build pass.
 - **59** – Faded out new Overview panel on first drag and hid Tweakpane on small screens. Lint and build pass.
 - **60** – Moved DemoControls outside the R3F Canvas by hoisting state to `App` and updating component props. Lint and build pass.
+- **61** – Added noise "detail" parameter to ripple fade effect with new Tweakpane slider and shader uniform. Lint and build pass.
 
 ## Next Steps
 

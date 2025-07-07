@@ -14,6 +14,7 @@ export type CanvasStageProps = {
   textValue: string
   speed: number
   displacement: number
+  detail: number
   zoom: number
   centerZoom: boolean
   onInteract: () => void
@@ -30,6 +31,7 @@ export default function CanvasStage({
   textValue,
   speed,
   displacement,
+  detail,
   zoom,
   centerZoom,
   onInteract,
@@ -48,6 +50,7 @@ export default function CanvasStage({
           textValue={textValue}
           speed={speed}
           displacement={displacement}
+          detail={detail}
           zoom={zoom}
           centerZoom={centerZoom}
           onInteract={onInteract}
