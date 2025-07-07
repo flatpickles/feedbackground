@@ -11,18 +11,23 @@ function useInitialBgName(): 'wildflowers' | 'white' {
 
 export default function App() {
   const [bgName, setBgName] = useState<'wildflowers' | 'white'>(useInitialBgName)
+  const [overviewHidden, setOverviewHidden] = useState(false)
   const style =
     bgName === 'wildflowers'
       ? { backgroundImage: `url(${wildflowersUrl})` }
       : { backgroundColor: '#ffffff' }
   return (
     <>
-      <Overview />
+      <Overview hidden={overviewHidden} />
       <div
         className="w-screen h-screen overflow-hidden bg-cover bg-center"
         style={style}
       >
-        <CanvasStage backgroundName={bgName} setBackgroundName={setBgName} />
+        <CanvasStage
+          backgroundName={bgName}
+          setBackgroundName={setBgName}
+          onInteract={() => setOverviewHidden(true)}
+        />
       </div>
     </>
   )
