@@ -21,6 +21,7 @@ export type DraggableForegroundProps = {
   speed: number
   displacement: number
   zoom: number
+  centerZoom: boolean
 }
 
 export default function DraggableForeground({
@@ -34,6 +35,7 @@ export default function DraggableForeground({
   speed,
   displacement,
   zoom,
+  centerZoom,
 }: DraggableForegroundProps) {
   const dragRef = useRef<THREE.Group | null>(null)
   const { bind, pose, active, interactionSession, isDragging } =
@@ -51,6 +53,7 @@ export default function DraggableForeground({
     speed,
     displacement,
     zoom,
+    centerZoom,
     paintWhileStill
   )
 

@@ -25,6 +25,7 @@ export default function useFeedbackFBO(
   speed = 0.05,
   displacement = 0.0015,
   zoom = 0,
+  centerZoom = false,
   paintWhileStill = false
 ) {
   const { gl, size, camera, viewport } = useThree()
@@ -156,7 +157,9 @@ export default function useFeedbackFBO(
   useFrame((state) => {
     timeRef.current = state.clock.getElapsedTime()
     uniforms.uTime.value = timeRef.current
-    if (snapshotGroup.current) {
+    if (centerZoom || !snapshotGroup.current) {
+      uniforms.uCenter.value.set(0.5, 0.5)
+    } else {
       uniforms.uCenter.value.set(
         snapshotGroup.current.position.x / viewport.width + 0.5,
         snapshotGroup.current.position.y / viewport.height + 0.5
