@@ -15,15 +15,16 @@ import type { DragSpringPose } from './useDragAndSpring'
 
 export default function useFeedbackFBO(
   fragmentShader: string,
-  decay = 0.9,
+  decay = 0.975,
   active = true,
   sessionId = 0,
   interpQueue?: MutableRefObject<DragSpringPose[]>,
   externalRef?: MutableRefObject<THREE.Group | null>,
   preprocessShader: string | null = null,
   preprocessRadius = 1,
-  noiseSpeed = 0.2,
-  noiseSize = 0.005,
+  speed = 0.05,
+  displacement = 0.0015,
+  zoom = 0,
   paintWhileStill = false
 ) {
   const { gl, size, camera } = useThree()
@@ -96,10 +97,11 @@ export default function useFeedbackFBO(
       uDecay: { value: decay },
       uSessionRandom: { value: sessionRandom.current.clone() },
       uTime: { value: 0 },
-      uNoiseSpeed: { value: noiseSpeed },
-      uNoiseSize: { value: noiseSize },
+      uSpeed: { value: speed },
+      uDisplacement: { value: displacement },
+      uZoom: { value: zoom },
     }),
-    [decay, noiseSpeed, noiseSize]
+    [decay, speed, displacement, zoom]
   )
 
   const quadScene = useMemo(() => {

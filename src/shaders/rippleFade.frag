@@ -5,8 +5,9 @@ uniform sampler2D uPrevFrame;
 uniform sampler2D uSnapshot;
 uniform float uDecay;
 uniform float uTime;
-uniform float uNoiseSpeed;
-uniform float uNoiseSize;
+uniform float uSpeed;
+uniform float uDisplacement;
+uniform float uZoom;
 uniform vec3 uSessionRandom;
 
 vec3 mod289(vec3 x) {
@@ -106,12 +107,13 @@ float cnoise(vec3 P) {
 }
 
 void main() {
-  vec2 lookup = vUv * 4.0;
-  float t = uTime * uNoiseSpeed;
+  vec2 zoomed = (vUv - 0.5) * (1.0 + uZoom) + 0.5;
+  vec2 lookup = zoomed * 4.0;
+  float t = uTime * uSpeed;
   vec2 offset;
   offset.x = cnoise(vec3(lookup, t));
   offset.y = cnoise(vec3(lookup, t + 1000.0));
-  vec2 uv = vUv + offset * uNoiseSize;
+  vec2 uv = zoomed + offset * uDisplacement;
 
   vec4 history = texture2D(uPrevFrame, uv);
   float oldAlpha = history.a * uDecay;

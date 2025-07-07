@@ -76,6 +76,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **54** – Fixed foreground control ordering so size parameters stay above "paint while still" when switching options. Lint and build pass.
 - **55** – Reordered size parameter logic so sliders reinsert above paint control when switching options. Lint and build pass.
+- **56** – Updated defaults and parameter names, added URL param for text, new ripple fade zoom control, and renamed noise params to speed/displacement. Lint and build pass.
 
 ## Next Steps
 
@@ -85,3 +86,4 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - Consider alternate text display since reliable relative sizing is not feasible.
 - Add more background images and color options to the new selector.
 - Hook up effect-specific parameters for additional shaders.
+- Add URL parameters for effect controls beyond text.

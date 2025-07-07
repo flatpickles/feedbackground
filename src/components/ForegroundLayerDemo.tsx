@@ -14,6 +14,11 @@ function useSvgUrl(): string {
   return params.get('svg') || defaultSvgUrl
 }
 
+function useInitialText(): string {
+  const params = new URLSearchParams(window.location.search)
+  return params.get('text') || 'Hello'
+}
+
 export type ForegroundLayerDemoProps = {
   backgroundName: 'wildflowers' | 'white'
   setBackgroundName: (name: 'wildflowers' | 'white') => void
@@ -24,7 +29,7 @@ export default function ForegroundLayerDemo({
   setBackgroundName,
 }: ForegroundLayerDemoProps) {
   const svgUrl = useSvgUrl()
-  const [stepSize, setStepSize] = useState(2)
+  const [stepSize, setStepSize] = useState(1)
   const preprocessMap = {
     none: null,
     blur: gaussianBlurFrag,
@@ -33,10 +38,10 @@ export default function ForegroundLayerDemo({
     useState<keyof typeof preprocessMap>('blur')
   const [svgSize, setSvgSize] = useState<SvgSize>({
     type: 'scaled',
-    factor: 1,
+    factor: 2,
   })
-  const [sourceName, setSourceName] = useState<'diamond' | 'text'>('diamond')
-  const [textValue, setTextValue] = useState('Hello World')
+  const [sourceName, setSourceName] = useState<'diamond' | 'text'>('text')
+  const [textValue, setTextValue] = useState(useInitialText())
   const shaderMap = {
     motionBlur: motionBlurFrag,
     randomPaint: randomPaintFrag,
@@ -44,10 +49,11 @@ export default function ForegroundLayerDemo({
   }
   const [shaderName, setShaderName] =
     useState<keyof typeof shaderMap>('rippleFade')
-  const [decay, setDecay] = useState(0.95)
+  const [decay, setDecay] = useState(0.975)
   const [paintWhileStill, setPaintWhileStill] = useState(false)
-  const [noiseSpeed, setNoiseSpeed] = useState(0.2)
-  const [noiseSize, setNoiseSize] = useState(0.005)
+  const [speed, setSpeed] = useState(0.05)
+  const [displacement, setDisplacement] = useState(0.0015)
+  const [zoom, setZoom] = useState(0)
 
   const content: ForegroundContent =
     sourceName === 'text'
@@ -77,10 +83,12 @@ export default function ForegroundLayerDemo({
         setSourceName={(n) => setSourceName(n as 'diamond' | 'text')}
         textValue={textValue}
         setTextValue={setTextValue}
-        noiseSpeed={noiseSpeed}
-        setNoiseSpeed={setNoiseSpeed}
-        noiseSize={noiseSize}
-        setNoiseSize={setNoiseSize}
+        speed={speed}
+        setSpeed={setSpeed}
+        displacement={displacement}
+        setDisplacement={setDisplacement}
+        zoom={zoom}
+        setZoom={setZoom}
       />
       <DraggableForeground
         content={content}
@@ -90,8 +98,9 @@ export default function ForegroundLayerDemo({
         preprocessShader={preprocessMap[preprocessName]}
         svgSize={svgSize}
         paintWhileStill={paintWhileStill}
-        noiseSpeed={noiseSpeed}
-        noiseSize={noiseSize}
+        speed={speed}
+        displacement={displacement}
+        zoom={zoom}
       />
     </>
   )
