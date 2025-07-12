@@ -87,11 +87,11 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **64** – Removed unused `uPreviousFrameLastPass` uniform and blur special casing. Blur now runs as a normal pass with radius from interpolation step. Updated shaders, hook, and docs. Lint and build pass.
 - **65** – Fixed pass buffer allocation so multi-pass effects don't crash and ripple fade parameters work again. Lint and build pass.
 - **66** – Corrected uniform names for pass parameters and ensured render targets resize when switching effects. Lint warns on hooks; build succeeds.
+- **67** – Removed pass descriptor names, refactored parameter plumbing, added blur radius control, and fixed interp step to constant. Lint warns; build succeeds.
 
 ## Next Steps
 
 - Implement more multi-pass effects using the new pipeline.
-- Hook up gaussian blur pass and other effect-specific parameters.
 - Tune random paint and ripple fade blending for performance and visual quality.
 - Profile high-DPR rendering performance and optimize FBO sizing.
 - Expose additional shader uniforms via Tweakpane for experimentation.

@@ -12,7 +12,7 @@ function useSvgUrl(): string {
 export type ForegroundLayerDemoProps = {
   shaderName: EffectName
   decay: number
-  stepSize: number
+  blurRadius: number
   svgSize: SvgSize
   paintWhileStill: boolean
   sourceName: 'diamond' | 'text'
@@ -28,7 +28,7 @@ export type ForegroundLayerDemoProps = {
 export default function ForegroundLayerDemo({
   shaderName,
   decay,
-  stepSize,
+  blurRadius,
   svgSize,
   paintWhileStill,
   sourceName,
@@ -53,7 +53,7 @@ export default function ForegroundLayerDemo({
         content={content}
         passes={effectIndex[shaderName].passes}
         decay={decay}
-        stepSize={stepSize}
+        blurRadius={blurRadius}
         svgSize={svgSize}
         paintWhileStill={paintWhileStill}
         speed={speed}

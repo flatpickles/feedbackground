@@ -20,7 +20,8 @@ export default function useFeedbackFBO(
   sessionId = 0,
   interpQueue?: MutableRefObject<DragSpringPose[]>,
   externalRef?: MutableRefObject<THREE.Group | null>,
-  passParams: Record<string, Record<string, number | boolean>> = {},
+  passParams: Array<Record<string, number | boolean>> = [],
+  centerZoom = false,
   paintWhileStill = false
 ) {
   const { gl, size, camera, viewport } = useThree()
@@ -104,7 +105,7 @@ export default function useFeedbackFBO(
         },
         uPreviousPassThisFrame: { value: snapshotRT.current.texture },
       }
-      const extra = passParams[p.name ?? ''] ?? {}
+      const extra = passParams[idx] ?? {}
       for (const [k, v] of Object.entries(extra)) {
         if (uniforms[k]) uniforms[k].value = v
         else uniforms[k] = { value: v }
@@ -177,7 +178,6 @@ export default function useFeedbackFBO(
       if (p) p.uniforms.uTime.value = timeRef.current
     })
 
-    const centerZoom = Boolean(passParams.rippleFade?.centerZoom)
     if (centerZoom || !snapshotGroup.current) {
       passData.forEach((p) => {
         if (p && p.uniforms.uCenter)

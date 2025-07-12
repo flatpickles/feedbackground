@@ -10,8 +10,8 @@ export type DemoControlsProps = {
   setShaderName: (name: EffectName) => void
   decay: number
   setDecay: (val: number) => void
-  stepSize: number
-  setStepSize: (val: number) => void
+  blurRadius: number
+  setBlurRadius: (val: number) => void
   speed: number
   setSpeed: (val: number) => void
   displacement: number
@@ -39,8 +39,8 @@ export default function DemoControls({
   setShaderName,
   decay,
   setDecay,
-  stepSize,
-  setStepSize,
+  blurRadius,
+  setBlurRadius,
   speed,
   setSpeed,
   displacement,
@@ -83,7 +83,7 @@ export default function DemoControls({
         ;(pane as any).remove(effectParamsFolder)
         effectParamsFolder = null
       }
-      if (shader === 'rippleFade') {
+      if (shader === 'rippleFade' || shader === 'blurredRipple') {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         effectParamsFolder = (pane as any).addFolder({
           title: 'Effect Params',
@@ -149,6 +149,19 @@ export default function DemoControls({
           centerParams.center = ev.value
           setCenterZoom(ev.value)
         })
+        if (shader === 'blurredRipple') {
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const blurInput = (effectParamsFolder as any).addBlade({
+            view: 'slider',
+            label: 'blur radius',
+            min: 0,
+            max: 10,
+            value: blurRadius,
+            step: 1,
+          })
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          blurInput.on('change', (ev: any) => setBlurRadius(ev.value))
+        }
       }
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -236,18 +249,6 @@ export default function DemoControls({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     decayInput.on('change', (ev: any) => setDecay(ev.value))
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const interpInput = (effectFolder as any).addBlade({
-      view: 'slider',
-      label: 'interp (px)',
-      min: 1,
-      max: 10,
-      value: stepSize,
-      step: 1,
-      index: 1,
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    interpInput.on('change', (ev: any) => setStepSize(ev.value))
 
     const shaderOptions = Object.entries(effectIndex).map(([key, val]) => ({
       text: val.label,
@@ -259,7 +260,7 @@ export default function DemoControls({
       label: 'shader',
       options: shaderOptions,
       value: shaderName,
-      index: 2,
+      index: 1,
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     shaderInput.on('change', (ev: any) => {

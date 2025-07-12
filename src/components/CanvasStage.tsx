@@ -7,7 +7,7 @@ import type { EffectName } from '../effects'
 export type CanvasStageProps = {
   shaderName: EffectName
   decay: number
-  stepSize: number
+  blurRadius: number
   svgSize: SvgSize
   paintWhileStill: boolean
   sourceName: 'diamond' | 'text'
@@ -23,7 +23,7 @@ export type CanvasStageProps = {
 export default function CanvasStage({
   shaderName,
   decay,
-  stepSize,
+  blurRadius,
   svgSize,
   paintWhileStill,
   sourceName,
@@ -41,7 +41,7 @@ export default function CanvasStage({
         <ForegroundLayerDemo
           shaderName={shaderName}
           decay={decay}
-          stepSize={stepSize}
+          blurRadius={blurRadius}
           svgSize={svgSize}
           paintWhileStill={paintWhileStill}
           sourceName={sourceName}
