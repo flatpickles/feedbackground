@@ -22,8 +22,6 @@ export type DemoControlsProps = {
   setZoom: (val: number) => void
   centerZoom: boolean
   setCenterZoom: (val: boolean) => void
-  preprocessName: string
-  setPreprocessName: (name: string) => void
   svgSize: SvgSize
   setSvgSize: (size: SvgSize) => void
   paintWhileStill: boolean
@@ -53,8 +51,6 @@ export default function DemoControls({
   setZoom,
   centerZoom,
   setCenterZoom,
-  preprocessName,
-  setPreprocessName,
   svgSize,
   setSvgSize,
   paintWhileStill,
@@ -253,20 +249,6 @@ export default function DemoControls({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     interpInput.on('change', (ev: any) => setStepSize(ev.value))
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const preprocessInput = (effectFolder as any).addBlade({
-      view: 'list',
-      label: 'preprocess',
-      options: [
-        { text: 'None', value: 'none' },
-        { text: 'Blur', value: 'blur' },
-      ],
-      value: preprocessName,
-      index: 2,
-    })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    preprocessInput.on('change', (ev: any) => setPreprocessName(ev.value))
-
     const shaderOptions = Object.entries(effectIndex).map(([key, val]) => ({
       text: val.label,
       value: key,
@@ -277,7 +259,7 @@ export default function DemoControls({
       label: 'shader',
       options: shaderOptions,
       value: shaderName,
-      index: 3,
+      index: 2,
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     shaderInput.on('change', (ev: any) => {

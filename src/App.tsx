@@ -29,7 +29,6 @@ export default function App() {
   )
   const [overviewHidden, setOverviewHidden] = useState(false)
   const [stepSize, setStepSize] = useState(1)
-  const [preprocessName, setPreprocessName] = useState<'none' | 'blur'>('blur')
   const [svgSize, setSvgSize] = useState<SvgSize>({ type: 'scaled', factor: 2 })
   const [sourceName, setSourceName] = useState<'diamond' | 'text'>('text')
   const [textValue, setTextValue] = useState(useInitialText())
@@ -57,8 +56,6 @@ export default function App() {
         setDecay={setDecay}
         stepSize={stepSize}
         setStepSize={setStepSize}
-        preprocessName={preprocessName}
-        setPreprocessName={setPreprocessName as (name: string) => void}
         svgSize={svgSize}
         setSvgSize={setSvgSize}
         paintWhileStill={paintWhileStill}
@@ -86,7 +83,6 @@ export default function App() {
           shaderName={shaderName}
           decay={decay}
           stepSize={stepSize}
-          preprocessName={preprocessName}
           svgSize={svgSize}
           paintWhileStill={paintWhileStill}
           sourceName={sourceName}

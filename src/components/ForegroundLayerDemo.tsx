@@ -1,5 +1,4 @@
 import defaultSvgUrl from '../assets/diamond.svg?url'
-import gaussianBlurFrag from '../shaders/gaussianBlur.frag'
 import { effectIndex, type EffectName } from '../effects'
 import type { ForegroundContent } from '../types/foreground'
 import type { SvgSize } from '../types/svg'
@@ -14,7 +13,6 @@ export type ForegroundLayerDemoProps = {
   shaderName: EffectName
   decay: number
   stepSize: number
-  preprocessName: 'none' | 'blur'
   svgSize: SvgSize
   paintWhileStill: boolean
   sourceName: 'diamond' | 'text'
@@ -31,7 +29,6 @@ export default function ForegroundLayerDemo({
   shaderName,
   decay,
   stepSize,
-  preprocessName,
   svgSize,
   paintWhileStill,
   sourceName,
@@ -44,10 +41,6 @@ export default function ForegroundLayerDemo({
   onInteract,
 }: ForegroundLayerDemoProps) {
   const svgUrl = useSvgUrl()
-  const preprocessMap = {
-    none: null,
-    blur: gaussianBlurFrag,
-  }
 
   const content: ForegroundContent =
     sourceName === 'text'
@@ -61,7 +54,6 @@ export default function ForegroundLayerDemo({
         passes={effectIndex[shaderName].passes}
         decay={decay}
         stepSize={stepSize}
-        preprocessShader={preprocessMap[preprocessName]}
         svgSize={svgSize}
         paintWhileStill={paintWhileStill}
         speed={speed}
