@@ -3,7 +3,6 @@ precision highp float;
 varying vec2 vUv;
 uniform sampler2D uThisPassPreviousFrame;
 uniform sampler2D uPreviousPassThisFrame;
-uniform sampler2D uPreviousFrameLastPass;
 uniform float uDecay;
 
 void main() {

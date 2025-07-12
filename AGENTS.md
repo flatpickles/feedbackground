@@ -84,6 +84,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **61** – Added noise "detail" parameter to ripple fade effect with new Tweakpane slider and shader uniform. Lint and build pass.
 - **62** – Refactored effect registry to define ordered pass lists and updated `useFeedbackFBO` to run them sequentially. Components now look up passes by name. Updated README. Lint and build pass.
 - **63** – Simplified feedback pipeline with implicit snapshot and per-pass buffers. Removed preprocess blur handling and updated components, shaders, and docs. Lint and build pass.
+- **64** – Removed unused `uPreviousFrameLastPass` uniform and blur special casing. Blur now runs as a normal pass with radius from interpolation step. Updated shaders, hook, and docs. Lint and build pass.
 
 ## Next Steps
 
@@ -96,3 +97,4 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - Add more background images and color options to the new selector.
 - Hook up effect-specific parameters for additional shaders.
 - Add URL parameters for effect controls beyond text.
+- Investigate "unsupported GSUB table LookupType 6" console warning from troika text.

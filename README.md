@@ -16,7 +16,7 @@ At first glance, visitors see a static hero element: any SVG graphic of closed p
 
 - **Pose update:** Each animation frame captures the SVG’s current translate(x,y).
 - **Snapshot pass:** Render the SVG (all paths) into `snapshotRT` with alpha.
-- **Feedback pass:** Composite `snapshotRT` into the feedback buffer using a fragment shader. The shader reads `uPrevFrame`, applies its decay logic (uniform or custom), then blends in the new snapshot.
+- **Feedback passes:** Composite `snapshotRT` through each effect pass. Every shader blends `uThisPassPreviousFrame` with `uPreviousPassThisFrame` while applying its decay logic.
 
 Because the loop is always active, snapshots during dragging or spring return create a trail matching the exact SVG geometry. Releasing the drag triggers a spring tween back to center, feeding snapshots until rest; afterward, no new snapshots arrive and the buffer decays back to blank.
 
@@ -79,7 +79,6 @@ to the next. Each shader receives uniforms:
 * `uThisPassPreviousFrame` – the output from this pass in the last frame
 * `uPreviousPassThisFrame` – the output from the previous pass in this frame
   (the snapshot for the first pass)
-* `uPreviousFrameLastPass` – the final output from the last frame
 
 With this setup, multi-pass effects like `[blur, rippleFade]` are simple to
 express while single-pass effects such as `[rippleFade]` behave as before.
@@ -90,13 +89,13 @@ express while single-pass effects such as `[rippleFade]` behave as before.
 
 1. **Pose computation:** `useDragAndSpring` + `useFrameInterpolator` yield one or more `{ x, y }` transforms.
 2. **Snapshot pass (A):** If motion active, render `SvgMesh` via `DraggableSvg` to offscreen `snapshotRT`.
-3. **Feedback pass (B):** Draw full-screen quad with the active shader:
+3. **Feedback passes (B):** Step through each effect pass:
    ```glsl
-   vec4 history = texture2D(uPrevFrame, vUv);
-   vec4 snap    = texture2D(uSnapshot, vUv);
+   vec4 history = texture2D(uThisPassPreviousFrame, vUv);
+   vec4 snap    = texture2D(uPreviousPassThisFrame, vUv);
    gl_FragColor = customBlend(history, snap);
    ```
-   Swap `writeRT` ↔ `readRT`.
+   Swap each pass's read/write targets.
 4. **Composite pass (C):** Render `BackgroundPlane`, then `FeedbackPlane` (sampling `readRT`), then `SvgMesh` on top.
 
 ---
