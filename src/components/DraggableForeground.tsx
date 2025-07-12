@@ -48,27 +48,24 @@ export default function DraggableForeground({
     onGrab?.()
   }
   const interpQueue = useFrameInterpolator(pose, isDragging, INTERP_STEP_PX)
-  const passParams: Record<string, number | boolean>[] =
-    passes.length > 1
-      ? [
-          { uRadius: blurRadius },
-          {
-            uSpeed: speed,
-            uDisplacement: displacement,
-            uDetail: detail,
-            uZoom: zoom,
-            centerZoom,
-          },
-        ]
-      : [
-          {
-            uSpeed: speed,
-            uDisplacement: displacement,
-            uDetail: detail,
-            uZoom: zoom,
-            centerZoom,
-          },
-        ]
+  const effectValues: Record<string, number | boolean> = {
+    blurRadius,
+    speed,
+    displacement,
+    detail,
+    zoom,
+    centerZoom,
+  }
+  const passParams = passes.map((p) => {
+    const obj: Record<string, number | boolean> = {}
+    p.params?.forEach((param) => {
+      const val = effectValues[param.id]
+      if (val !== undefined) {
+        obj[param.uniform ?? param.id] = val
+      }
+    })
+    return obj
+  })
   const { snapshotRef, texture } = useFeedbackFBO(
     passes,
     decay,

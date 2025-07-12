@@ -1,7 +1,12 @@
 import { useEffect, useRef } from 'react'
+import type React from 'react'
 import { Pane } from 'tweakpane'
 import type { SvgSize } from '../types/svg'
-import { effectIndex, type EffectName } from '../effects'
+import {
+  effectIndex,
+  type EffectName,
+  getEffectParamDefs,
+} from '../effects'
 
 export type DemoControlsProps = {
   backgroundName: 'wildflowers' | 'white'
@@ -101,92 +106,62 @@ export default function DemoControls({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let effectParamsFolder: any
 
+    const paramMap: Record<
+      string,
+      {
+        ref: React.MutableRefObject<any>
+        setter: (v: any) => void
+      }
+    > = {
+      blurRadius: { ref: blurRadiusRef, setter: setBlurRadius },
+      speed: { ref: speedRef, setter: setSpeed },
+      displacement: { ref: displacementRef, setter: setDisplacement },
+      detail: { ref: detailRef, setter: setDetail },
+      zoom: { ref: zoomRef, setter: setZoom },
+      centerZoom: { ref: centerZoomRef, setter: setCenterZoom },
+    }
+
     const createEffectParamsFolder = (shader: EffectName) => {
       if (effectParamsFolder) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ;(pane as any).remove(effectParamsFolder)
         effectParamsFolder = null
       }
-      if (shader === 'rippleFade' || shader === 'blurredRipple') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        effectParamsFolder = (pane as any).addFolder({
-          title: 'Effect Params',
-          index: 3,
-        })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const speedInput = (effectParamsFolder as any).addBlade({
-          view: 'slider',
-          label: 'speed',
-          min: 0,
-          max: 0.3,
-          value: speedRef.current,
-          step: 0.001,
-        })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        speedInput.on('change', (ev: any) => setSpeed(ev.value))
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const sizeInputNoise = (effectParamsFolder as any).addBlade({
-          view: 'slider',
-          label: 'displacement',
-          min: 0,
-          max: 0.003,
-          value: displacementRef.current,
-          step: 0.0001,
-        })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        sizeInputNoise.on('change', (ev: any) => setDisplacement(ev.value))
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const detailInput = (effectParamsFolder as any).addBlade({
-          view: 'slider',
-          label: 'detail',
-          min: 0.1,
-          max: 5,
-          value: detailRef.current,
-          step: 0.01,
-        })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        detailInput.on('change', (ev: any) => setDetail(ev.value))
-
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const zoomInput = (effectParamsFolder as any).addBlade({
-          view: 'slider',
-          label: 'zoom',
-          min: -0.02,
-          max: 0.02,
-          value: zoomRef.current,
-          step: 0.0001,
-        })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        zoomInput.on('change', (ev: any) => setZoom(ev.value))
-
-        const centerParams = { center: centerZoomRef.current }
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const centerInput = (effectParamsFolder as any).addBinding(
-          centerParams,
-          'center',
-          { label: 'center zoom' }
-        )
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        centerInput.on('change', (ev: any) => {
-          centerParams.center = ev.value
-          setCenterZoom(ev.value)
-        })
-        if (shader === 'blurredRipple') {
+      const defs = getEffectParamDefs(shader)
+      if (defs.length === 0) return
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      effectParamsFolder = (pane as any).addFolder({
+        title: 'Effect Params',
+        index: 3,
+      })
+      defs.forEach((def) => {
+        const info = paramMap[def.id as keyof typeof paramMap]
+        if (!info) return
+        if (def.type === 'number') {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const blurInput = (effectParamsFolder as any).addBlade({
+          const blade = (effectParamsFolder as any).addBlade({
             view: 'slider',
-            label: 'blur radius',
-            min: 0,
-            max: 10,
-            value: blurRadiusRef.current,
-            step: 1,
+            label: def.label,
+            min: def.min,
+            max: def.max,
+            value: info.ref.current,
+            step: def.step,
           })
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          blurInput.on('change', (ev: any) => setBlurRadius(ev.value))
+          blade.on('change', (ev: any) => info.setter(ev.value))
+        } else {
+          const params = { val: info.ref.current as boolean }
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const blade = (effectParamsFolder as any).addBinding(params, 'val', {
+            label: def.label,
+          })
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          blade.on('change', (ev: any) => {
+            params.val = ev.value
+            info.setter(ev.value)
+          })
         }
-      }
+      })
     }
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const bgInput = (bgFolder as any).addBlade({

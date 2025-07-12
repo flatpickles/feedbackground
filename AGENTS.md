@@ -89,6 +89,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **66** – Corrected uniform names for pass parameters and ensured render targets resize when switching effects. Lint warns on hooks; build succeeds.
 - **67** – Removed pass descriptor names, refactored parameter plumbing, added blur radius control, and fixed interp step to constant. Lint warns; build succeeds.
 - **68** – Synced ripple effect parameters across effect switches using refs so tweakpane values persist. Lint warns; build succeeds.
+- **69** – Refactored pass model to declare effect parameters per pass and auto-generate Tweakpane controls. Removed blur special-casing. Lint warns; build succeeds.
 
 ## Next Steps
 
