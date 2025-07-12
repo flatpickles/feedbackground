@@ -1,8 +1,6 @@
 import defaultSvgUrl from '../assets/diamond.svg?url'
 import gaussianBlurFrag from '../shaders/gaussianBlur.frag'
-import motionBlurFrag from '../shaders/motionBlur.frag'
-import randomPaintFrag from '../shaders/randomPaint.frag'
-import rippleFadeFrag from '../shaders/rippleFade.frag'
+import { effectIndex, type EffectName } from '../effects'
 import type { ForegroundContent } from '../types/foreground'
 import type { SvgSize } from '../types/svg'
 import DraggableForeground from './DraggableForeground'
@@ -13,7 +11,7 @@ function useSvgUrl(): string {
 }
 
 export type ForegroundLayerDemoProps = {
-  shaderName: 'motionBlur' | 'randomPaint' | 'rippleFade'
+  shaderName: EffectName
   decay: number
   stepSize: number
   preprocessName: 'none' | 'blur'
@@ -50,11 +48,6 @@ export default function ForegroundLayerDemo({
     none: null,
     blur: gaussianBlurFrag,
   }
-  const shaderMap = {
-    motionBlur: motionBlurFrag,
-    randomPaint: randomPaintFrag,
-    rippleFade: rippleFadeFrag,
-  }
 
   const content: ForegroundContent =
     sourceName === 'text'
@@ -65,7 +58,7 @@ export default function ForegroundLayerDemo({
     <>
       <DraggableForeground
         content={content}
-        shader={shaderMap[shaderName]}
+        shader={effectIndex[shaderName].shader}
         decay={decay}
         stepSize={stepSize}
         preprocessShader={preprocessMap[preprocessName]}

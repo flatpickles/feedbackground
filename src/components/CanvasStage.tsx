@@ -2,9 +2,10 @@ import { Canvas } from '@react-three/fiber'
 import { Suspense } from 'react'
 import ForegroundLayerDemo from './ForegroundLayerDemo'
 import type { SvgSize } from '../types/svg'
+import type { EffectName } from '../effects'
 
 export type CanvasStageProps = {
-  shaderName: 'motionBlur' | 'randomPaint' | 'rippleFade'
+  shaderName: EffectName
   decay: number
   stepSize: number
   preprocessName: 'none' | 'blur'

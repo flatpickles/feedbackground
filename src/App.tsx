@@ -5,6 +5,7 @@ import CanvasStage from './components/CanvasStage'
 import DemoControls from './components/DemoControls'
 import Overview from './components/Overview'
 import type { SvgSize } from './types/svg'
+import { effectIndex, type EffectName } from './effects'
 
 function useInitialBgName(): 'wildflowers' | 'white' {
   const params = new URLSearchParams(window.location.search)
@@ -14,6 +15,12 @@ function useInitialBgName(): 'wildflowers' | 'white' {
 function useInitialText(): string {
   const params = new URLSearchParams(window.location.search)
   return params.get('text') || 'Hello'
+}
+
+function useInitialEffect(): EffectName {
+  const params = new URLSearchParams(window.location.search)
+  const name = params.get('effect') as EffectName | null
+  return name && name in effectIndex ? name : 'rippleFade'
 }
 
 export default function App() {
@@ -26,9 +33,7 @@ export default function App() {
   const [svgSize, setSvgSize] = useState<SvgSize>({ type: 'scaled', factor: 2 })
   const [sourceName, setSourceName] = useState<'diamond' | 'text'>('text')
   const [textValue, setTextValue] = useState(useInitialText())
-  const [shaderName, setShaderName] = useState<
-    'motionBlur' | 'randomPaint' | 'rippleFade'
-  >('rippleFade')
+  const [shaderName, setShaderName] = useState<EffectName>(useInitialEffect())
   const [decay, setDecay] = useState(0.98)
   const [paintWhileStill, setPaintWhileStill] = useState(false)
   const [speed, setSpeed] = useState(0.05)
@@ -47,7 +52,7 @@ export default function App() {
         backgroundName={bgName}
         setBackgroundName={setBgName}
         shaderName={shaderName}
-        setShaderName={setShaderName as (name: string) => void}
+        setShaderName={setShaderName}
         decay={decay}
         setDecay={setDecay}
         stepSize={stepSize}

@@ -1,12 +1,13 @@
 import { useEffect, useRef } from 'react'
 import { Pane } from 'tweakpane'
 import type { SvgSize } from '../types/svg'
+import { effectIndex, type EffectName } from '../effects'
 
 export type DemoControlsProps = {
   backgroundName: 'wildflowers' | 'white'
   setBackgroundName: (name: 'wildflowers' | 'white') => void
-  shaderName: string
-  setShaderName: (name: string) => void
+  shaderName: EffectName
+  setShaderName: (name: EffectName) => void
   decay: number
   setDecay: (val: number) => void
   stepSize: number
@@ -80,7 +81,7 @@ export default function DemoControls({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let effectParamsFolder: any
 
-    const createEffectParamsFolder = (shader: string) => {
+    const createEffectParamsFolder = (shader: EffectName) => {
       if (effectParamsFolder) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         ;(pane as any).remove(effectParamsFolder)
@@ -266,22 +267,23 @@ export default function DemoControls({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     preprocessInput.on('change', (ev: any) => setPreprocessName(ev.value))
 
+    const shaderOptions = Object.entries(effectIndex).map(([key, val]) => ({
+      text: val.label,
+      value: key,
+    }))
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const shaderInput = (effectFolder as any).addBlade({
       view: 'list',
       label: 'shader',
-      options: [
-        { text: 'Motion Blur', value: 'motionBlur' },
-        { text: 'Random Paint', value: 'randomPaint' },
-        { text: 'Ripple Fade', value: 'rippleFade' },
-      ],
+      options: shaderOptions,
       value: shaderName,
       index: 3,
     })
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     shaderInput.on('change', (ev: any) => {
-      setShaderName(ev.value)
-      createEffectParamsFolder(ev.value)
+      const val = ev.value as EffectName
+      setShaderName(val)
+      createEffectParamsFolder(val)
     })
 
     createEffectParamsFolder(shaderName)
