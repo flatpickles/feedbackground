@@ -41,21 +41,36 @@ export default function useFeedbackFBO(
     })
   )
 
-  const passTargets = useRef(
-    passes.map(
+  const passTargets = useRef<{ read: THREE.WebGLRenderTarget; write: THREE.WebGLRenderTarget }[]>(
+    passes.map(() => ({
+      read: new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
+        type: THREE.HalfFloatType,
+      }),
+      write: new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
+        type: THREE.HalfFloatType,
+      }),
+    }))
+  )
+
+  // (re)allocate render targets when passes or size change
+  useEffect(() => {
+    const ratio = gl.getPixelRatio()
+    passTargets.current.forEach((t) => {
+      t.read.dispose()
+      t.write.dispose()
+    })
+    passTargets.current = passes.map(
       () =>
         ({
-          read: new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
+          read: new THREE.WebGLRenderTarget(size.width * ratio, size.height * ratio, {
             type: THREE.HalfFloatType,
           }),
-          write: new THREE.WebGLRenderTarget(
-            size.width * dpr,
-            size.height * dpr,
-            { type: THREE.HalfFloatType }
-          ),
+          write: new THREE.WebGLRenderTarget(size.width * ratio, size.height * ratio, {
+            type: THREE.HalfFloatType,
+          }),
         })
     )
-  )
+  }, [passes, size, gl])
 
   const { width, height } = size
   const baseUniforms = useMemo(

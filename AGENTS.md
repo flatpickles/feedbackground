@@ -85,6 +85,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **62** – Refactored effect registry to define ordered pass lists and updated `useFeedbackFBO` to run them sequentially. Components now look up passes by name. Updated README. Lint and build pass.
 - **63** – Simplified feedback pipeline with implicit snapshot and per-pass buffers. Removed preprocess blur handling and updated components, shaders, and docs. Lint and build pass.
 - **64** – Removed unused `uPreviousFrameLastPass` uniform and blur special casing. Blur now runs as a normal pass with radius from interpolation step. Updated shaders, hook, and docs. Lint and build pass.
+- **65** – Fixed pass buffer allocation so multi-pass effects don't crash and ripple fade parameters work again. Lint and build pass.
 
 ## Next Steps
 
