@@ -41,36 +41,43 @@ export default function useFeedbackFBO(
     })
   )
 
-  const passTargets = useRef<{ read: THREE.WebGLRenderTarget; write: THREE.WebGLRenderTarget }[]>(
-    passes.map(() => ({
+  function createTarget() {
+    return {
       read: new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
         type: THREE.HalfFloatType,
       }),
       write: new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
         type: THREE.HalfFloatType,
       }),
-    }))
-  )
+    }
+  }
 
-  // (re)allocate render targets when passes or size change
-  useEffect(() => {
+  const passTargets = useRef<{
+    read: THREE.WebGLRenderTarget
+    write: THREE.WebGLRenderTarget
+  }[]>(passes.map(() => createTarget()))
+
+  function ensureTargets() {
     const ratio = gl.getPixelRatio()
+    while (passTargets.current.length < passes.length) {
+      passTargets.current.push(createTarget())
+    }
+    while (passTargets.current.length > passes.length) {
+      const t = passTargets.current.pop()
+      if (t) {
+        t.read.dispose()
+        t.write.dispose()
+      }
+    }
     passTargets.current.forEach((t) => {
-      t.read.dispose()
-      t.write.dispose()
+      t.read.setSize(size.width * ratio, size.height * ratio)
+      t.write.setSize(size.width * ratio, size.height * ratio)
     })
-    passTargets.current = passes.map(
-      () =>
-        ({
-          read: new THREE.WebGLRenderTarget(size.width * ratio, size.height * ratio, {
-            type: THREE.HalfFloatType,
-          }),
-          write: new THREE.WebGLRenderTarget(size.width * ratio, size.height * ratio, {
-            type: THREE.HalfFloatType,
-          }),
-        })
-    )
-  }, [passes, size, gl])
+  }
+
+  useEffect(() => {
+    ensureTargets()
+  }, [passes, size])
 
   const { width, height } = size
   const baseUniforms = useMemo(
@@ -87,6 +94,7 @@ export default function useFeedbackFBO(
   )
 
   const passData = useMemo(() => {
+    ensureTargets()
     return passes.map((p, idx) => {
       if (p.type !== 'shader') return null
       const uniforms: Record<string, THREE.IUniform> = {
@@ -112,7 +120,7 @@ export default function useFeedbackFBO(
       scene.add(mesh)
       return { scene, uniforms }
     })
-  }, [passes, baseUniforms, passParams])
+  }, [passes, baseUniforms, passParams, size])
 
   const orthoCam = useMemo(
     () => new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1),

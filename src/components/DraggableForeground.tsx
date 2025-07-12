@@ -49,8 +49,14 @@ export default function DraggableForeground({
   }
   const interpQueue = useFrameInterpolator(pose, isDragging, stepSize)
   const passParams = {
-    blur: { radius: stepSize },
-    rippleFade: { speed, displacement, detail, zoom, centerZoom },
+    blur: { uRadius: stepSize },
+    rippleFade: {
+      uSpeed: speed,
+      uDisplacement: displacement,
+      uDetail: detail,
+      uZoom: zoom,
+      centerZoom,
+    },
   }
   const { snapshotRef, texture } = useFeedbackFBO(
     passes,
