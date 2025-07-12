@@ -90,6 +90,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **67** – Removed pass descriptor names, refactored parameter plumbing, added blur radius control, and fixed interp step to constant. Lint warns; build succeeds.
 - **68** – Synced ripple effect parameters across effect switches using refs so tweakpane values persist. Lint warns; build succeeds.
 - **69** – Refactored pass model to declare effect parameters per pass and auto-generate Tweakpane controls. Removed blur special-casing. Lint warns; build succeeds.
+- **70** – Introduced pass registry and reused ripple fade pass for blurred ripple effect. Lint warns; build passes.
 
 ## Next Steps
 
