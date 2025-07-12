@@ -36,7 +36,7 @@ export default function CanvasStage({
   onInteract,
 }: CanvasStageProps) {
   return (
-    <Canvas className="w-full h-full">
+    <Canvas className="w-full h-full" style={{ touchAction: 'none' }}>
       <Suspense fallback={null}>
         <ForegroundLayerDemo
           shaderName={shaderName}

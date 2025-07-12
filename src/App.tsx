@@ -76,8 +76,8 @@ export default function App() {
         setCenterZoom={setCenterZoom}
       />
       <div
-        className="w-screen h-screen overflow-hidden bg-cover bg-center"
-        style={style}
+        className="w-screen overflow-hidden bg-cover bg-center"
+        style={{ ...style, height: '100dvh', touchAction: 'none' }}
       >
         <CanvasStage
           shaderName={shaderName}
