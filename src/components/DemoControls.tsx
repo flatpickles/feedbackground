@@ -61,10 +61,34 @@ export default function DemoControls({
   setTextValue,
 }: DemoControlsProps) {
   const sizeRef = useRef(svgSize)
+  const speedRef = useRef(speed)
+  const displacementRef = useRef(displacement)
+  const detailRef = useRef(detail)
+  const zoomRef = useRef(zoom)
+  const centerZoomRef = useRef(centerZoom)
+  const blurRadiusRef = useRef(blurRadius)
   const containerRef = useRef<HTMLDivElement | null>(null)
   useEffect(() => {
     sizeRef.current = svgSize
   }, [svgSize])
+  useEffect(() => {
+    speedRef.current = speed
+  }, [speed])
+  useEffect(() => {
+    displacementRef.current = displacement
+  }, [displacement])
+  useEffect(() => {
+    detailRef.current = detail
+  }, [detail])
+  useEffect(() => {
+    zoomRef.current = zoom
+  }, [zoom])
+  useEffect(() => {
+    centerZoomRef.current = centerZoom
+  }, [centerZoom])
+  useEffect(() => {
+    blurRadiusRef.current = blurRadius
+  }, [blurRadius])
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const pane = new Pane({ container: containerRef.current ?? undefined })
@@ -95,7 +119,7 @@ export default function DemoControls({
           label: 'speed',
           min: 0,
           max: 0.3,
-          value: speed,
+          value: speedRef.current,
           step: 0.001,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -107,7 +131,7 @@ export default function DemoControls({
           label: 'displacement',
           min: 0,
           max: 0.003,
-          value: displacement,
+          value: displacementRef.current,
           step: 0.0001,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -119,7 +143,7 @@ export default function DemoControls({
           label: 'detail',
           min: 0.1,
           max: 5,
-          value: detail,
+          value: detailRef.current,
           step: 0.01,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -131,13 +155,13 @@ export default function DemoControls({
           label: 'zoom',
           min: -0.02,
           max: 0.02,
-          value: zoom,
+          value: zoomRef.current,
           step: 0.0001,
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         zoomInput.on('change', (ev: any) => setZoom(ev.value))
 
-        const centerParams = { center: centerZoom }
+        const centerParams = { center: centerZoomRef.current }
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const centerInput = (effectParamsFolder as any).addBinding(
           centerParams,
@@ -156,7 +180,7 @@ export default function DemoControls({
             label: 'blur radius',
             min: 0,
             max: 10,
-            value: blurRadius,
+            value: blurRadiusRef.current,
             step: 1,
           })
           // eslint-disable-next-line @typescript-eslint/no-explicit-any

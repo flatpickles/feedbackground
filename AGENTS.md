@@ -88,6 +88,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **65** – Fixed pass buffer allocation so multi-pass effects don't crash and ripple fade parameters work again. Lint and build pass.
 - **66** – Corrected uniform names for pass parameters and ensured render targets resize when switching effects. Lint warns on hooks; build succeeds.
 - **67** – Removed pass descriptor names, refactored parameter plumbing, added blur radius control, and fixed interp step to constant. Lint warns; build succeeds.
+- **68** – Synced ripple effect parameters across effect switches using refs so tweakpane values persist. Lint warns; build succeeds.
 
 ## Next Steps
 
