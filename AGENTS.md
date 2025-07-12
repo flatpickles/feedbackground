@@ -83,10 +83,12 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **60** – Moved DemoControls outside the R3F Canvas by hoisting state to `App` and updating component props. Lint and build pass.
 - **61** – Added noise "detail" parameter to ripple fade effect with new Tweakpane slider and shader uniform. Lint and build pass.
 - **62** – Refactored effect registry to define ordered pass lists and updated `useFeedbackFBO` to run them sequentially. Components now look up passes by name. Updated README. Lint and build pass.
+- **63** – Simplified feedback pipeline with implicit snapshot and per-pass buffers. Removed preprocess blur handling and updated components, shaders, and docs. Lint and build pass.
 
 ## Next Steps
 
 - Implement more multi-pass effects using the new pipeline.
+- Hook up gaussian blur pass and other effect-specific parameters.
 - Tune random paint and ripple fade blending for performance and visual quality.
 - Profile high-DPR rendering performance and optimize FBO sizing.
 - Expose additional shader uniforms via Tweakpane for experimentation.

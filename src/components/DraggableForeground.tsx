@@ -15,7 +15,6 @@ export type DraggableForegroundProps = {
   passes: readonly import('../effects').EffectPass[]
   decay: number
   stepSize: number
-  preprocessShader: string | null
   svgSize: SvgSize
   paintWhileStill: boolean
   speed: number
@@ -31,7 +30,6 @@ export default function DraggableForeground({
   passes,
   decay,
   stepSize,
-  preprocessShader,
   svgSize,
   paintWhileStill,
   speed,
@@ -50,6 +48,10 @@ export default function DraggableForeground({
     onGrab?.()
   }
   const interpQueue = useFrameInterpolator(pose, isDragging, stepSize)
+  const passParams = {
+    blur: { radius: stepSize },
+    rippleFade: { speed, displacement, detail, zoom, centerZoom },
+  }
   const { snapshotRef, texture } = useFeedbackFBO(
     passes,
     decay,
@@ -57,13 +59,7 @@ export default function DraggableForeground({
     interactionSession,
     interpQueue,
     dragRef,
-    preprocessShader,
-    stepSize,
-    speed,
-    displacement,
-    detail,
-    zoom,
-    centerZoom,
+    passParams,
     paintWhileStill
   )
 

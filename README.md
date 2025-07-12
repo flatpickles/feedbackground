@@ -69,10 +69,20 @@ App
 - **Input pass:** Only when dragging or springing do we render SVG snapshots into the buffer, producing visible trails.
 - **Customizability:** Each shader can override or extend decay behavior for unique effects.
 
-Each effect in `src/effects` declares an ordered list of passes. A pass is either
-`{ type: 'snapshot' }` to capture the current foreground pose or `{ type: 'shader', fragment }`
-to run a fullscreen shader. `useFeedbackFBO` steps through this list every frame,
-feeding the output texture of one pass into the next.
+Each effect in `src/effects` declares an ordered list of passes following an
+implicit snapshot. Every frame starts by rendering the current foreground pose
+into a snapshot buffer; the resulting texture becomes the input for the first
+pass. A pass is `{ type: 'shader', fragment, name? }`.
+`useFeedbackFBO` steps through the passes sequentially, piping textures from one
+to the next. Each shader receives uniforms:
+
+* `uThisPassPreviousFrame` – the output from this pass in the last frame
+* `uPreviousPassThisFrame` – the output from the previous pass in this frame
+  (the snapshot for the first pass)
+* `uPreviousFrameLastPass` – the final output from the last frame
+
+With this setup, multi-pass effects like `[blur, rippleFade]` are simple to
+express while single-pass effects such as `[rippleFade]` behave as before.
 
 ---
 

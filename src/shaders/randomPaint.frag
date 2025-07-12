@@ -1,17 +1,18 @@
 precision highp float;
 
 varying vec2 vUv;
-uniform sampler2D uPrevFrame;
-uniform sampler2D uSnapshot;
+uniform sampler2D uThisPassPreviousFrame;
+uniform sampler2D uPreviousPassThisFrame;
+uniform sampler2D uPreviousFrameLastPass;
 uniform float uDecay;
 uniform vec3 uSessionRandom;
 
 void main() {
-  vec4 history = texture2D(uPrevFrame, vUv);
+  vec4 history = texture2D(uThisPassPreviousFrame, vUv);
   float oldAlpha = history.a * uDecay;
   vec3 oldColor = history.rgb;
 
-  float newAlpha = texture2D(uSnapshot, vUv).a;
+  float newAlpha = texture2D(uPreviousPassThisFrame, vUv).a;
   vec3 newColor = uSessionRandom;
 
   float outAlpha = newAlpha + oldAlpha * (1.0 - newAlpha);

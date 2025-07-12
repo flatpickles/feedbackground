@@ -1,6 +1,9 @@
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
+import type { MutableRefObject } from 'react'
+import type { DragSpringPose } from './useDragAndSpring'
+import type { PassDescriptor } from '../effects'
 
 const vertexShader = `
   varying vec2 vUv;
@@ -10,10 +13,6 @@ const vertexShader = `
   }
 `
 
-import type { MutableRefObject } from 'react'
-import type { DragSpringPose } from './useDragAndSpring'
-import type { PassDescriptor } from '../effects'
-
 export default function useFeedbackFBO(
   passes: readonly PassDescriptor[],
   decay = 0.975,
@@ -21,13 +20,7 @@ export default function useFeedbackFBO(
   sessionId = 0,
   interpQueue?: MutableRefObject<DragSpringPose[]>,
   externalRef?: MutableRefObject<THREE.Group | null>,
-  preprocessShader: string | null = null,
-  preprocessRadius = 1,
-  speed = 0.05,
-  displacement = 0.0015,
-  detail = 1,
-  zoom = 0,
-  centerZoom = false,
+  passParams: Record<string, Record<string, number | boolean>> = {},
   paintWhileStill = false
 ) {
   const { gl, size, camera, viewport } = useThree()
@@ -42,77 +35,68 @@ export default function useFeedbackFBO(
 
   const timeRef = useRef(0)
 
-  const readRT = useRef(
-    new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
-      type: THREE.HalfFloatType,
-    })
-  )
-  const writeRT = useRef(
-    new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
-      type: THREE.HalfFloatType,
-    })
-  )
   const snapshotRT = useRef(
     new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
       type: THREE.HalfFloatType,
     })
   )
-  const preprocessRT = useRef(
-    new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
-      type: THREE.HalfFloatType,
-    })
+
+  const passTargets = useRef(
+    passes.map(
+      () =>
+        ({
+          read: new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
+            type: THREE.HalfFloatType,
+          }),
+          write: new THREE.WebGLRenderTarget(
+            size.width * dpr,
+            size.height * dpr,
+            { type: THREE.HalfFloatType }
+          ),
+        })
+    )
   )
 
-  const preprocessUniforms = useMemo(
+  const baseUniforms = useMemo(
     () => ({
-      uTexture: { value: snapshotRT.current.texture },
-      uTexelSize: {
-        value: new THREE.Vector2(
-          1 / (size.width * dpr),
-          1 / (size.height * dpr)
-        ),
-      },
-      uRadius: { value: preprocessRadius },
-    }),
-    [size, dpr, preprocessRadius]
-  )
-
-  const lastSnapshotPos = useRef(new THREE.Vector2(Infinity, Infinity))
-
-  const preprocessScene = useMemo<THREE.Scene | null>(() => {
-    if (!preprocessShader) return null
-    const scene = new THREE.Scene()
-    const material = new THREE.ShaderMaterial({
-      vertexShader,
-      fragmentShader: preprocessShader,
-      uniforms: preprocessUniforms,
-      blending: THREE.NoBlending,
-    })
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material)
-    scene.add(mesh)
-    return scene
-  }, [preprocessUniforms, preprocessShader])
-
-  const uniforms = useMemo(
-    () => ({
-      uPrevFrame: { value: readRT.current.texture },
-      uSnapshot: { value: snapshotRT.current.texture },
       uDecay: { value: decay },
       uSessionRandom: { value: sessionRandom.current.clone() },
       uTime: { value: 0 },
-      uSpeed: { value: speed },
-      uDisplacement: { value: displacement },
-      uDetail: { value: detail },
-      uZoom: { value: zoom },
+      uSpeed: { value: (passParams.rippleFade?.speed as number) ?? 0.05 },
+      uDisplacement: {
+        value: (passParams.rippleFade?.displacement as number) ?? 0.0015,
+      },
+      uDetail: { value: (passParams.rippleFade?.detail as number) ?? 1 },
+      uZoom: { value: (passParams.rippleFade?.zoom as number) ?? 0 },
       uCenter: { value: new THREE.Vector2(0.5, 0.5) },
     }),
-    [decay, speed, displacement, detail, zoom]
+    [decay, passParams]
   )
 
-  const passScenes = useMemo(() => {
-    return passes.map((p) => {
+  const passData = useMemo(() => {
+    return passes.map((p, idx) => {
       if (p.type !== 'shader') return null
-      const scene = new THREE.Scene()
+      const uniforms: Record<string, THREE.IUniform> = {
+        ...baseUniforms,
+        uThisPassPreviousFrame: {
+          value: passTargets.current[idx].read.texture,
+        },
+        uPreviousPassThisFrame: { value: snapshotRT.current.texture },
+        uPreviousFrameLastPass: {
+          value: passTargets.current[passes.length - 1].read.texture,
+        },
+      }
+      const extra = passParams[p.name ?? ''] ?? {}
+      for (const [k, v] of Object.entries(extra)) {
+        if (uniforms[k]) uniforms[k].value = v
+        else uniforms[k] = { value: v }
+      }
+      if (p.name === 'blur') {
+        uniforms.uTexture = { value: snapshotRT.current.texture }
+        uniforms.uTexelSize = {
+          value: new THREE.Vector2(1 / (size.width * dpr), 1 / (size.height * dpr)),
+        }
+      }
       const material = new THREE.ShaderMaterial({
         vertexShader,
         fragmentShader: p.fragment,
@@ -120,10 +104,11 @@ export default function useFeedbackFBO(
         blending: THREE.NoBlending,
       })
       const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material)
+      const scene = new THREE.Scene()
       scene.add(mesh)
-      return scene
+      return { scene, uniforms }
     })
-  }, [passes, uniforms])
+  }, [passes, baseUniforms, passParams, size, dpr])
 
   const orthoCam = useMemo(
     () => new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1),
@@ -136,113 +121,126 @@ export default function useFeedbackFBO(
       Math.random() / 2,
       Math.random() / 2
     )
-    uniforms.uSessionRandom.value.copy(sessionRandom.current)
-  }, [sessionId, uniforms])
+    passData.forEach((p) => {
+      if (p) (p.uniforms.uSessionRandom.value as THREE.Vector3).copy(
+        sessionRandom.current
+      )
+    })
+  }, [sessionId, passData])
 
   useEffect(() => {
     const ratio = gl.getPixelRatio()
-    readRT.current.setSize(size.width * ratio, size.height * ratio)
-    writeRT.current.setSize(size.width * ratio, size.height * ratio)
     snapshotRT.current.setSize(size.width * ratio, size.height * ratio)
-    preprocessRT.current.setSize(size.width * ratio, size.height * ratio)
-    preprocessUniforms.uTexelSize.value.set(
-      1 / (size.width * ratio),
-      1 / (size.height * ratio)
-    )
-  }, [size, gl, preprocessUniforms])
+    passTargets.current.forEach((t) => {
+      t.read.setSize(size.width * ratio, size.height * ratio)
+      t.write.setSize(size.width * ratio, size.height * ratio)
+    })
+    passData.forEach((p) => {
+      if (!p) return
+      if (p.uniforms.uTexelSize)
+        p.uniforms.uTexelSize.value.set(
+          1 / (size.width * ratio),
+          1 / (size.height * ratio)
+        )
+    })
+  }, [size, gl, passData])
 
   useEffect(() => {
-    const read = readRT.current
-    const write = writeRT.current
     const snap = snapshotRT.current
-    const preprocessT = preprocessRT.current
+    const targets = passTargets.current
     return () => {
-      read.dispose()
-      write.dispose()
       snap.dispose()
-      preprocessT.dispose()
+      targets.forEach((t) => {
+        t.read.dispose()
+        t.write.dispose()
+      })
     }
-  }, [])
+  }, [passes])
+
+  const lastSnapshotPos = useRef(new THREE.Vector2(Infinity, Infinity))
 
   useFrame((state) => {
     timeRef.current = state.clock.getElapsedTime()
-    uniforms.uTime.value = timeRef.current
+    passData.forEach((p) => {
+      if (p) p.uniforms.uTime.value = timeRef.current
+    })
+
+    const centerZoom = Boolean(passParams.rippleFade?.centerZoom)
     if (centerZoom || !snapshotGroup.current) {
-      uniforms.uCenter.value.set(0.5, 0.5)
+      passData.forEach((p) => {
+        if (p && p.uniforms.uCenter)
+          (p.uniforms.uCenter.value as THREE.Vector2).set(0.5, 0.5)
+      })
     } else {
-      uniforms.uCenter.value.set(
-        snapshotGroup.current.position.x / viewport.width + 0.5,
-        snapshotGroup.current.position.y / viewport.height + 0.5
-      )
+      const cx = snapshotGroup.current.position.x / viewport.width + 0.5
+      const cy = snapshotGroup.current.position.y / viewport.height + 0.5
+      passData.forEach((p) => {
+        if (p && p.uniforms.uCenter)
+          (p.uniforms.uCenter.value as THREE.Vector2).set(cx, cy)
+      })
     }
 
-    let snapTex = snapshotRT.current.texture
-    let prevTex = readRT.current.texture
-
-    passes.forEach((pass, i) => {
-      if (pass.type === 'snapshot') {
-        gl.setRenderTarget(snapshotRT.current)
-        gl.setClearColor(0x000000, 0)
-        gl.clear(true, true, true)
-        let moved = false
-        if (
-          snapshotGroup.current &&
-          (active || (interpQueue && interpQueue.current.length > 0))
-        ) {
-          const group = snapshotGroup.current
-          const poses = interpQueue
-            ? interpQueue.current.splice(0, interpQueue.current.length)
-            : []
-          if (poses.length === 0) {
-            poses.push({ x: group.position.x, y: group.position.y })
-          }
-          const originalPos = { x: group.position.x, y: group.position.y }
-          const prevAuto = gl.autoClear
-          gl.autoClear = false
-          for (const p of poses) {
-            if (
-              paintWhileStill ||
-              p.x !== lastSnapshotPos.current.x ||
-              p.y !== lastSnapshotPos.current.y
-            ) {
-              group.position.x = p.x
-              group.position.y = p.y
-              group.updateMatrixWorld()
-              gl.render(group, camera)
-              moved = true
-              lastSnapshotPos.current.set(p.x, p.y)
-            }
-          }
-          gl.autoClear = prevAuto
-          group.position.set(originalPos.x, originalPos.y, group.position.z)
-          group.updateMatrixWorld()
-        }
-
-        if (moved && preprocessShader && preprocessScene) {
-          preprocessUniforms.uTexture.value = snapshotRT.current.texture
-          preprocessUniforms.uRadius.value = preprocessRadius
-          gl.setRenderTarget(preprocessRT.current)
-          gl.render(preprocessScene, orthoCam)
-          gl.setRenderTarget(null)
-          snapTex = preprocessRT.current.texture
-        } else {
-          snapTex = snapshotRT.current.texture
-        }
-      } else if (pass.type === 'shader') {
-        const scene = passScenes[i]
-        if (!scene) return
-        uniforms.uSnapshot.value = snapTex
-        uniforms.uPrevFrame.value = prevTex
-        gl.setRenderTarget(writeRT.current)
-        gl.render(scene, orthoCam)
-        gl.setRenderTarget(null)
-        const tmp = readRT.current
-        readRT.current = writeRT.current
-        writeRT.current = tmp
-        prevTex = readRT.current.texture
+    gl.setRenderTarget(snapshotRT.current)
+    gl.setClearColor(0x000000, 0)
+    gl.clear(true, true, true)
+    if (
+      snapshotGroup.current &&
+      (active || (interpQueue && interpQueue.current.length > 0))
+    ) {
+      const group = snapshotGroup.current
+      const poses = interpQueue
+        ? interpQueue.current.splice(0, interpQueue.current.length)
+        : []
+      if (poses.length === 0) {
+        poses.push({ x: group.position.x, y: group.position.y })
       }
+      const originalPos = { x: group.position.x, y: group.position.y }
+      const prevAuto = gl.autoClear
+      gl.autoClear = false
+      for (const p of poses) {
+        if (
+          paintWhileStill ||
+          p.x !== lastSnapshotPos.current.x ||
+          p.y !== lastSnapshotPos.current.y
+        ) {
+          group.position.x = p.x
+          group.position.y = p.y
+          group.updateMatrixWorld()
+          gl.render(group, camera)
+          lastSnapshotPos.current.set(p.x, p.y)
+        }
+      }
+      gl.autoClear = prevAuto
+      group.position.set(originalPos.x, originalPos.y, group.position.z)
+      group.updateMatrixWorld()
+    }
+    gl.setRenderTarget(null)
+
+    let prevTexture = snapshotRT.current.texture
+    const lastIndex = passes.length - 1
+    passes.forEach((pass, idx) => {
+      const data = passData[idx]
+      if (!data) return
+      data.uniforms.uPreviousPassThisFrame.value = prevTexture
+      data.uniforms.uThisPassPreviousFrame.value = passTargets.current[idx].read.texture
+      data.uniforms.uPreviousFrameLastPass.value = passTargets.current[lastIndex].read.texture
+      if (pass.name === 'blur') {
+        data.uniforms.uTexture.value = prevTexture
+      }
+      gl.setRenderTarget(passTargets.current[idx].write)
+      gl.render(data.scene, orthoCam)
+      gl.setRenderTarget(null)
+      ;[passTargets.current[idx].read, passTargets.current[idx].write] = [
+        passTargets.current[idx].write,
+        passTargets.current[idx].read,
+      ]
+      prevTexture = passTargets.current[idx].read.texture
     })
   })
 
-  return { snapshotRef: snapshotGroup, texture: readRT.current.texture }
+  const outputTex = passes.length
+    ? passTargets.current[passes.length - 1].read.texture
+    : snapshotRT.current.texture
+
+  return { snapshotRef: snapshotGroup, texture: outputTex }
 }

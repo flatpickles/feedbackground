@@ -8,7 +8,6 @@ export type CanvasStageProps = {
   shaderName: EffectName
   decay: number
   stepSize: number
-  preprocessName: 'none' | 'blur'
   svgSize: SvgSize
   paintWhileStill: boolean
   sourceName: 'diamond' | 'text'
@@ -25,7 +24,6 @@ export default function CanvasStage({
   shaderName,
   decay,
   stepSize,
-  preprocessName,
   svgSize,
   paintWhileStill,
   sourceName,
@@ -44,7 +42,6 @@ export default function CanvasStage({
           shaderName={shaderName}
           decay={decay}
           stepSize={stepSize}
-          preprocessName={preprocessName}
           svgSize={svgSize}
           paintWhileStill={paintWhileStill}
           sourceName={sourceName}
