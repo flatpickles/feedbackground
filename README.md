@@ -69,6 +69,11 @@ App
 - **Input pass:** Only when dragging or springing do we render SVG snapshots into the buffer, producing visible trails.
 - **Customizability:** Each shader can override or extend decay behavior for unique effects.
 
+Each effect in `src/effects` declares an ordered list of passes. A pass is either
+`{ type: 'snapshot' }` to capture the current foreground pose or `{ type: 'shader', fragment }`
+to run a fullscreen shader. `useFeedbackFBO` steps through this list every frame,
+feeding the output texture of one pass into the next.
+
 ---
 
 ## 3 · Rendering Pipeline (per animation frame)

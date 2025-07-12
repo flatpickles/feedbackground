@@ -12,9 +12,10 @@ const vertexShader = `
 
 import type { MutableRefObject } from 'react'
 import type { DragSpringPose } from './useDragAndSpring'
+import type { PassDescriptor } from '../effects'
 
 export default function useFeedbackFBO(
-  fragmentShader: string,
+  passes: readonly PassDescriptor[],
   decay = 0.975,
   active = true,
   sessionId = 0,
@@ -108,18 +109,21 @@ export default function useFeedbackFBO(
     [decay, speed, displacement, detail, zoom]
   )
 
-  const quadScene = useMemo(() => {
-    const scene = new THREE.Scene()
-    const material = new THREE.ShaderMaterial({
-      vertexShader,
-      fragmentShader,
-      uniforms,
-      blending: THREE.NoBlending,
+  const passScenes = useMemo(() => {
+    return passes.map((p) => {
+      if (p.type !== 'shader') return null
+      const scene = new THREE.Scene()
+      const material = new THREE.ShaderMaterial({
+        vertexShader,
+        fragmentShader: p.fragment,
+        uniforms,
+        blending: THREE.NoBlending,
+      })
+      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material)
+      scene.add(mesh)
+      return scene
     })
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material)
-    scene.add(mesh)
-    return scene
-  }, [fragmentShader, uniforms])
+  }, [passes, uniforms])
 
   const orthoCam = useMemo(
     () => new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1),
@@ -172,66 +176,72 @@ export default function useFeedbackFBO(
       )
     }
 
-    // Prepare snapshot texture
-    gl.setRenderTarget(snapshotRT.current)
-    gl.setClearColor(0x000000, 0)
-    gl.clear(true, true, true)
-    let moved = false
-    if (
-      snapshotGroup.current &&
-      (active || (interpQueue && interpQueue.current.length > 0))
-    ) {
-      const group = snapshotGroup.current
-      const poses = interpQueue
-        ? interpQueue.current.splice(0, interpQueue.current.length)
-        : []
-      if (poses.length === 0) {
-        poses.push({ x: group.position.x, y: group.position.y })
-      }
-      const originalPos = { x: group.position.x, y: group.position.y }
-      const prevAuto = gl.autoClear
-      gl.autoClear = false
-      for (const p of poses) {
+    let snapTex = snapshotRT.current.texture
+    let prevTex = readRT.current.texture
+
+    passes.forEach((pass, i) => {
+      if (pass.type === 'snapshot') {
+        gl.setRenderTarget(snapshotRT.current)
+        gl.setClearColor(0x000000, 0)
+        gl.clear(true, true, true)
+        let moved = false
         if (
-          paintWhileStill ||
-          p.x !== lastSnapshotPos.current.x ||
-          p.y !== lastSnapshotPos.current.y
+          snapshotGroup.current &&
+          (active || (interpQueue && interpQueue.current.length > 0))
         ) {
-          group.position.x = p.x
-          group.position.y = p.y
+          const group = snapshotGroup.current
+          const poses = interpQueue
+            ? interpQueue.current.splice(0, interpQueue.current.length)
+            : []
+          if (poses.length === 0) {
+            poses.push({ x: group.position.x, y: group.position.y })
+          }
+          const originalPos = { x: group.position.x, y: group.position.y }
+          const prevAuto = gl.autoClear
+          gl.autoClear = false
+          for (const p of poses) {
+            if (
+              paintWhileStill ||
+              p.x !== lastSnapshotPos.current.x ||
+              p.y !== lastSnapshotPos.current.y
+            ) {
+              group.position.x = p.x
+              group.position.y = p.y
+              group.updateMatrixWorld()
+              gl.render(group, camera)
+              moved = true
+              lastSnapshotPos.current.set(p.x, p.y)
+            }
+          }
+          gl.autoClear = prevAuto
+          group.position.set(originalPos.x, originalPos.y, group.position.z)
           group.updateMatrixWorld()
-          gl.render(group, camera)
-          moved = true
-          lastSnapshotPos.current.set(p.x, p.y)
         }
+
+        if (moved && preprocessShader && preprocessScene) {
+          preprocessUniforms.uTexture.value = snapshotRT.current.texture
+          preprocessUniforms.uRadius.value = preprocessRadius
+          gl.setRenderTarget(preprocessRT.current)
+          gl.render(preprocessScene, orthoCam)
+          gl.setRenderTarget(null)
+          snapTex = preprocessRT.current.texture
+        } else {
+          snapTex = snapshotRT.current.texture
+        }
+      } else if (pass.type === 'shader') {
+        const scene = passScenes[i]
+        if (!scene) return
+        uniforms.uSnapshot.value = snapTex
+        uniforms.uPrevFrame.value = prevTex
+        gl.setRenderTarget(writeRT.current)
+        gl.render(scene, orthoCam)
+        gl.setRenderTarget(null)
+        const tmp = readRT.current
+        readRT.current = writeRT.current
+        writeRT.current = tmp
+        prevTex = readRT.current.texture
       }
-      gl.autoClear = prevAuto
-      group.position.set(originalPos.x, originalPos.y, group.position.z)
-      group.updateMatrixWorld()
-    }
-
-    // Preprocess snapshot
-    if (moved && preprocessShader && preprocessScene) {
-      preprocessUniforms.uTexture.value = snapshotRT.current.texture
-      preprocessUniforms.uRadius.value = preprocessRadius
-      gl.setRenderTarget(preprocessRT.current)
-      gl.render(preprocessScene, orthoCam)
-      gl.setRenderTarget(null)
-      uniforms.uSnapshot.value = preprocessRT.current.texture
-    } else {
-      uniforms.uSnapshot.value = snapshotRT.current.texture
-    }
-
-    // Feedback pass
-    gl.setRenderTarget(writeRT.current)
-    gl.render(quadScene, orthoCam)
-    gl.setRenderTarget(null)
-
-    // Swap
-    const tmp = readRT.current
-    readRT.current = writeRT.current
-    writeRT.current = tmp
-    uniforms.uPrevFrame.value = readRT.current.texture
+    })
   })
 
   return { snapshotRef: snapshotGroup, texture: readRT.current.texture }

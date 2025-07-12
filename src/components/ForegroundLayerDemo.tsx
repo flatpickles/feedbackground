@@ -58,7 +58,7 @@ export default function ForegroundLayerDemo({
     <>
       <DraggableForeground
         content={content}
-        shader={effectIndex[shaderName].shader}
+        passes={effectIndex[shaderName].passes}
         decay={decay}
         stepSize={stepSize}
         preprocessShader={preprocessMap[preprocessName]}

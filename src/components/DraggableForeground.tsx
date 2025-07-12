@@ -12,7 +12,7 @@ import type { ForegroundContent } from '../types/foreground'
 
 export type DraggableForegroundProps = {
   content: ForegroundContent
-  shader: string
+  passes: readonly import('../effects').EffectPass[]
   decay: number
   stepSize: number
   preprocessShader: string | null
@@ -28,7 +28,7 @@ export type DraggableForegroundProps = {
 
 export default function DraggableForeground({
   content,
-  shader,
+  passes,
   decay,
   stepSize,
   preprocessShader,
@@ -51,7 +51,7 @@ export default function DraggableForeground({
   }
   const interpQueue = useFrameInterpolator(pose, isDragging, stepSize)
   const { snapshotRef, texture } = useFeedbackFBO(
-    shader,
+    passes,
     decay,
     paintWhileStill || active,
     interactionSession,
