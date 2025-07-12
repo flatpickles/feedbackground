@@ -109,7 +109,8 @@ export default function DemoControls({
     const paramMap: Record<
       string,
       {
-        ref: React.MutableRefObject<any>
+        ref: React.MutableRefObject<number | boolean>
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         setter: (v: any) => void
       }
     > = {
