@@ -2,7 +2,7 @@ import { a } from '@react-spring/three'
 import { useRef } from 'react'
 import * as THREE from 'three'
 import useDragAndSpring from '../hooks/useDragAndSpring'
-import useFrameInterpolator from '../hooks/useFrameInterpolator'
+import useFrameInterpolator, { INTERP_STEP_PX } from '../hooks/useFrameInterpolator'
 import useFeedbackFBO from '../hooks/useFeedbackFBO'
 import FeedbackPlane from './FeedbackPlane'
 import SvgMesh from './SvgMesh'
@@ -14,7 +14,7 @@ export type DraggableForegroundProps = {
   content: ForegroundContent
   passes: readonly import('../effects').EffectPass[]
   decay: number
-  stepSize: number
+  blurRadius: number
   svgSize: SvgSize
   paintWhileStill: boolean
   speed: number
@@ -29,7 +29,7 @@ export default function DraggableForeground({
   content,
   passes,
   decay,
-  stepSize,
+  blurRadius,
   svgSize,
   paintWhileStill,
   speed,
@@ -47,17 +47,28 @@ export default function DraggableForeground({
     onPointerDown(e)
     onGrab?.()
   }
-  const interpQueue = useFrameInterpolator(pose, isDragging, stepSize)
-  const passParams = {
-    blur: { uRadius: stepSize },
-    rippleFade: {
-      uSpeed: speed,
-      uDisplacement: displacement,
-      uDetail: detail,
-      uZoom: zoom,
-      centerZoom,
-    },
-  }
+  const interpQueue = useFrameInterpolator(pose, isDragging, INTERP_STEP_PX)
+  const passParams: Record<string, number | boolean>[] =
+    passes.length > 1
+      ? [
+          { uRadius: blurRadius },
+          {
+            uSpeed: speed,
+            uDisplacement: displacement,
+            uDetail: detail,
+            uZoom: zoom,
+            centerZoom,
+          },
+        ]
+      : [
+          {
+            uSpeed: speed,
+            uDisplacement: displacement,
+            uDetail: detail,
+            uZoom: zoom,
+            centerZoom,
+          },
+        ]
   const { snapshotRef, texture } = useFeedbackFBO(
     passes,
     decay,
@@ -66,6 +77,7 @@ export default function DraggableForeground({
     interpQueue,
     dragRef,
     passParams,
+    centerZoom,
     paintWhileStill
   )
 

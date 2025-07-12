@@ -6,27 +6,26 @@ import gaussianBlurFrag from '../shaders/gaussianBlur.frag'
 export type PassDescriptor = {
   type: 'shader'
   fragment: string
-  name?: string
 }
 
 export const effectIndex = {
   motionBlur: {
     label: 'Motion Blur',
-    passes: [{ type: 'shader', fragment: motionBlurFrag, name: 'motionBlur' }],
+    passes: [{ type: 'shader', fragment: motionBlurFrag }],
   },
   randomPaint: {
     label: 'Random Paint',
-    passes: [{ type: 'shader', fragment: randomPaintFrag, name: 'randomPaint' }],
+    passes: [{ type: 'shader', fragment: randomPaintFrag }],
   },
   rippleFade: {
     label: 'Ripple Fade',
-    passes: [{ type: 'shader', fragment: rippleFadeFrag, name: 'rippleFade' }],
+    passes: [{ type: 'shader', fragment: rippleFadeFrag }],
   },
   blurredRipple: {
     label: 'Blurred Ripple',
     passes: [
-      { type: 'shader', fragment: gaussianBlurFrag, name: 'blur' },
-      { type: 'shader', fragment: rippleFadeFrag, name: 'rippleFade' },
+      { type: 'shader', fragment: gaussianBlurFrag },
+      { type: 'shader', fragment: rippleFadeFrag },
     ],
   },
 } as const

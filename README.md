@@ -72,7 +72,7 @@ App
 Each effect in `src/effects` declares an ordered list of passes following an
 implicit snapshot. Every frame starts by rendering the current foreground pose
 into a snapshot buffer; the resulting texture becomes the input for the first
-pass. A pass is `{ type: 'shader', fragment, name? }`.
+pass. A pass is `{ type: 'shader', fragment }`.
 `useFeedbackFBO` steps through the passes sequentially, piping textures from one
 to the next. Each shader receives uniforms:
 

@@ -28,7 +28,7 @@ export default function App() {
     useInitialBgName
   )
   const [overviewHidden, setOverviewHidden] = useState(false)
-  const [stepSize, setStepSize] = useState(1)
+  const [blurRadius, setBlurRadius] = useState(1)
   const [svgSize, setSvgSize] = useState<SvgSize>({ type: 'scaled', factor: 2 })
   const [sourceName, setSourceName] = useState<'diamond' | 'text'>('text')
   const [textValue, setTextValue] = useState(useInitialText())
@@ -54,8 +54,8 @@ export default function App() {
         setShaderName={setShaderName}
         decay={decay}
         setDecay={setDecay}
-        stepSize={stepSize}
-        setStepSize={setStepSize}
+        blurRadius={blurRadius}
+        setBlurRadius={setBlurRadius}
         svgSize={svgSize}
         setSvgSize={setSvgSize}
         paintWhileStill={paintWhileStill}
@@ -82,7 +82,7 @@ export default function App() {
         <CanvasStage
           shaderName={shaderName}
           decay={decay}
-          stepSize={stepSize}
+          blurRadius={blurRadius}
           svgSize={svgSize}
           paintWhileStill={paintWhileStill}
           sourceName={sourceName}

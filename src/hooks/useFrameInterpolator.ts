@@ -4,10 +4,12 @@ import { useRef, useEffect } from 'react'
 import type { MutableRefObject } from 'react'
 import type { DragSpringPose } from './useDragAndSpring'
 
+export const INTERP_STEP_PX = 1
+
 export default function useFrameInterpolator(
   pose: { x: SpringValue<number>; y: SpringValue<number> },
   isDragging: boolean,
-  stepPx = 20
+  stepPx = INTERP_STEP_PX
 ): MutableRefObject<DragSpringPose[]> {
   const { size, viewport, gl } = useThree()
   const lastPose = useRef<DragSpringPose>({
