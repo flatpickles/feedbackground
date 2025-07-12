@@ -92,6 +92,8 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **69** – Refactored pass model to declare effect parameters per pass and auto-generate Tweakpane controls. Removed blur special-casing. Lint warns; build succeeds.
 - **70** – Introduced pass registry and reused ripple fade pass for blurred ripple effect. Lint warns; build passes.
 
+- **71** – Fixed mobile Safari viewport scroll by using `100dvh` height and `touch-action:none` on the canvas container. Updated meta viewport, added overflow locks, and disabled page scrolling. Lint warns; build succeeds.
+
 ## Next Steps
 
 - Implement more multi-pass effects using the new pipeline.
