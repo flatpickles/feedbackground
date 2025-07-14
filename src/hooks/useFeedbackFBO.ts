@@ -1,5 +1,5 @@
 import { useFrame, useThree } from '@react-three/fiber'
-import { useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import type { MutableRefObject } from 'react'
 import type { DragSpringPose } from './useDragAndSpring'
@@ -42,7 +42,7 @@ export default function useFeedbackFBO(
     })
   )
 
-  function createTarget() {
+  const createTarget = useCallback(() => {
     return {
       read: new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
         type: THREE.HalfFloatType,
@@ -51,14 +51,14 @@ export default function useFeedbackFBO(
         type: THREE.HalfFloatType,
       }),
     }
-  }
+  }, [size, dpr])
 
   const passTargets = useRef<{
     read: THREE.WebGLRenderTarget
     write: THREE.WebGLRenderTarget
   }[]>(passes.map(() => createTarget()))
 
-  function ensureTargets() {
+  const ensureTargets = useCallback(() => {
     const ratio = gl.getPixelRatio()
     while (passTargets.current.length < passes.length) {
       passTargets.current.push(createTarget())
@@ -74,11 +74,11 @@ export default function useFeedbackFBO(
       t.read.setSize(size.width * ratio, size.height * ratio)
       t.write.setSize(size.width * ratio, size.height * ratio)
     })
-  }
+  }, [gl, size, passes, createTarget])
 
   useEffect(() => {
     ensureTargets()
-  }, [passes, size])
+  }, [ensureTargets])
 
   const { width, height } = size
   const baseUniforms = useMemo(
@@ -121,7 +121,7 @@ export default function useFeedbackFBO(
       scene.add(mesh)
       return { scene, uniforms }
     })
-  }, [passes, baseUniforms, passParams, size])
+  }, [passes, baseUniforms, passParams, ensureTargets])
 
   const orthoCam = useMemo(
     () => new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1),
