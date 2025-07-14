@@ -39,6 +39,7 @@ export default function useFeedbackFBO(
   const snapshotRT = useRef(
     new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
       type: THREE.HalfFloatType,
+      depthBuffer: false,
     })
   )
 
@@ -46,9 +47,11 @@ export default function useFeedbackFBO(
     return {
       read: new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
         type: THREE.HalfFloatType,
+        depthBuffer: false,
       }),
       write: new THREE.WebGLRenderTarget(size.width * dpr, size.height * dpr, {
         type: THREE.HalfFloatType,
+        depthBuffer: false,
       }),
     }
   }, [size, dpr])

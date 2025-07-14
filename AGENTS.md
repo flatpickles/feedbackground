@@ -99,6 +99,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **72** – Removed `console.log` debug statement from `TextMesh`. Lint warns on hooks; build succeeds.
 - **72** – Added cleanup for shader materials and geometries in `useFeedbackFBO` when passes change. Lint and build pass.
+- **73** – Disabled depth buffers in feedback render targets to reduce memory usage. Lint and build pass.
 
 ## Next Steps
 
@@ -113,3 +114,4 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - Investigate "unsupported GSUB table LookupType 6" console warning from troika text.
 - Audit for stray debugging logs and remove them from production code.
 - Verify GPU resources are released when switching effects.
+- Confirm memory savings from disabling FBO depth buffers.
