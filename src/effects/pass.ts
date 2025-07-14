@@ -15,10 +15,13 @@ export interface Pass {
   params?: readonly PassParamDef[]
   setup?: (ctx: PassSetupContext) => void
   render?: (ctx: PassRenderContext) => void
+  cleanup?: () => void
 }
 
 export interface PassSetupContext {
   passIndex: number
+  gl: THREE.WebGLRenderer
+  size: THREE.Vector2
   baseUniforms: Record<string, THREE.IUniform>
   extraParams: Record<string, number | boolean>
 }
@@ -52,6 +55,16 @@ export interface ShaderPass extends Pass {
   data?: ShaderPassData
 }
 
+export interface ScenePassData {
+  scene: THREE.Scene
+  camera: THREE.Camera
+}
+
+export interface ScenePass extends Pass {
+  type: 'scene'
+  data?: ScenePassData & Record<string, unknown>
+}
+
 export function shaderPass(
   fragment: string,
   params?: readonly PassParamDef[]
@@ -63,7 +76,7 @@ export type ClearPass = Pass & { type: 'clear'; color?: THREE.ColorRepresentatio
 
 export type CustomPass = Pass & { type: 'custom' }
 
-export type AnyPass = ShaderPass | ClearPass | CustomPass
+export type AnyPass = ShaderPass | ScenePass | ClearPass | CustomPass
 
 export function setupShaderPass(pass: ShaderPass, ctx: PassSetupContext) {
   const { baseUniforms, extraParams } = ctx

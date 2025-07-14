@@ -40,6 +40,7 @@ export default function App() {
   const [detail, setDetail] = useState(2)
   const [zoom, setZoom] = useState(0)
   const [centerZoom, setCenterZoom] = useState(false)
+  const [charWidth, setCharWidth] = useState(12)
   const style =
     bgName === 'wildflowers'
       ? { backgroundImage: `url(${wildflowersUrl})` }
@@ -74,6 +75,8 @@ export default function App() {
         setZoom={setZoom}
         centerZoom={centerZoom}
         setCenterZoom={setCenterZoom}
+        charWidth={charWidth}
+        setCharWidth={setCharWidth}
       />
       <div
         className="w-screen overflow-hidden bg-cover bg-center"
@@ -92,6 +95,7 @@ export default function App() {
           detail={detail}
           zoom={zoom}
           centerZoom={centerZoom}
+          charWidth={charWidth}
           onInteract={() => setOverviewHidden(true)}
         />
       </div>
