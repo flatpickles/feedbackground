@@ -13,6 +13,8 @@ const vertexShader = `
   }
 `
 
+const quad = new THREE.PlaneGeometry(2, 2)
+
 export default function useFeedbackFBO(
   passes: readonly PassDescriptor[],
   decay = 0.975,
@@ -66,7 +68,6 @@ export default function useFeedbackFBO(
       scene: THREE.Scene
       uniforms: Record<string, THREE.IUniform>
       material: THREE.ShaderMaterial
-      geometry: THREE.PlaneGeometry
     } | null>
   >([])
 
@@ -122,7 +123,7 @@ export default function useFeedbackFBO(
         if (uniforms[k]) uniforms[k].value = v
         else uniforms[k] = { value: v }
       }
-      const geometry = new THREE.PlaneGeometry(2, 2)
+      const geometry = quad
       const material = new THREE.ShaderMaterial({
         vertexShader,
         fragmentShader: p.fragment,
@@ -132,7 +133,7 @@ export default function useFeedbackFBO(
       const mesh = new THREE.Mesh(geometry, material)
       const scene = new THREE.Scene()
       scene.add(mesh)
-      return { scene, uniforms, material, geometry }
+      return { scene, uniforms, material }
     })
   }, [passes, baseUniforms, passParams, ensureTargets])
 
@@ -143,7 +144,6 @@ export default function useFeedbackFBO(
       previous.forEach((p) => {
         if (!p) return
         p.material.dispose()
-        p.geometry.dispose()
         p.scene.clear()
       })
     }
