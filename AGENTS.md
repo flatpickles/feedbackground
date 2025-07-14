@@ -98,6 +98,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **72** – Documented URL query params, effect names, and Tweakpane defaults in README. Lint warns; build succeeds.
 
 - **72** – Removed `console.log` debug statement from `TextMesh`. Lint warns on hooks; build succeeds.
+- **72** – Added cleanup for shader materials and geometries in `useFeedbackFBO` when passes change. Lint and build pass.
 
 ## Next Steps
 
@@ -111,3 +112,4 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - Add URL parameters for effect controls beyond text.
 - Investigate "unsupported GSUB table LookupType 6" console warning from troika text.
 - Audit for stray debugging logs and remove them from production code.
+- Verify GPU resources are released when switching effects.
