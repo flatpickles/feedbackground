@@ -3,30 +3,12 @@ import randomPaintFrag from '../shaders/randomPaint.frag'
 import rippleFadeFrag from '../shaders/rippleFade.frag'
 import gaussianBlurFrag from '../shaders/gaussianBlur.frag'
 
-export type PassParamDef = {
-  id: string
-  uniform?: string
-  type: 'number' | 'boolean'
-  label: string
-  default: number | boolean
-  min?: number
-  max?: number
-  step?: number
-}
-
-export type PassDescriptor = {
-  type: 'shader'
-  fragment: string
-  params?: readonly PassParamDef[]
-}
+import { shaderPass, type ShaderPass, type PassParamDef } from './pass'
 
 export const passRegistry = {
-  motionBlur: { type: 'shader', fragment: motionBlurFrag },
-  randomPaint: { type: 'shader', fragment: randomPaintFrag },
-  rippleFade: {
-    type: 'shader',
-    fragment: rippleFadeFrag,
-    params: [
+  motionBlur: shaderPass(motionBlurFrag),
+  randomPaint: shaderPass(randomPaintFrag),
+  rippleFade: shaderPass(rippleFadeFrag, [
       {
         id: 'speed',
         uniform: 'uSpeed',
@@ -73,12 +55,8 @@ export const passRegistry = {
         label: 'center zoom',
         default: false,
       },
-    ],
-  },
-  gaussianBlur: {
-    type: 'shader',
-    fragment: gaussianBlurFrag,
-    params: [
+    ]),
+  gaussianBlur: shaderPass(gaussianBlurFrag, [
       {
         id: 'blurRadius',
         uniform: 'uRadius',
@@ -89,9 +67,8 @@ export const passRegistry = {
         max: 10,
         step: 1,
       },
-    ],
-  },
-} as const satisfies Record<string, PassDescriptor>
+    ]),
+} as const satisfies Record<string, ShaderPass>
 
 export const effectIndex = {
   motionBlur: {
@@ -110,10 +87,10 @@ export const effectIndex = {
     label: 'Blurred Ripple',
     passes: [passRegistry.gaussianBlur, passRegistry.rippleFade],
   },
-} as const satisfies Record<string, { label: string; passes: readonly PassDescriptor[] }>
+} as const satisfies Record<string, { label: string; passes: readonly ShaderPass[] }>
 
 export type EffectName = keyof typeof effectIndex
-export type EffectPass = PassDescriptor
+export type EffectPass = ShaderPass
 
 export type EffectParamDef = PassParamDef & { passIndex: number }
 
@@ -121,7 +98,7 @@ export function getEffectParamDefs(effect: EffectName): EffectParamDef[] {
   const { passes } = effectIndex[effect]
   const result: EffectParamDef[] = []
   passes.forEach((p, idx) => {
-    const pass = p as PassDescriptor
+    const pass = p as ShaderPass
     pass.params?.forEach((param: PassParamDef) => {
       result.push({ ...param, passIndex: idx })
     })
