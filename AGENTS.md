@@ -62,37 +62,38 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **46** – Disabled 'relative' size mode when text source is active; Tweakpane now hides the option and reverts to scaled. Lint and build pass.
 - **47** – Added `rippleFade.frag` shader to effect dropdown and updated shader map in demo. Lint and build pass.
 
-- **47** – Allocated feedback render targets with `HalfFloatType` to eliminate residual trails at high decay. Lint and build pass.
-- **48** – Added background chooser (wildflowers or white) in Tweakpane and threaded state through components. Lint and build pass.
+- **48** – Allocated feedback render targets with `HalfFloatType` to eliminate residual trails at high decay. Lint and build pass.
+- **49** – Added background chooser (wildflowers or white) in Tweakpane and threaded state through components. Lint and build pass.
 
-- **48** – Added `uTime` uniform in `useFeedbackFBO` and implemented noise-driven warp in `rippleFade.frag`. Lint and build pass.
-- **49** – Added "paint while still" option with Tweakpane checkbox to control snapshot painting at rest. Lint and build pass.
-- **50** – Fixed "paint while still" checkbox using `addBinding` so it renders correctly. Lint and build pass.
-- **51** – Added Perlin-noise offset to `rippleFade.frag` with tweakable speed and size; new sliders wired through `DemoControls` and `useFeedbackFBO`.
+- **50** – Added `uTime` uniform in `useFeedbackFBO` and implemented noise-driven warp in `rippleFade.frag`. Lint and build pass.
+- **51** – Added "paint while still" option with Tweakpane checkbox to control snapshot painting at rest. Lint and build pass.
+- **52** – Fixed "paint while still" checkbox using `addBinding` so it renders correctly. Lint and build pass.
+- **53** – Added Perlin-noise offset to `rippleFade.frag` with tweakable speed and size; new sliders wired through `DemoControls` and `useFeedbackFBO`.
 
-- **52** – Fixed "paint while still" so snapshots render every frame when enabled. Updated `useFeedbackFBO` and its call site. Lint and build pass.
+- **54** – Fixed "paint while still" so snapshots render every frame when enabled. Updated `useFeedbackFBO` and its call site. Lint and build pass.
 
-- **53** – Reorganized Tweakpane sections, added effect-parameter folder with noise controls gated by shader selection, removed box blur, and adjusted defaults. Lint and build pass.
+- **55** – Reorganized Tweakpane sections, added effect-parameter folder with noise controls gated by shader selection, removed box blur, and adjusted defaults. Lint and build pass.
 
-- **54** – Fixed foreground control ordering so size parameters stay above "paint while still" when switching options. Lint and build pass.
-- **55** – Reordered size parameter logic so sliders reinsert above paint control when switching options. Lint and build pass.
-- **56** – Updated defaults and parameter names, added URL param for text, new ripple fade zoom control, and renamed noise params to speed/displacement. Lint and build pass.
-- **57** – Centered ripple zoom on foreground position with new uniform and limited range. Lint and build pass.
-- **58** – Added "center zoom" toggle to switch ripple zoom between canvas center and foreground. Lint and build pass.
-- **59** – Faded out new Overview panel on first drag and hid Tweakpane on small screens. Lint and build pass.
-- **60** – Moved DemoControls outside the R3F Canvas by hoisting state to `App` and updating component props. Lint and build pass.
-- **61** – Added noise "detail" parameter to ripple fade effect with new Tweakpane slider and shader uniform. Lint and build pass.
-- **62** – Refactored effect registry to define ordered pass lists and updated `useFeedbackFBO` to run them sequentially. Components now look up passes by name. Updated README. Lint and build pass.
-- **63** – Simplified feedback pipeline with implicit snapshot and per-pass buffers. Removed preprocess blur handling and updated components, shaders, and docs. Lint and build pass.
-- **64** – Removed unused `uPreviousFrameLastPass` uniform and blur special casing. Blur now runs as a normal pass with radius from interpolation step. Updated shaders, hook, and docs. Lint and build pass.
-- **65** – Fixed pass buffer allocation so multi-pass effects don't crash and ripple fade parameters work again. Lint and build pass.
-- **66** – Corrected uniform names for pass parameters and ensured render targets resize when switching effects. Lint warns on hooks; build succeeds.
-- **67** – Removed pass descriptor names, refactored parameter plumbing, added blur radius control, and fixed interp step to constant. Lint warns; build succeeds.
-- **68** – Synced ripple effect parameters across effect switches using refs so tweakpane values persist. Lint warns; build succeeds.
-- **69** – Refactored pass model to declare effect parameters per pass and auto-generate Tweakpane controls. Removed blur special-casing. Lint warns; build succeeds.
-- **70** – Introduced pass registry and reused ripple fade pass for blurred ripple effect. Lint warns; build passes.
+- **56** – Fixed foreground control ordering so size parameters stay above "paint while still" when switching options. Lint and build pass.
+- **57** – Reordered size parameter logic so sliders reinsert above paint control when switching options. Lint and build pass.
+- **58** – Updated defaults and parameter names, added URL param for text, new ripple fade zoom control, and renamed noise params to speed/displacement. Lint and build pass.
+- **59** – Centered ripple zoom on foreground position with new uniform and limited range. Lint and build pass.
+- **60** – Added "center zoom" toggle to switch ripple zoom between canvas center and foreground. Lint and build pass.
+- **61** – Faded out new Overview panel on first drag and hid Tweakpane on small screens. Lint and build pass.
+- **62** – Moved DemoControls outside the R3F Canvas by hoisting state to `App` and updating component props. Lint and build pass.
+- **63** – Added noise "detail" parameter to ripple fade effect with new Tweakpane slider and shader uniform. Lint and build pass.
+- **64** – Refactored effect registry to define ordered pass lists and updated `useFeedbackFBO` to run them sequentially. Components now look up passes by name. Updated README. Lint and build pass.
+- **65** – Simplified feedback pipeline with implicit snapshot and per-pass buffers. Removed preprocess blur handling and updated components, shaders, and docs. Lint and build pass.
+- **66** – Removed unused `uPreviousFrameLastPass` uniform and blur special casing. Blur now runs as a normal pass with radius from interpolation step. Updated shaders, hook, and docs. Lint and build pass.
+- **67** – Fixed pass buffer allocation so multi-pass effects don't crash and ripple fade parameters work again. Lint and build pass.
+- **68** – Corrected uniform names for pass parameters and ensured render targets resize when switching effects. Lint warns on hooks; build succeeds.
+- **69** – Removed pass descriptor names, refactored parameter plumbing, added blur radius control, and fixed interp step to constant. Lint warns; build succeeds.
+- **70** – Synced ripple effect parameters across effect switches using refs so tweakpane values persist. Lint warns; build succeeds.
+- **71** – Refactored pass model to declare effect parameters per pass and auto-generate Tweakpane controls. Removed blur special-casing. Lint warns; build succeeds.
+- **72** – Introduced pass registry and reused ripple fade pass for blurred ripple effect. Lint warns; build passes.
 
-- **71** – Fixed mobile Safari viewport scroll by using `100dvh` height and `touch-action:none` on the canvas container. Updated meta viewport, added overflow locks, and disabled page scrolling. Lint warns; build succeeds.
+- **73** – Fixed mobile Safari viewport scroll by using `100dvh` height and `touch-action:none` on the canvas container. Updated meta viewport, added overflow locks, and disabled page scrolling. Lint warns; build succeeds.
+- **74** – Renumbered progress log entries sequentially and removed duplicates. Lint warns on hooks; build succeeds.
 
 ## Next Steps
 
