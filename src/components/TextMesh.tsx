@@ -35,7 +35,6 @@ export default function TextMesh({
             new THREE.Vector3(maxX * scaleFactor, maxY * scaleFactor, 0)
           )
           setBounds(box)
-          console.log('Text bounds', box.min, box.max)
         }
       })
     }
