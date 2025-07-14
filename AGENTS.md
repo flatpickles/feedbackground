@@ -100,6 +100,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **72** – Removed `console.log` debug statement from `TextMesh`. Lint warns on hooks; build succeeds.
 - **72** – Added cleanup for shader materials and geometries in `useFeedbackFBO` when passes change. Lint and build pass.
 - **73** – Disabled depth buffers in feedback render targets to reduce memory usage. Lint and build pass.
+- **74** – Introduced generic `Pass` type with `setup` and `render` hooks and refactored shader passes and `useFeedbackFBO` to use it. Lint and build pass.
 
 ## Next Steps
 

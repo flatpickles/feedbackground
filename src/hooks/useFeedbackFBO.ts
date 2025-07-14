@@ -3,20 +3,12 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import type { MutableRefObject } from 'react'
 import type { DragSpringPose } from './useDragAndSpring'
-import type { PassDescriptor } from '../effects'
+import type { ShaderPass, ShaderPassData } from '../effects/pass'
+import { setupShaderPass, renderShaderPass } from '../effects/pass'
 
-const vertexShader = `
-  varying vec2 vUv;
-  void main() {
-    vUv = uv;
-    gl_Position = vec4(position, 1.0);
-  }
-`
-
-const quad = new THREE.PlaneGeometry(2, 2)
 
 export default function useFeedbackFBO(
-  passes: readonly PassDescriptor[],
+  passes: readonly ShaderPass[],
   decay = 0.975,
   active = true,
   sessionId = 0,
@@ -63,13 +55,7 @@ export default function useFeedbackFBO(
     write: THREE.WebGLRenderTarget
   }[]>(passes.map(() => createTarget()))
 
-  const lastPassData = useRef<
-    Array<{
-      scene: THREE.Scene
-      uniforms: Record<string, THREE.IUniform>
-      material: THREE.ShaderMaterial
-    } | null>
-  >([])
+  const lastPassData = useRef<Array<ShaderPassData | null>>([])
 
   const ensureTargets = useCallback(() => {
     const ratio = gl.getPixelRatio()
@@ -111,29 +97,16 @@ export default function useFeedbackFBO(
     ensureTargets()
     return passes.map((p, idx) => {
       if (p.type !== 'shader') return null
-      const uniforms: Record<string, THREE.IUniform> = {
-        ...baseUniforms,
-        uThisPassPreviousFrame: {
-          value: passTargets.current[idx].read.texture,
+      setupShaderPass(p, {
+        passIndex: idx,
+        baseUniforms: {
+          ...baseUniforms,
+          uThisPassPreviousFrame: { value: passTargets.current[idx].read.texture },
+          uPreviousPassThisFrame: { value: snapshotRT.current.texture },
         },
-        uPreviousPassThisFrame: { value: snapshotRT.current.texture },
-      }
-      const extra = passParams[idx] ?? {}
-      for (const [k, v] of Object.entries(extra)) {
-        if (uniforms[k]) uniforms[k].value = v
-        else uniforms[k] = { value: v }
-      }
-      const geometry = quad
-      const material = new THREE.ShaderMaterial({
-        vertexShader,
-        fragmentShader: p.fragment,
-        uniforms,
-        blending: THREE.NoBlending,
+        extraParams: passParams[idx] ?? {},
       })
-      const mesh = new THREE.Mesh(geometry, material)
-      const scene = new THREE.Scene()
-      scene.add(mesh)
-      return { scene, uniforms, material }
+      return p.data ?? null
     })
   }, [passes, baseUniforms, passParams, ensureTargets])
 
@@ -149,10 +122,6 @@ export default function useFeedbackFBO(
     }
   }, [passes, passData])
 
-  const orthoCam = useMemo(
-    () => new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1),
-    []
-  )
 
   useEffect(() => {
     sessionRandom.current.set(
@@ -255,14 +224,16 @@ export default function useFeedbackFBO(
     gl.setRenderTarget(null)
 
     let prevTexture = snapshotRT.current.texture
-    passes.forEach((_, idx) => {
+    passes.forEach((p, idx) => {
       const data = passData[idx]
-      if (!data) return
-      data.uniforms.uPreviousPassThisFrame.value = prevTexture
-      data.uniforms.uThisPassPreviousFrame.value = passTargets.current[idx].read.texture
-      gl.setRenderTarget(passTargets.current[idx].write)
-      gl.render(data.scene, orthoCam)
-      gl.setRenderTarget(null)
+      if (!data || p.type !== 'shader') return
+      renderShaderPass(p, {
+        gl,
+        input: prevTexture,
+        history: passTargets.current[idx].read.texture,
+        output: passTargets.current[idx].write,
+        time: timeRef.current,
+      })
       ;[passTargets.current[idx].read, passTargets.current[idx].write] = [
         passTargets.current[idx].write,
         passTargets.current[idx].read,
