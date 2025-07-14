@@ -58,6 +58,15 @@ export default function useFeedbackFBO(
     write: THREE.WebGLRenderTarget
   }[]>(passes.map(() => createTarget()))
 
+  const lastPassData = useRef<
+    Array<{
+      scene: THREE.Scene
+      uniforms: Record<string, THREE.IUniform>
+      material: THREE.ShaderMaterial
+      geometry: THREE.PlaneGeometry
+    } | null>
+  >([])
+
   const ensureTargets = useCallback(() => {
     const ratio = gl.getPixelRatio()
     while (passTargets.current.length < passes.length) {
@@ -110,18 +119,32 @@ export default function useFeedbackFBO(
         if (uniforms[k]) uniforms[k].value = v
         else uniforms[k] = { value: v }
       }
+      const geometry = new THREE.PlaneGeometry(2, 2)
       const material = new THREE.ShaderMaterial({
         vertexShader,
         fragmentShader: p.fragment,
         uniforms,
         blending: THREE.NoBlending,
       })
-      const mesh = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material)
+      const mesh = new THREE.Mesh(geometry, material)
       const scene = new THREE.Scene()
       scene.add(mesh)
-      return { scene, uniforms }
+      return { scene, uniforms, material, geometry }
     })
   }, [passes, baseUniforms, passParams, ensureTargets])
+
+  useEffect(() => {
+    const previous = lastPassData.current
+    lastPassData.current = passData
+    return () => {
+      previous.forEach((p) => {
+        if (!p) return
+        p.material.dispose()
+        p.geometry.dispose()
+        p.scene.clear()
+      })
+    }
+  }, [passes, passData])
 
   const orthoCam = useMemo(
     () => new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1),
