@@ -101,6 +101,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **72** – Added cleanup for shader materials and geometries in `useFeedbackFBO` when passes change. Lint and build pass.
 - **73** – Disabled depth buffers in feedback render targets to reduce memory usage. Lint and build pass.
 - **74** – Introduced generic `Pass` type with `setup` and `render` hooks and refactored shader passes and `useFeedbackFBO` to use it. Lint and build pass.
+- **75** – Added scene pass infrastructure with ASCII luminance effect and `asciiDecay` stack. Updated controls, README, and types. Lint passes with warning; build succeeds.
 
 ## Next Steps
 
@@ -116,3 +117,4 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - Audit for stray debugging logs and remove them from production code.
 - Verify GPU resources are released when switching effects.
 - Confirm memory savings from disabling FBO depth buffers.
+- Optimize ASCII pass sampling and explore GPU-based alternatives.

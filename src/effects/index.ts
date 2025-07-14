@@ -3,7 +3,8 @@ import randomPaintFrag from '../shaders/randomPaint.frag'
 import rippleFadeFrag from '../shaders/rippleFade.frag'
 import gaussianBlurFrag from '../shaders/gaussianBlur.frag'
 
-import { shaderPass, type ShaderPass, type PassParamDef } from './pass'
+import { shaderPass, type ShaderPass, type ScenePass, type PassParamDef } from './pass'
+import asciiLuminancePass from './asciiLuminance'
 
 export const passRegistry = {
   motionBlur: shaderPass(motionBlurFrag),
@@ -68,7 +69,8 @@ export const passRegistry = {
         step: 1,
       },
     ]),
-} as const satisfies Record<string, ShaderPass>
+  asciiLuminance: asciiLuminancePass(),
+} as const satisfies Record<string, ShaderPass | ScenePass>
 
 export const effectIndex = {
   motionBlur: {
@@ -87,10 +89,14 @@ export const effectIndex = {
     label: 'Blurred Ripple',
     passes: [passRegistry.gaussianBlur, passRegistry.rippleFade],
   },
-} as const satisfies Record<string, { label: string; passes: readonly ShaderPass[] }>
+  asciiDecay: {
+    label: 'Ascii Decay',
+    passes: [passRegistry.rippleFade, passRegistry.asciiLuminance],
+  },
+} as const satisfies Record<string, { label: string; passes: readonly (ShaderPass | ScenePass)[] }>
 
 export type EffectName = keyof typeof effectIndex
-export type EffectPass = ShaderPass
+export type EffectPass = ShaderPass | ScenePass
 
 export type EffectParamDef = PassParamDef & { passIndex: number }
 
@@ -98,8 +104,7 @@ export function getEffectParamDefs(effect: EffectName): EffectParamDef[] {
   const { passes } = effectIndex[effect]
   const result: EffectParamDef[] = []
   passes.forEach((p, idx) => {
-    const pass = p as ShaderPass
-    pass.params?.forEach((param: PassParamDef) => {
+    p.params?.forEach((param: PassParamDef) => {
       result.push({ ...param, passIndex: idx })
     })
   })

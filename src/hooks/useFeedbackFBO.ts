@@ -3,12 +3,12 @@ import { useCallback, useEffect, useMemo, useRef } from 'react'
 import * as THREE from 'three'
 import type { MutableRefObject } from 'react'
 import type { DragSpringPose } from './useDragAndSpring'
-import type { ShaderPass, ShaderPassData } from '../effects/pass'
+import type { AnyPass, ScenePass, ShaderPassData, ScenePassData } from '../effects/pass'
 import { setupShaderPass, renderShaderPass } from '../effects/pass'
 
 
 export default function useFeedbackFBO(
-  passes: readonly ShaderPass[],
+  passes: readonly AnyPass[],
   decay = 0.975,
   active = true,
   sessionId = 0,
@@ -55,7 +55,7 @@ export default function useFeedbackFBO(
     write: THREE.WebGLRenderTarget
   }[]>(passes.map(() => createTarget()))
 
-  const lastPassData = useRef<Array<ShaderPassData | null>>([])
+  const lastPassData = useRef<Array<ShaderPassData | ScenePassData | null>>([])
 
   const ensureTargets = useCallback(() => {
     const ratio = gl.getPixelRatio()
@@ -96,27 +96,42 @@ export default function useFeedbackFBO(
   const passData = useMemo(() => {
     ensureTargets()
     return passes.map((p, idx) => {
-      if (p.type !== 'shader') return null
-      setupShaderPass(p, {
+      if (p.type === 'shader') {
+        setupShaderPass(p, {
+          passIndex: idx,
+          gl,
+          size: new THREE.Vector2(size.width * dpr, size.height * dpr),
+          baseUniforms: {
+            ...baseUniforms,
+            uThisPassPreviousFrame: { value: passTargets.current[idx].read.texture },
+            uPreviousPassThisFrame: { value: snapshotRT.current.texture },
+          },
+          extraParams: passParams[idx] ?? {},
+        })
+        return p.data ?? null
+      }
+      p.setup?.({
         passIndex: idx,
-        baseUniforms: {
-          ...baseUniforms,
-          uThisPassPreviousFrame: { value: passTargets.current[idx].read.texture },
-          uPreviousPassThisFrame: { value: snapshotRT.current.texture },
-        },
+        gl,
+        size: new THREE.Vector2(size.width * dpr, size.height * dpr),
+        baseUniforms,
         extraParams: passParams[idx] ?? {},
       })
-      return p.data ?? null
+      return (p as ScenePass).data ?? null
     })
-  }, [passes, baseUniforms, passParams, ensureTargets])
+  }, [passes, baseUniforms, passParams, ensureTargets, gl, size, dpr])
 
   useEffect(() => {
     const previous = lastPassData.current
     lastPassData.current = passData
     return () => {
-      previous.forEach((p) => {
+      previous.forEach((p, idx) => {
         if (!p) return
-        p.material.dispose()
+        const pass = passes[idx] as AnyPass
+        if (pass.type === 'shader') {
+          (p as ShaderPassData).material.dispose()
+        }
+        pass.cleanup?.()
         p.scene.clear()
       })
     }
@@ -129,12 +144,15 @@ export default function useFeedbackFBO(
       Math.random() / 2,
       Math.random() / 2
     )
-    passData.forEach((p) => {
-      if (p) (p.uniforms.uSessionRandom.value as THREE.Vector3).copy(
-        sessionRandom.current
-      )
+    passes.forEach((pass, idx) => {
+      const p = passData[idx] as ShaderPassData | ScenePassData | null
+      if (!p) return
+      if (pass.type === 'shader') {
+        ;(p as ShaderPassData).uniforms.uSessionRandom.value
+          .copy(sessionRandom.current)
+      }
     })
-  }, [sessionId, passData])
+  }, [sessionId, passData, passes])
 
   useEffect(() => {
     const ratio = gl.getPixelRatio()
@@ -143,15 +161,16 @@ export default function useFeedbackFBO(
       t.read.setSize(size.width * ratio, size.height * ratio)
       t.write.setSize(size.width * ratio, size.height * ratio)
     })
-    passData.forEach((p) => {
-      if (!p) return
-      if (p.uniforms.uTexelSize)
-        p.uniforms.uTexelSize.value.set(
-          1 / (size.width * ratio),
-          1 / (size.height * ratio)
-        )
+    passes.forEach((pass, idx) => {
+      const p = passData[idx] as ShaderPassData | ScenePassData | null
+      if (!p || pass.type !== 'shader') return
+      const sp = p as ShaderPassData
+      sp.uniforms.uTexelSize.value.set(
+        1 / (size.width * ratio),
+        1 / (size.height * ratio)
+      )
     })
-  }, [size, gl, passData])
+  }, [size, gl, passData, passes])
 
   useEffect(() => {
     const snap = snapshotRT.current
@@ -169,21 +188,34 @@ export default function useFeedbackFBO(
 
   useFrame((state) => {
     timeRef.current = state.clock.getElapsedTime()
-    passData.forEach((p) => {
-      if (p) p.uniforms.uTime.value = timeRef.current
+    passes.forEach((pass, idx) => {
+      const p = passData[idx] as ShaderPassData | ScenePassData | null
+      if (pass.type === 'shader' && p) {
+        (p as ShaderPassData).uniforms.uTime.value = timeRef.current
+      }
     })
 
     if (centerZoom || !snapshotGroup.current) {
-      passData.forEach((p) => {
-        if (p && p.uniforms.uCenter)
-          (p.uniforms.uCenter.value as THREE.Vector2).set(0.5, 0.5)
+      passes.forEach((pass, idx) => {
+        const p = passData[idx]
+        if (pass.type === 'shader' && p) {
+          ((p as ShaderPassData).uniforms.uCenter.value as THREE.Vector2).set(
+            0.5,
+            0.5
+          )
+        }
       })
     } else {
       const cx = snapshotGroup.current.position.x / viewport.width + 0.5
       const cy = snapshotGroup.current.position.y / viewport.height + 0.5
-      passData.forEach((p) => {
-        if (p && p.uniforms.uCenter)
-          (p.uniforms.uCenter.value as THREE.Vector2).set(cx, cy)
+      passes.forEach((pass, idx) => {
+        const p = passData[idx]
+        if (pass.type === 'shader' && p) {
+          ((p as ShaderPassData).uniforms.uCenter.value as THREE.Vector2).set(
+            cx,
+            cy
+          )
+        }
       })
     }
 
@@ -226,14 +258,24 @@ export default function useFeedbackFBO(
     let prevTexture = snapshotRT.current.texture
     passes.forEach((p, idx) => {
       const data = passData[idx]
-      if (!data || p.type !== 'shader') return
-      renderShaderPass(p, {
-        gl,
-        input: prevTexture,
-        history: passTargets.current[idx].read.texture,
-        output: passTargets.current[idx].write,
-        time: timeRef.current,
-      })
+      if (!data) return
+      if (p.type === 'shader') {
+        renderShaderPass(p, {
+          gl,
+          input: prevTexture,
+          history: passTargets.current[idx].read.texture,
+          output: passTargets.current[idx].write,
+          time: timeRef.current,
+        })
+      } else if (p.type === 'scene') {
+        p.render?.({
+          gl,
+          input: prevTexture,
+          history: passTargets.current[idx].read.texture,
+          output: passTargets.current[idx].write,
+          time: timeRef.current,
+        })
+      }
       ;[passTargets.current[idx].read, passTargets.current[idx].write] = [
         passTargets.current[idx].write,
         passTargets.current[idx].read,

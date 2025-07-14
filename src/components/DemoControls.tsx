@@ -36,6 +36,8 @@ export type DemoControlsProps = {
   setZoom: (val: number) => void
   centerZoom: boolean
   setCenterZoom: (val: boolean) => void
+  charWidth: number
+  setCharWidth: (val: number) => void
   svgSize: SvgSize
   setSvgSize: (size: SvgSize) => void
   paintWhileStill: boolean
@@ -65,6 +67,8 @@ export default function DemoControls({
   setZoom,
   centerZoom,
   setCenterZoom,
+  charWidth,
+  setCharWidth,
   svgSize,
   setSvgSize,
   paintWhileStill,
@@ -81,6 +85,7 @@ export default function DemoControls({
   const zoomRef = useRef(zoom)
   const centerZoomRef = useRef(centerZoom)
   const blurRadiusRef = useRef(blurRadius)
+  const charWidthRef = useRef(charWidth)
   const containerRef = useRef<HTMLDivElement | null>(null)
   useEffect(() => {
     sizeRef.current = svgSize
@@ -103,6 +108,9 @@ export default function DemoControls({
   useEffect(() => {
     blurRadiusRef.current = blurRadius
   }, [blurRadius])
+  useEffect(() => {
+    charWidthRef.current = charWidth
+  }, [charWidth])
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const pane = new Pane({ container: containerRef.current ?? undefined })
@@ -125,6 +133,7 @@ export default function DemoControls({
       detail: { ref: detailRef, setter: setDetail },
       zoom: { ref: zoomRef, setter: setZoom },
       centerZoom: { ref: centerZoomRef, setter: setCenterZoom },
+      charWidth: { ref: charWidthRef, setter: setCharWidth },
     }
 
     const createEffectParamsFolder = (shader: EffectName) => {

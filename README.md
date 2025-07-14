@@ -72,7 +72,9 @@ App
 Each effect in `src/effects` declares an ordered list of passes following an
 implicit snapshot. Every frame starts by rendering the current foreground pose
 into a snapshot buffer; the resulting texture becomes the input for the first
-pass. A pass is `{ type: 'shader', fragment }`.
+pass. A pass is typically `{ type: 'shader', fragment }`, but effects can also
+include custom scene passes that render arbitrary Three.js content. `asciiDecay`
+uses this to draw a grid of text characters.
 `useFeedbackFBO` steps through the passes sequentially, piping textures from one
 to the next. Each shader receives uniforms:
 
@@ -161,7 +163,7 @@ starting state:
 | ------- | ------------------------------------------ | ------------ | ------------------------------------------------------ |
 | `text`  | Any string                                | `Hello`      | Initial text content when the foreground source is text |
 | `bg`    | `wildflowers`, `white`                    | `white`      | Background image selection                             |
-| `effect`| `motionBlur`, `randomPaint`, `rippleFade`, `blurredRipple` | `rippleFade` | Starting feedback effect                               |
+| `effect`| `motionBlur`, `randomPaint`, `rippleFade`, `blurredRipple`, `asciiDecay` | `rippleFade` | Starting feedback effect                               |
 
 Effect names correspond to entries in
 [`src/effects/index.ts`](src/effects/index.ts). They can contain multiple passes
@@ -176,4 +178,4 @@ Runtime controls are exposed via a Tweakpane panel. Defaults come from
 - **Effect:** `rippleFade` with decay `0.98`
 - **Paint While Still:** `false`
 - **Effect Params:** blur radius `1`, ripple speed `0.05`, displacement `0.0015`,
-  detail `2`, zoom `0`, center zoom `false`
+  detail `2`, zoom `0`, center zoom `false`, character width `12`
