@@ -94,6 +94,8 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 
 - **71** – Fixed mobile Safari viewport scroll by using `100dvh` height and `touch-action:none` on the canvas container. Updated meta viewport, added overflow locks, and disabled page scrolling. Lint warns; build succeeds.
 
+- **72** – Documented URL query params, effect names, and Tweakpane defaults in README. Lint warns; build succeeds.
+
 ## Next Steps
 
 - Implement more multi-pass effects using the new pipeline.

@@ -151,3 +151,29 @@ src/
 | **Shader compile errors** | Blank or noisy UI | Precompile & cache shaders; revert to default shader. |
 
 ---
+
+## 8 · URL Params & Controls
+
+The demo accepts a few query parameters so it can be linked with a specific
+starting state:
+
+| Param   | Values                                    | Default      | Purpose                                                |
+| ------- | ------------------------------------------ | ------------ | ------------------------------------------------------ |
+| `text`  | Any string                                | `Hello`      | Initial text content when the foreground source is text |
+| `bg`    | `wildflowers`, `white`                    | `white`      | Background image selection                             |
+| `effect`| `motionBlur`, `randomPaint`, `rippleFade`, `blurredRipple` | `rippleFade` | Starting feedback effect                               |
+
+Effect names correspond to entries in
+[`src/effects/index.ts`](src/effects/index.ts). They can contain multiple passes
+— for example, `blurredRipple` runs a Gaussian blur before `rippleFade`.
+
+Runtime controls are exposed via a Tweakpane panel. Defaults come from
+[`App.tsx`](src/App.tsx):
+
+- **Background:** `white` (options: wildflowers or white)
+- **Foreground Source:** `text` with value `"Hello"` (diamond or text)
+- **Size Mode:** `scaled` with factor `2` (natural, scaled, or relative for the diamond)
+- **Effect:** `rippleFade` with decay `0.98`
+- **Paint While Still:** `false`
+- **Effect Params:** blur radius `1`, ripple speed `0.05`, displacement `0.0015`,
+  detail `2`, zoom `0`, center zoom `false`
