@@ -22,6 +22,7 @@ export type ForegroundLayerDemoProps = {
   detail: number
   zoom: number
   centerZoom: boolean
+  maxDpr?: number
   onInteract: () => void
 }
 
@@ -38,6 +39,7 @@ export default function ForegroundLayerDemo({
   detail,
   zoom,
   centerZoom,
+  maxDpr,
   onInteract,
 }: ForegroundLayerDemoProps) {
   const svgUrl = useSvgUrl()
@@ -61,6 +63,7 @@ export default function ForegroundLayerDemo({
         detail={detail}
         zoom={zoom}
         centerZoom={centerZoom}
+        maxDpr={maxDpr}
         onGrab={onInteract}
       />
     </>

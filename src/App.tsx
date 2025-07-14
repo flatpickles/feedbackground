@@ -40,6 +40,7 @@ export default function App() {
   const [detail, setDetail] = useState(2)
   const [zoom, setZoom] = useState(0)
   const [centerZoom, setCenterZoom] = useState(false)
+  const maxDpr = 2
   const style =
     bgName === 'wildflowers'
       ? { backgroundImage: `url(${wildflowersUrl})` }
@@ -91,9 +92,10 @@ export default function App() {
           displacement={displacement}
           detail={detail}
           zoom={zoom}
-          centerZoom={centerZoom}
-          onInteract={() => setOverviewHidden(true)}
-        />
+        centerZoom={centerZoom}
+        maxDpr={maxDpr}
+        onInteract={() => setOverviewHidden(true)}
+      />
       </div>
     </>
   )

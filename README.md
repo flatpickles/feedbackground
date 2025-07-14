@@ -110,6 +110,7 @@ express while single-pass effects such as `[rippleFade]` behave as before.
 | **Interpolation**   | Configure `useFrameInterpolator` params | Linear sub-sampling         |
 | **Physics engine**  | Swap `react-spring`                     | `react-spring`              |
 | **Input methods**   | Extend for touch, gesture, gamepad      | Mouse/pointer               |
+| **Render scale**    | `maxDpr` prop on `CanvasStage`          | `window.devicePixelRatio`   |
 
 ---
 

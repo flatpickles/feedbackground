@@ -22,10 +22,11 @@ export default function useFeedbackFBO(
   externalRef?: MutableRefObject<THREE.Group | null>,
   passParams: Array<Record<string, number | boolean>> = [],
   centerZoom = false,
-  paintWhileStill = false
+  paintWhileStill = false,
+  maxDpr = Infinity
 ) {
   const { gl, size, camera, viewport } = useThree()
-  const dpr = gl.getPixelRatio()
+  const dpr = Math.min(gl.getPixelRatio(), maxDpr)
 
   const internalRef = useRef<THREE.Group | null>(null)
   const snapshotGroup = externalRef ?? internalRef
@@ -59,7 +60,7 @@ export default function useFeedbackFBO(
   }[]>(passes.map(() => createTarget()))
 
   function ensureTargets() {
-    const ratio = gl.getPixelRatio()
+    const ratio = Math.min(gl.getPixelRatio(), maxDpr)
     while (passTargets.current.length < passes.length) {
       passTargets.current.push(createTarget())
     }
@@ -142,7 +143,7 @@ export default function useFeedbackFBO(
   }, [sessionId, passData])
 
   useEffect(() => {
-    const ratio = gl.getPixelRatio()
+    const ratio = Math.min(gl.getPixelRatio(), maxDpr)
     snapshotRT.current.setSize(size.width * ratio, size.height * ratio)
     passTargets.current.forEach((t) => {
       t.read.setSize(size.width * ratio, size.height * ratio)

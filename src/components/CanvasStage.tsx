@@ -17,6 +17,7 @@ export type CanvasStageProps = {
   detail: number
   zoom: number
   centerZoom: boolean
+  maxDpr?: number
   onInteract: () => void
 }
 
@@ -33,6 +34,7 @@ export default function CanvasStage({
   detail,
   zoom,
   centerZoom,
+  maxDpr,
   onInteract,
 }: CanvasStageProps) {
   return (
@@ -51,6 +53,7 @@ export default function CanvasStage({
           detail={detail}
           zoom={zoom}
           centerZoom={centerZoom}
+          maxDpr={maxDpr}
           onInteract={onInteract}
         />
       </Suspense>

@@ -22,6 +22,7 @@ export type DraggableForegroundProps = {
   detail: number
   zoom: number
   centerZoom: boolean
+  maxDpr?: number
   onGrab?: () => void
 }
 
@@ -37,6 +38,7 @@ export default function DraggableForeground({
   detail,
   zoom,
   centerZoom,
+  maxDpr,
   onGrab,
 }: DraggableForegroundProps) {
   const dragRef = useRef<THREE.Group | null>(null)
@@ -75,7 +77,8 @@ export default function DraggableForeground({
     dragRef,
     passParams,
     centerZoom,
-    paintWhileStill
+    paintWhileStill,
+    maxDpr
   )
 
   return (
