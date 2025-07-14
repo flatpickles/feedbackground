@@ -1,6 +1,15 @@
 import { useEffect, useRef } from 'react'
 import type React from 'react'
-import { Pane } from 'tweakpane'
+import {
+  Pane,
+  SliderBladeApi,
+  ListBladeApi,
+  TextBladeApi,
+  type InputBindingApi,
+  FolderApi,
+  TpChangeEvent,
+} from 'tweakpane'
+import { addBladeTyped, addBindingTyped, addFolderTyped, removeBladeTyped } from '../utils/tweakpane'
 import type { SvgSize } from '../types/svg'
 import {
   effectIndex,
@@ -97,14 +106,10 @@ export default function DemoControls({
   /* eslint-disable react-hooks/exhaustive-deps */
   useEffect(() => {
     const pane = new Pane({ container: containerRef.current ?? undefined })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const fgFolder = (pane as any).addFolder({ title: 'Foreground' })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const bgFolder = (pane as any).addFolder({ title: 'Background' })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const effectFolder = (pane as any).addFolder({ title: 'Effect' })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let effectParamsFolder: any
+    const fgFolder = addFolderTyped(pane, { title: 'Foreground' })
+    const bgFolder = addFolderTyped(pane, { title: 'Background' })
+    const effectFolder = addFolderTyped(pane, { title: 'Effect' })
+    let effectParamsFolder: FolderApi | null
 
     const paramMap: Record<
       string,
@@ -124,14 +129,12 @@ export default function DemoControls({
 
     const createEffectParamsFolder = (shader: EffectName) => {
       if (effectParamsFolder) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        ;(pane as any).remove(effectParamsFolder)
+        removeBladeTyped(pane, effectParamsFolder)
         effectParamsFolder = null
       }
       const defs = getEffectParamDefs(shader)
       if (defs.length === 0) return
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      effectParamsFolder = (pane as any).addFolder({
+      effectParamsFolder = addFolderTyped(pane, {
         title: 'Effect Params',
         index: 3,
       })
@@ -139,8 +142,7 @@ export default function DemoControls({
         const info = paramMap[def.id as keyof typeof paramMap]
         if (!info) return
         if (def.type === 'number') {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const blade = (effectParamsFolder as any).addBlade({
+          const blade = addBladeTyped<SliderBladeApi>(effectParamsFolder, {
             view: 'slider',
             label: def.label,
             min: def.min,
@@ -148,24 +150,20 @@ export default function DemoControls({
             value: info.ref.current,
             step: def.step,
           })
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          blade.on('change', (ev: any) => info.setter(ev.value))
+          blade.on('change', (ev: TpChangeEvent<number>) => info.setter(ev.value))
         } else {
           const params = { val: info.ref.current as boolean }
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const blade = (effectParamsFolder as any).addBinding(params, 'val', {
+          const blade = addBindingTyped(effectParamsFolder, params, 'val', {
             label: def.label,
           })
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          blade.on('change', (ev: any) => {
+          blade.on('change', (ev: TpChangeEvent<boolean>) => {
             params.val = ev.value
             info.setter(ev.value)
           })
         }
       })
     }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const bgInput = (bgFolder as any).addBlade({
+    const bgInput = addBladeTyped<ListBladeApi<'wildflowers' | 'white'>>(bgFolder, {
       view: 'list',
       label: 'image',
       options: [
@@ -174,11 +172,9 @@ export default function DemoControls({
       ],
       value: backgroundName,
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    bgInput.on('change', (ev: any) => setBackgroundName(ev.value))
+    bgInput.on('change', (ev: TpChangeEvent<'wildflowers' | 'white'>) => setBackgroundName(ev.value))
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const sourceInput = (fgFolder as any).addBlade({
+    const sourceInput = addBladeTyped<ListBladeApi<'diamond' | 'text'>>(fgFolder, {
       view: 'list',
       label: 'source',
       options: [
@@ -190,37 +186,31 @@ export default function DemoControls({
     })
 
     const paintParams = { paint: paintWhileStill }
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let paintInput: any
+    let paintInput: InputBindingApi<boolean> | undefined
     const addPaintInput = () => {
       if (paintInput) fgFolder.remove(paintInput)
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      paintInput = (fgFolder as any).addBinding(paintParams, 'paint', {
+      paintInput = addBindingTyped(fgFolder, paintParams, 'paint', {
         label: 'paint while still',
         index: 4,
       })
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      paintInput.on('change', (ev: any) => {
+      paintInput.on('change', (ev: TpChangeEvent<boolean>) => {
         paintParams.paint = ev.value
         setPaintWhileStill(ev.value)
       })
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let textBlade: any
+    let textBlade: TextBladeApi<string> | undefined
     const updateTextBlade = (type: 'diamond' | 'text') => {
       if (textBlade) fgFolder.remove(textBlade)
       if (type === 'text') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        textBlade = (fgFolder as any).addBlade({
+        textBlade = addBladeTyped<TextBladeApi<string>>(fgFolder, {
           view: 'text',
           label: 'text',
           parse: (v: unknown) => String(v),
           value: textValue,
           index: 1,
         })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        textBlade.on('change', (ev: any) => setTextValue(ev.value))
+        textBlade.on('change', (ev: TpChangeEvent<string>) => setTextValue(ev.value))
       } else {
         textBlade = undefined
       }
@@ -228,16 +218,14 @@ export default function DemoControls({
 
     updateTextBlade(sourceName)
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    sourceInput.on('change', (ev: any) => {
+    sourceInput.on('change', (ev: TpChangeEvent<'diamond' | 'text'>) => {
       const val = ev.value as 'diamond' | 'text'
       setSourceName(val)
       updateTextBlade(val)
       createSizeInput(val)
     })
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const decayInput = (effectFolder as any).addBlade({
+    const decayInput = addBladeTyped<SliderBladeApi>(effectFolder, {
       view: 'slider',
       label: 'decay',
       min: 0.95,
@@ -246,24 +234,21 @@ export default function DemoControls({
       step: 0.001,
       index: 0,
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    decayInput.on('change', (ev: any) => setDecay(ev.value))
+    decayInput.on('change', (ev: TpChangeEvent<number>) => setDecay(ev.value))
 
 
     const shaderOptions = Object.entries(effectIndex).map(([key, val]) => ({
       text: val.label,
       value: key,
     }))
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const shaderInput = (effectFolder as any).addBlade({
+    const shaderInput = addBladeTyped<ListBladeApi<EffectName>>(effectFolder, {
       view: 'list',
       label: 'shader',
       options: shaderOptions,
       value: shaderName,
       index: 1,
     })
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    shaderInput.on('change', (ev: any) => {
+    shaderInput.on('change', (ev: TpChangeEvent<string>) => {
       const val = ev.value as EffectName
       setShaderName(val)
       createEffectParamsFolder(val)
@@ -271,16 +256,13 @@ export default function DemoControls({
 
     createEffectParamsFolder(shaderName)
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let sizeInput: any
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let paramBlade: any
+    let sizeInput: ListBladeApi<SvgSize['type']> | undefined
+    let paramBlade: SliderBladeApi | undefined
     const updateParamBlade = (type: SvgSize['type']) => {
       if (paintInput) fgFolder.remove(paintInput)
       if (paramBlade) fgFolder.remove(paramBlade)
       if (type === 'scaled') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        paramBlade = (fgFolder as any).addBlade({
+        paramBlade = addBladeTyped<SliderBladeApi>(fgFolder, {
           view: 'slider',
           label: 'factor',
           min: 0,
@@ -289,13 +271,11 @@ export default function DemoControls({
           step: 0.01,
           index: 3,
         })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        paramBlade.on('change', (ev: any) =>
+        paramBlade.on('change', (ev: TpChangeEvent<number>) =>
           setSvgSize({ type: 'scaled', factor: ev.value })
         )
       } else if (type === 'relative') {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        paramBlade = (fgFolder as any).addBlade({
+        paramBlade = addBladeTyped<SliderBladeApi>(fgFolder, {
           view: 'slider',
           label: 'fraction',
           min: 0,
@@ -307,8 +287,7 @@ export default function DemoControls({
           step: 0.01,
           index: 3,
         })
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        paramBlade.on('change', (ev: any) =>
+        paramBlade.on('change', (ev: TpChangeEvent<number>) =>
           setSvgSize({ type: 'relative', fraction: ev.value })
         )
       } else {
@@ -333,8 +312,7 @@ export default function DemoControls({
         setSvgSize({ type: 'scaled', factor: 1 })
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      sizeInput = (fgFolder as any).addBlade({
+      sizeInput = addBladeTyped<ListBladeApi<SvgSize['type']>>(fgFolder, {
         view: 'list',
         label: 'size',
         options,
@@ -342,8 +320,7 @@ export default function DemoControls({
         index: 2,
       })
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      sizeInput.on('change', (ev: any) => {
+      sizeInput.on('change', (ev: TpChangeEvent<SvgSize['type']>) => {
         const type = ev.value as SvgSize['type']
         if (type === 'natural') {
           setSvgSize({ type: 'natural' })
