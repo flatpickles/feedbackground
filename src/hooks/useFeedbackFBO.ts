@@ -56,6 +56,7 @@ export default function useFeedbackFBO(
   }[]>(passes.map(() => createTarget()))
 
   const lastPassData = useRef<Array<ShaderPassData | ScenePassData | null>>([])
+  const lastPasses = useRef<AnyPass[]>([])
 
   const ensureTargets = useCallback(() => {
     const ratio = gl.getPixelRatio()
@@ -122,16 +123,18 @@ export default function useFeedbackFBO(
   }, [passes, baseUniforms, passParams, ensureTargets, gl, size, dpr])
 
   useEffect(() => {
-    const previous = lastPassData.current
+    const previousData = lastPassData.current
+    const previousPasses = lastPasses.current
     lastPassData.current = passData
+    lastPasses.current = Array.from(passes)
     return () => {
-      previous.forEach((p, idx) => {
+      previousData.forEach((p, idx) => {
         if (!p) return
-        const pass = passes[idx] as AnyPass
-        if (pass.type === 'shader') {
+        const pass = previousPasses[idx]
+        if (pass && pass.type === 'shader') {
           (p as ShaderPassData).material.dispose()
         }
-        pass.cleanup?.()
+        pass?.cleanup?.()
         p.scene.clear()
       })
     }
