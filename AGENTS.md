@@ -105,6 +105,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **76** – Reworked ASCII luminance into a GPU shader pass and fixed pass cleanup when switching effects. Lint and build pass.
 - **77** – Fixed ASCII luminance shader to sample glyph alpha so characters render correctly. Lint and build pass.
 - **78** – Fixed ASCII grid orientation and reset snapshot state when idle to prevent frozen output. Lint and build pass.
+- **79** – Flipped shader Y axis and cleared the ASCII pass buffer each frame to keep text upright and prevent stuck frames. Lint and build pass.
 
 ## Next Steps
 
