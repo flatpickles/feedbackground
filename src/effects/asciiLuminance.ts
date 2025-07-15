@@ -28,7 +28,7 @@ const fragmentShader = `
     float lum = dot(color.rgb, vec3(0.299, 0.587, 0.114)) * color.a;
     float index = floor((1.0 - lum) * (uCharCount - 1.0) + 0.5);
     vec2 local = fract(vUv * vec2(uCols, uRows));
-    vec2 atlasUV = vec2((index + local.x) / uCharCount, 1.0 - local.y);
+    vec2 atlasUV = vec2((index + local.x) / uCharCount, local.y);
     vec4 glyph = texture2D(uAtlas, atlasUV);
     gl_FragColor = vec4(0.0, 0.0, 0.0, glyph.a);
   }
@@ -74,6 +74,7 @@ export default function asciiLuminancePass(): ScenePass {
     const tex = new THREE.CanvasTexture(canvas)
     tex.minFilter = THREE.LinearFilter
     tex.magFilter = THREE.NearestFilter
+    tex.flipY = false
     return tex
   }
 
