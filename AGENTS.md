@@ -103,6 +103,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **74** – Introduced generic `Pass` type with `setup` and `render` hooks and refactored shader passes and `useFeedbackFBO` to use it. Lint and build pass.
 - **75** – Added scene pass infrastructure with ASCII luminance effect and `asciiDecay` stack. Updated controls, README, and types. Lint passes with warning; build succeeds.
 - **76** – Reworked ASCII luminance into a GPU shader pass and fixed pass cleanup when switching effects. Lint and build pass.
+- **77** – Fixed ASCII luminance shader to sample glyph alpha so characters render correctly. Lint and build pass.
 
 ## Next Steps
 
