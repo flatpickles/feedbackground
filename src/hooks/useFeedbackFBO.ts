@@ -255,6 +255,8 @@ export default function useFeedbackFBO(
       gl.autoClear = prevAuto
       group.position.set(originalPos.x, originalPos.y, group.position.z)
       group.updateMatrixWorld()
+    } else {
+      lastSnapshotPos.current.set(Infinity, Infinity)
     }
     gl.setRenderTarget(null)
 
