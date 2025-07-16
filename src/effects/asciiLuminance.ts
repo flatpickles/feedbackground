@@ -32,7 +32,7 @@ const fragmentShader = `
     local = vec2(1.0 - local.x, 1.0 - local.y);
     vec2 atlasUV = vec2((index + local.x) / uCharCount, local.y);
     vec4 glyph = texture2D(uAtlas, atlasUV);
-    gl_FragColor = vec4(0.0, 0.0, 0.0, glyph.a);
+    gl_FragColor = vec4(0.0, 0.0, 0.0, glyph.a * lum);
   }
 `
 
