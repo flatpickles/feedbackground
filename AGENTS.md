@@ -107,6 +107,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **78** – Fixed ASCII grid orientation and reset snapshot state when idle to prevent frozen output. Lint and build pass.
 - **79** – Flipped shader Y axis and cleared the ASCII pass buffer each frame to keep text upright and prevent stuck frames. Lint and build pass.
 - **80** – Corrected ASCII pass orientation and rotated glyphs 180° so they display upright. Lint and build pass.
+- **81** – Cleared render targets when resized or created to prevent ASCII decay freeze after interactions. Lint and build pass.
 
 ## Next Steps
 

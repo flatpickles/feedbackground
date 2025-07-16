@@ -73,6 +73,13 @@ export default function useFeedbackFBO(
     passTargets.current.forEach((t) => {
       t.read.setSize(size.width * ratio, size.height * ratio)
       t.write.setSize(size.width * ratio, size.height * ratio)
+      gl.setRenderTarget(t.read)
+      gl.setClearColor(0x000000, 0)
+      gl.clear(true, true, true)
+      gl.setRenderTarget(t.write)
+      gl.setClearColor(0x000000, 0)
+      gl.clear(true, true, true)
+      gl.setRenderTarget(null)
     })
   }, [gl, size, passes, createTarget])
 
