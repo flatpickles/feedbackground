@@ -22,14 +22,15 @@ const fragmentShader = `
   uniform float uRows;
   uniform float uCharCount;
   void main() {
-    vec2 uv = vec2(vUv.x, 1.0 - vUv.y);
+    vec2 uv = vUv;
     vec2 cell = floor(uv * vec2(uCols, uRows));
     vec2 sampleUV = (cell + 0.5) / vec2(uCols, uRows);
     vec4 color = texture2D(uInput, sampleUV);
     float lum = dot(color.rgb, vec3(0.299, 0.587, 0.114)) * color.a;
     float index = floor((1.0 - lum) * (uCharCount - 1.0) + 0.5);
     vec2 local = fract(uv * vec2(uCols, uRows));
-    vec2 atlasUV = vec2((index + local.x) / uCharCount, 1.0 - local.y);
+    local = vec2(1.0 - local.x, 1.0 - local.y);
+    vec2 atlasUV = vec2((index + local.x) / uCharCount, local.y);
     vec4 glyph = texture2D(uAtlas, atlasUV);
     gl_FragColor = vec4(0.0, 0.0, 0.0, glyph.a);
   }
