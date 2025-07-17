@@ -296,9 +296,18 @@ export default function useFeedbackFBO(
     })
   })
 
-  const outputTex = passes.length
-    ? passTargets.current[passes.length - 1].read.texture
-    : snapshotRT.current.texture
+  const outputTex = useRef<THREE.Texture>(
+    passes.length
+      ? passTargets.current[passes.length - 1].read.texture
+      : snapshotRT.current.texture
+  )
+
+  useFrame(() => {
+    outputTex.current =
+      passes.length > 0
+        ? passTargets.current[passes.length - 1].read.texture
+        : snapshotRT.current.texture
+  })
 
   return { snapshotRef: snapshotGroup, texture: outputTex }
 }
