@@ -110,6 +110,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **81** – Cleared render targets when resized or created to prevent ASCII decay freeze after interactions. Lint and build pass.
 - **82** – Multiplied ASCII glyph alpha by luminance so trails fade smoothly. Lint and build pass.
 - **83** – Fixed feedback output freeze by updating the displayed texture each frame and refactoring `FeedbackPlane` to track a ref. Lint and build pass.
+- **84** – Updated output texture assignment inside `useFeedbackFBO`'s render loop and ensured `FeedbackPlane` only updates its material map when the texture ref changes.
 
 ## Next Steps
 
