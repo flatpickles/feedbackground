@@ -18,6 +18,8 @@ const fragmentShader = `
   varying vec2 vUv;
   uniform sampler2D uInput;
   uniform sampler2D uAtlas;
+  uniform sampler2D uHistory;
+  uniform float uDecay;
   uniform float uCols;
   uniform float uRows;
   uniform float uCharCount;
@@ -32,7 +34,9 @@ const fragmentShader = `
     local = vec2(1.0 - local.x, 1.0 - local.y);
     vec2 atlasUV = vec2((index + local.x) / uCharCount, local.y);
     vec4 glyph = texture2D(uAtlas, atlasUV);
-    gl_FragColor = vec4(0.0, 0.0, 0.0, glyph.a * lum);
+    float glyphAlpha = glyph.a * lum;
+    float prevAlpha = texture2D(uHistory, vUv).a * uDecay;
+    gl_FragColor = vec4(0.0, 0.0, 0.0, max(glyphAlpha, prevAlpha));
   }
 `
 
@@ -95,6 +99,8 @@ export default function asciiLuminancePass(): ScenePass {
       uniforms: {
         uInput: { value: null as unknown as THREE.Texture },
         uAtlas: { value: atlas },
+        uHistory: { value: null as unknown as THREE.Texture },
+        uDecay: { value: ctx.baseUniforms.uDecay.value as number },
         uCols: { value: cols },
         uRows: { value: rows },
         uCharCount: { value: asciiChars.length },
@@ -112,6 +118,7 @@ export default function asciiLuminancePass(): ScenePass {
   function render(ctx: PassRenderContext) {
     if (!scene || !camera || !material) return
     material.uniforms.uInput.value = ctx.input
+    ;(material.uniforms.uHistory as THREE.IUniform).value = ctx.history
     ctx.gl.setRenderTarget(ctx.output)
     ctx.gl.setClearColor(0x000000, 0)
     ctx.gl.clear(true, true, true)

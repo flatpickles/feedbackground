@@ -111,6 +111,7 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **82** – Multiplied ASCII glyph alpha by luminance so trails fade smoothly. Lint and build pass.
 - **83** – Fixed feedback output freeze by updating the displayed texture each frame and refactoring `FeedbackPlane` to track a ref. Lint and build pass.
 - **84** – Updated output texture assignment inside `useFeedbackFBO`'s render loop and ensured `FeedbackPlane` only updates its material map when the texture ref changes.
+- **85** – Added decay-aware history sampling in the ASCII luminance pass so trails persist after interactions. Lint and build pass.
 
 ## Next Steps
 
