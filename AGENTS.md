@@ -107,10 +107,16 @@ This file tracks Codex progress and upcoming tasks. Keep it chronological and ap
 - **78** – Fixed ASCII grid orientation and reset snapshot state when idle to prevent frozen output. Lint and build pass.
 - **79** – Flipped shader Y axis and cleared the ASCII pass buffer each frame to keep text upright and prevent stuck frames. Lint and build pass.
 - **80** – Corrected ASCII pass orientation and rotated glyphs 180° so they display upright. Lint and build pass.
+- **81** – Cleared render targets when resized or created to prevent ASCII decay freeze after interactions. Lint and build pass.
+- **82** – Multiplied ASCII glyph alpha by luminance so trails fade smoothly. Lint and build pass.
+- **83** – Fixed feedback output freeze by updating the displayed texture each frame and refactoring `FeedbackPlane` to track a ref. Lint and build pass.
+- **84** – Updated output texture assignment inside `useFeedbackFBO`'s render loop and ensured `FeedbackPlane` only updates its material map when the texture ref changes.
+- **85** – Added decay-aware history sampling in the ASCII luminance pass so trails persist after interactions. Lint and build pass.
 
 ## Next Steps
 
 - Implement more multi-pass effects using the new pipeline.
+- Polish ASCII decay effect and expose character grid options.
 - Tune random paint and ripple fade blending for performance and visual quality.
 - Profile high-DPR rendering performance and optimize FBO sizing.
 - Expose additional shader uniforms via Tweakpane for experimentation.
